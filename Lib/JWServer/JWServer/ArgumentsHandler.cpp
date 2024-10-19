@@ -65,11 +65,11 @@ namespace jw
 
     void DefaultArgumentHandler::printHelp()
     {
-        printf("%s »ç¿ë¹ı\n", GetProcessName().c_str());
-        printf("%s : »ç¿ë¹æ¹ıÀ» Ãâ·ÂÇÕ´Ï´Ù.\n", HELP_OPTION);
+        printf("%s ì‚¬ìš©ë²•\n", GetProcessName().c_str());
+        printf("%s : ì‚¬ìš©ë°©ë²•ì„ ì¶œë ¥í•©ë‹ˆë‹¤.\n", HELP_OPTION);
 
 
-        LOGGER_FETAL("{:s} »ç¿ë¹ı", GetProcessName().c_str());
-        LOGGER_FETAL("{:s} : »ç¿ë¹æ¹ıÀ» Ãâ·ÂÇÕ´Ï´Ù.", HELP_OPTION);
+        LOGGER_FETAL("{:s} ì‚¬ìš©ë²•", GetProcessName().c_str());
+        LOGGER_FETAL("{:s} : ì‚¬ìš©ë°©ë²•ì„ ì¶œë ¥í•©ë‹ˆë‹¤.", HELP_OPTION);
     }
 }

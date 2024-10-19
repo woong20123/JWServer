@@ -18,7 +18,7 @@ namespace jw
 
     struct LogBuffer::Impl
     {
-        // LogBuffer °´Ã¼ÀÇ »çÀÌÁî¸¦ ÆäÀÌÁö »çÀÌÁîÀÎ 4KB·Î °íÁ¤ ½ÃÅµ´Ï´Ù. 
+        // LogBuffer ê°ì²´ì˜ ì‚¬ì´ì¦ˆë¥¼ íŽ˜ì´ì§€ ì‚¬ì´ì¦ˆì¸ 4KBë¡œ ê³ ì • ì‹œí‚µë‹ˆë‹¤. 
         static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo);
 
         BufferType msg[MSG_SIZE] = { 0, };

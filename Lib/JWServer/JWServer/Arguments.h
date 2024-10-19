@@ -8,8 +8,8 @@ namespace jw
 {
     class ArgumentsHandler;
 
-    // ÇÁ·Î±×·¥¿¡¼­ Àü´ŞÇÑ ÀÎ¼ö¸¦ ÆÄ½ÌÇÏ°í Ã³¸®ÇÕ´Ï´Ù. 
-    // ÀÎ¼ö Ã³¸® ·ÎÁ÷Àº ArgumentsHandler Å¬·¡½º°¡ ´ã´çÇÕ´Ï´Ù. 
+    // í”„ë¡œê·¸ë¨ì—ì„œ ì „ë‹¬í•œ ì¸ìˆ˜ë¥¼ íŒŒì‹±í•˜ê³  ì²˜ë¦¬í•©ë‹ˆë‹¤. 
+    // ì¸ìˆ˜ ì²˜ë¦¬ ë¡œì§ì€ ArgumentsHandler í´ë˜ìŠ¤ê°€ ë‹´ë‹¹í•©ë‹ˆë‹¤. 
     class Arguments : public Singleton<Arguments>
     {
     public:

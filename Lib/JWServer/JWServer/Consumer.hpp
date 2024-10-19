@@ -6,9 +6,9 @@
 namespace jw
 {
 	/// <summary>
-	/// µî·ÏµÈ ProducerÀÇ Queue¸¦ ½Ç½Ã°£À¸·Î °¨ÁöÇÏ¿© µ¥ÀÌÅÍ°¡ µé¾î¿À¸é
-	/// HandleÇÔ¼ö·Î º¸³»Áı´Ï´Ù.
-	/// HandleÇÔ¼ö´Â »ç¿ëÀÚ°¡ Á¤ÀÇÇÕ´Ï´Ù.
+	/// ë“±ë¡ëœ Producerì˜ Queueë¥¼ ì‹¤ì‹œê°„ìœ¼ë¡œ ê°ì§€í•˜ì—¬ ë°ì´í„°ê°€ ë“¤ì–´ì˜¤ë©´
+	/// Handleí•¨ìˆ˜ë¡œ ë³´ë‚´ì§‘ë‹ˆë‹¤.
+	/// Handleí•¨ìˆ˜ëŠ” ì‚¬ìš©ìê°€ ì •ì˜í•©ë‹ˆë‹¤.
 	/// </summary>
 	/// <typeparam name="Producer"></typeparam>
 	template<typename Producer>
@@ -21,9 +21,9 @@ namespace jw
 		virtual ~Consumer();
 
 	protected:
-		virtual void Prepare();										///  ÇÁ·Î¼¼¼­¸¦ ½ÇÇàÇÏ±â Àü¿¡ ÇØ¾ß ÇÒ ÀÛ¾÷À» µî·ÏÇÕ´Ï´Ù.
-		virtual void Execute();										///  »ı»êÀÚ Å¥¿¡¼­ ¿ÀºêÁ§Æ®¸¦ ¹Ş¾Æ¿Í Handler¿¡ ³Ñ±é´Ï´Ù.
-		virtual void Handle(const queueObject& obj) = 0;			///  »ı»êÀÚÀÇ object¸¦ Ã³¸®ÇÕ´Ï´Ù.
+		virtual void Prepare();										///  í”„ë¡œì„¸ì„œë¥¼ ì‹¤í–‰í•˜ê¸° ì „ì— í•´ì•¼ í•  ì‘ì—…ì„ ë“±ë¡í•©ë‹ˆë‹¤.
+		virtual void Execute();										///  ìƒì‚°ì íì—ì„œ ì˜¤ë¸Œì íŠ¸ë¥¼ ë°›ì•„ì™€ Handlerì— ë„˜ê¹ë‹ˆë‹¤.
+		virtual void Handle(const queueObject& obj) = 0;			///  ìƒì‚°ìì˜ objectë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 		virtual void ThreadRun();
 
 	private:

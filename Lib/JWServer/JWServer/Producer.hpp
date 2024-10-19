@@ -10,9 +10,9 @@
 namespace jw
 {
 	/// <summary>
-	/// Producer´Â Queue º¸À¯ÇÕ´Ï´Ù.
-	/// Queue´Â ÅÛÇÃ¸´Å¸ÀÔÀÇ Á¤º¸¸¦ ÀúÀåÇÏ°í ÀÖ½À´Ï´Ù.
-	/// Producer¸¦ Consumer¿¡ µî·ÏÇÏ¸é Consumer¿¡¼­´Â ProducerÀÇ Queue¸¦ °¨½ÃÇÏ¿© µ¥ÀÌÅÍ°¡ µé¾î¿À¸é Ã³¸®ÇÕ´Ï´Ù.
+	/// ProducerëŠ” Queue ë³´ìœ í•©ë‹ˆë‹¤.
+	/// QueueëŠ” í…œí”Œë¦¿íƒ€ìž…ì˜ ì •ë³´ë¥¼ ì €ìž¥í•˜ê³  ìžˆìŠµë‹ˆë‹¤.
+	/// Producerë¥¼ Consumerì— ë“±ë¡í•˜ë©´ Consumerì—ì„œëŠ” Producerì˜ Queueë¥¼ ê°ì‹œí•˜ì—¬ ë°ì´í„°ê°€ ë“¤ì–´ì˜¤ë©´ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 	/// </summary>
 	/// <typeparam name="object"></typeparam>
 	template<typename object>
