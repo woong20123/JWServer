@@ -27,6 +27,7 @@ namespace jw
         using msgString = std::string;
 
         void SetLevel(LogType logType);
+        void Stop();
 
         void WriteV(LogType type, const msgType* file, const int line, const msgType* fmt, va_list args) const;
         void Write(LogType type, const msgType* file, const int line, const msgType* fmt, ...) const;
@@ -43,14 +44,15 @@ namespace jw
 
     protected:
         Logger();
-        ~Logger() = default;
+        ~Logger();
         Logger(const Logger&) = delete;
         Logger& operator=(const Logger&) = delete;
 
     private:
         bool enalbleLogLevel(const LogType level) const;
 
-        LogType _logLevel;
+        struct Impl;
+        std::unique_ptr<Impl> _pImpl;
         friend class Singleton<Logger>;
     };
 }

@@ -12,6 +12,9 @@
     <ClInclude Include="Singleton.hpp">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="Consumer.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -22,6 +25,9 @@
     </ClCompile>
     <ClCompile Include="LogBuffer.cpp">
       <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Producer.hpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
