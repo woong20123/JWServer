@@ -1,0 +1,31 @@
+#pragma once
+#ifndef __LOG_BUFFER_H_
+#define __LOG_BUFFER_H_
+#include <memory>
+
+namespace jw
+{
+    enum class LogType : int16_t;
+
+    class LogBuffer
+    {
+    public:
+        static constexpr size_t MEMORY_PAGE_SIZE = 1024 * 4;
+        static constexpr size_t PRIFIX_SIZE = 128;
+
+        LogBuffer();
+        ~LogBuffer();
+        using BufferType = char;
+        void Initialize(LogType logType, const BufferType* filePath, int line);
+
+        int MakePreFix(BufferType* prefixBuffer, size_t bufferSize);
+        int WriteMsg(const BufferType* msg);
+        const BufferType* GetMsg() const;
+        constexpr size_t GetMsgTotalSize() const;
+
+    private:
+        struct Impl;
+        std::unique_ptr<Impl> _pImpl;
+    };
+}
+#endif // !__LOG_BUFFER_H_
