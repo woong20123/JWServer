@@ -2,7 +2,9 @@
 #ifndef __WLOGGER_H_
 #define __WLOGGER_H_
 #include "Singleton.hpp"
+#include "Producer.hpp"
 #include <string>
+#include <memory>
 #if _HAS_CXX20 
 #include <format>
 #endif
@@ -18,13 +20,18 @@ namespace jw
         LOG_DEBUG,
     };
 
+    class LogBuffer;
+
     class Logger : public Singleton<Logger>
     {
     public:
+        using ProducerObj = Producer<std::shared_ptr<LogBuffer>>;
 
         static constexpr size_t LOG_BUFFER_SIZE = 2000;
         using msgType = char;
         using msgString = std::string;
+
+        void Initialize(const std::shared_ptr<ProducerObj>& producer);
 
         void SetLevel(LogType logType);
         void Stop();
@@ -37,7 +44,7 @@ namespace jw
         template <class... _Types>
         void WriteFormat(LogType type, const msgType* file, const int line, const msgType* fmt, _Types&&... args) const
         {
-            if (!enalbleLogLevel(type)) return;
+            if (!isEnable(type)) return;
             return WriteString(type, file, line, std::vformat(std::string_view(fmt), std::make_format_args(args...)));
         }
 #endif
@@ -49,7 +56,8 @@ namespace jw
         Logger& operator=(const Logger&) = delete;
 
     private:
-        bool enalbleLogLevel(const LogType level) const;
+        bool enableLogLevel(const LogType level) const;
+        bool isEnable(const LogType level) const;
 
         struct Impl;
         std::unique_ptr<Impl> _pImpl;

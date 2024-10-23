@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __ARGUMENTS_H_
 #define __ARGUMENTS_H_
 #include <memory>

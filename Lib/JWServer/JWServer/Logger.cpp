@@ -1,6 +1,5 @@
 #include "Logger.h"
 #include "LogBuffer.h"
-#include "Producer.hpp"
 #include <iostream>
 #include <cstdarg>
 namespace jw
@@ -14,12 +13,13 @@ namespace jw
             logLevel{ LogType::LOG_WARN }
 #endif
         {}
-        Producer<LogBuffer> LogWorkerProducer;
+        std::shared_ptr<ProducerObj> logProducer;
         LogType logLevel;
+        bool isRun;
     };
 
     Logger::Logger() :
-        _pImpl{std::make_unique<Impl>()}
+        _pImpl{ std::make_unique<Impl>() }
 
     {}
 
@@ -28,18 +28,28 @@ namespace jw
 
     }
 
+    void Logger::Initialize(const std::shared_ptr<ProducerObj>& producer)
+    {
+        _pImpl->logProducer = producer;
+        _pImpl->isRun = true;
+    }
+
     void Logger::SetLevel(LogType logLevel)
     {
         _pImpl->logLevel = logLevel;
     }
+
     void Logger::Stop()
     {
-        _pImpl->LogWorkerProducer.SetStopSignal();
+        _pImpl->logProducer->SetStopSignal();
+        _pImpl->isRun = false;
     }
 
     void Logger::WriteV(LogType type, const msgType* file, const int line, const msgType* fmt, va_list args) const
     {
-        if (!enalbleLogLevel(type)) return;
+        if (!isEnable(type)) return;
+        if (!_pImpl->isRun) return;
+
         Logger::msgType msg[LOG_BUFFER_SIZE] = { 0, };
         vsprintf_s(msg, fmt, args);
 
@@ -47,16 +57,15 @@ namespace jw
         logBuffer->Initialize(type, file, line);
         logBuffer->WriteMsg(msg);
 
-        // ´ÙÀ½ÀÇ µ¿ÀÛÀº logworker ½º·¹µå¿¡¼­ ¼öÇàÇØ¾ß ÇÕ´Ï´Ù. 
-        _pImpl->LogWorkerProducer.Push(logBuffer);
-        Logger::msgType prefix[LogBuffer::PRIFIX_SIZE];
-        logBuffer->MakePreFix(prefix, sizeof(prefix));
-        std::cout << prefix << logBuffer->GetMsg() << "\r\n";
+        // workerì— ë©”ì‹œì§€ë¥¼ ì „ë‹¬í•©ë‹ˆë‹¤. 
+        _pImpl->logProducer->Push(logBuffer);
     }
 
     void Logger::Write(LogType type, const msgType* file, const int line, const msgType* fmt, ...) const
     {
-        if (!enalbleLogLevel(type)) return;
+        if (!isEnable(type)) return;
+        if (!_pImpl->isRun) return;
+
         va_list	args;
         va_start(args, fmt);
         WriteV(type, file, line, fmt, args);
@@ -66,19 +75,20 @@ namespace jw
 
     void Logger::WriteString(LogType type, const msgType* file, const int line, const msgString& msg) const
     {
-        if (!enalbleLogLevel(type)) return;
+        if (!isEnable(type)) return;
         std::shared_ptr<LogBuffer> logBuffer = std::make_shared<LogBuffer>();
         logBuffer->Initialize(type, file, line);
         logBuffer->WriteMsg(msg.c_str());
 
-        // ´ÙÀ½ÀÇ µ¿ÀÛÀº logworker ½º·¹µå¿¡¼­ ¼öÇàÇØ¾ß ÇÕ´Ï´Ù. 
-        _pImpl->LogWorkerProducer.Push(logBuffer);
-        Logger::msgType prefix[LogBuffer::PRIFIX_SIZE];
-        logBuffer->MakePreFix(prefix, sizeof(prefix));
-        std::cout << prefix << logBuffer->GetMsg() << "\r\n";
+        _pImpl->logProducer->Push(logBuffer);
     }
 
-    bool Logger::enalbleLogLevel(const LogType level) const
+    bool Logger::isEnable(const LogType level) const
+    {
+        return enableLogLevel(level) && _pImpl->isRun;
+    }
+
+    bool Logger::enableLogLevel(const LogType level) const
     {
         return level <= _pImpl->logLevel;
     }

@@ -18,8 +18,9 @@ namespace jw
         using BufferType = char;
         void Initialize(LogType logType, const BufferType* filePath, int line);
 
-        int MakePreFix(BufferType* prefixBuffer, size_t bufferSize);
+        int MakePreFix();
         int WriteMsg(const BufferType* msg);
+        const BufferType* GetPrefix() const;
         const BufferType* GetMsg() const;
         constexpr size_t GetMsgTotalSize() const;
 
@@ -29,3 +30,4 @@ namespace jw
     };
 }
 #endif // !__LOG_BUFFER_H_
+

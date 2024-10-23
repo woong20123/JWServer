@@ -2,6 +2,7 @@
 #include <chrono>
 #include "LogBuffer.h"
 #include "Logger.h"
+#include <iostream>
 
 namespace jw
 {
@@ -19,20 +20,20 @@ namespace jw
     struct LogBuffer::Impl
     {
         // LogBuffer 객체의 사이즈를 페이지 사이즈인 4KB로 고정 시킵니다. 
-        static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo);
-
+        static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo) - PRIFIX_SIZE;
+        BufferType prefix[PRIFIX_SIZE];
         BufferType msg[MSG_SIZE] = { 0, };
         LogBufferInfo info;
     };
 
     LogBuffer::LogBuffer() : _pImpl{ std::make_unique<Impl>() }
     {
-
+//        std::cout << "new LogBuffer" << std::endl;
     }
 
     LogBuffer::~LogBuffer()
     {
-
+//        std::cout << "delete LogBuffer" << std::endl;
     }
 
     void LogBuffer::Initialize(LogType logType, const BufferType* filePath, int line)
@@ -43,7 +44,7 @@ namespace jw
         _pImpl->info.line = line;
     }
 
-    int LogBuffer::MakePreFix(BufferType* prefixBuffer, size_t bufferSize) {
+    int LogBuffer::MakePreFix() {
         using namespace std::chrono;
 
         // time
@@ -61,7 +62,7 @@ namespace jw
             snprintf(fileName, MAX_PATH, "%s%s", name, ext);
         }
 
-        return snprintf(prefixBuffer, bufferSize, "%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
+        return snprintf(_pImpl->prefix, PRIFIX_SIZE, "%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
             tmLogTime.tm_year + 1900, tmLogTime.tm_mon, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
             millis.count(), fileName, _pImpl->info.line);
@@ -70,6 +71,11 @@ namespace jw
     int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
     {
         return strncpy_s(_pImpl->msg, msg, strlen(msg));
+    }
+
+    const LogBuffer::BufferType* LogBuffer::GetPrefix() const
+    {
+        return _pImpl->prefix;
     }
 
     const LogBuffer::BufferType* LogBuffer::GetMsg() const

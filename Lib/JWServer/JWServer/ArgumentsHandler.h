@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __ARGUMENT_HANDLER_H_
 #define __ARGUMENT_HANDLER_H_
 
