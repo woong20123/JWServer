@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __CONSUMER_HPP_
-#define __CONSUMER_HPP_
+#ifndef __JW_CONSUMER_HPP__
+#define __JW_CONSUMER_HPP__
 #include <memory>
 #include <thread>
 #include <iostream>
@@ -108,4 +108,4 @@ public: \
 private: \
     void handle(const Consumer::queueObject& obj) override;
 
-#endif
+#endif //__JW_CONSUMER_HPP__

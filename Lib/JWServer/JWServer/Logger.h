@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __WLOGGER_H_
-#define __WLOGGER_H_
+#ifndef __JW_LOGGER_H__
+#define __JW_LOGGER_H__
 #include "Singleton.hpp"
 #include "Producer.hpp"
 #include <string>
@@ -47,7 +47,7 @@ namespace jw
             if (!isEnable(type)) return;
             return WriteString(type, file, line, std::vformat(std::string_view(fmt), std::make_format_args(args...)));
         }
-#endif
+#endif // _HAS_CXX20
 
     protected:
         Logger();
@@ -77,6 +77,6 @@ namespace jw
 #define LOGGER_WARN(fmt, ...)           Logger::GetInstance().Write(LogType::LOG_WARN ,__FILE__, __LINE__, fmt, __VA_ARGS__)
 #define LOGGER_INFO(fmt, ...)           Logger::GetInstance().Write(LogType::LOG_INFO ,__FILE__, __LINE__, fmt, __VA_ARGS__)
 #define LOGGER_DEBUG(fmt, ...)          Logger::GetInstance().Write(LogType::LOG_DEBUG ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#endif
+#endif // _HAS_CXX20
 
-#endif
+#endif // __JW_LOGGER_H__

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __SINGLETON_HPP_
-#define __SINGLETON_HPP_
+#ifndef __JW_SINGLETON_HPP__
+#define __JW_SINGLETON_HPP__
 
 namespace jw
 {
@@ -22,4 +22,4 @@ namespace jw
     };
 }
 
-#endif // __SINGLETON_HPP_
+#endif // __JW_SINGLETON_HPP__

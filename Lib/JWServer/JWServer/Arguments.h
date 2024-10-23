@@ -1,6 +1,6 @@
-﻿#pragma once
-#ifndef __ARGUMENTS_H_
-#define __ARGUMENTS_H_
+#pragma once
+#ifndef __JW_ARGUMENTS_H__
+#define __JW_ARGUMENTS_H__
 #include <memory>
 #include "Singleton.hpp"
 
@@ -37,4 +37,4 @@ namespace jw
 
 
 
-#endif
+#endif // __JW_ARGUMENTS_H__

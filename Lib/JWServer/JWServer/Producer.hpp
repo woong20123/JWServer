@@ -1,6 +1,6 @@
-﻿#pragma once
-#ifndef __PRODUCER_HPP_
-#define __PRODUCER_HPP_
+#pragma once
+#ifndef __JW_PRODUCER_HPP__
+#define __JW_PRODUCER_HPP__
 #include <cstdint>
 #include <queue>
 #include <mutex>
@@ -98,4 +98,4 @@ namespace jw
         return _queue.size();
     }
 }
-#endif
+#endif // __JW_PRODUCER_HPP__

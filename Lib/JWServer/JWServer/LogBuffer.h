@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __LOG_BUFFER_H_
-#define __LOG_BUFFER_H_
+#ifndef __JW_LOG_BUFFER_H__
+#define __JW_LOG_BUFFER_H__
 #include <memory>
 
 namespace jw
@@ -29,5 +29,5 @@ namespace jw
         std::unique_ptr<Impl> _pImpl;
     };
 }
-#endif // !__LOG_BUFFER_H_
+#endif // !__JW_LOG_BUFFER_H__
 

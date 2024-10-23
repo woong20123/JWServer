@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _JW_LOG_WORKER_H_
-#define _JW_LOG_WORKER_H_
+#ifndef __JW_LOG_WORKER_H__
+#define __JW_LOG_WORKER_H__
 #include "Producer.hpp"
 #include "Singleton.hpp"
 #include "Consumer.hpp"
@@ -17,5 +17,5 @@ namespace jw
         //std::array<LogStream, LOG_STREAM_MAX_COUNT> logStreams;
     };
 }
-#endif // _JW_LOG_WORKER_H_
+#endif // __JW_LOG_WORKER_H__
 

@@ -1,6 +1,6 @@
-﻿#pragma once
-#ifndef __ARGUMENT_HANDLER_H_
-#define __ARGUMENT_HANDLER_H_
+#pragma once
+#ifndef __JW_ARGUMENT_HANDLER_H__
+#define __JW_ARGUMENT_HANDLER_H__
 
 #include <functional>
 #include <string>
@@ -48,4 +48,4 @@ namespace jw
         void registerHandler() override;
     };
 }
-#endif
+#endif // __JW_ARGUMENT_HANDLER_H__
