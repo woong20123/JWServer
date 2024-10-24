@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <unordered_map>
 #include "ArgumentsHandler.h"
 #include "Logger.h"
@@ -65,11 +65,13 @@ namespace jw
 
     void DefaultArgumentHandler::printHelp()
     {
-        printf("%s 사용법\n", GetProcessName().c_str());
-        printf("%s : 사용방법을 출력합니다.\n", HELP_OPTION);
+        printf("%s 사용법\r\n", GetProcessName().c_str());
+        printf("%s : 사용방법을 출력합니다.\r\n", HELP_OPTION);
 
-
-        LOGGER_FETAL("{:s} 사용법", GetProcessName().c_str());
-        LOGGER_FETAL("{:s} : 사용방법을 출력합니다.", HELP_OPTION);
+        for (int i = 0; i < 10; ++i) 
+        {
+            LOGGER_DEBUG("{:s} 사용법 ", GetProcessName().c_str());
+            LOGGER_DEBUG("{:s} : 사용방법을 출력합니다.", HELP_OPTION);
+        }
     }
 }

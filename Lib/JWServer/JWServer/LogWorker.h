@@ -4,6 +4,8 @@
 #include "Producer.hpp"
 #include "Singleton.hpp"
 #include "Consumer.hpp"
+#include "LogStream.h"
+#include <vector>
 
 namespace jw
 {
@@ -11,10 +13,12 @@ namespace jw
     class LogWorker : public CONSUMER(std::shared_ptr<LogBuffer>)
     {
         CONSUMER_BASE_DECLARE(LogWorker, LogBuffer);
-    public :
+    public:
         static constexpr size_t LOG_STREAM_MAX_COUNT = 5;
+        void RegisterLogStream(const std::shared_ptr<LogStream> &stream);
     private:
-        //std::array<LogStream, LOG_STREAM_MAX_COUNT> logStreams;
+        std::vector<std::shared_ptr<LogStream> >    _logStreams;
+        size_t                                      _logStreamCnt{ 0 };
     };
 }
 #endif // __JW_LOG_WORKER_H__

@@ -18,6 +18,15 @@
     <ClInclude Include="LogWorker.h">
       <Filter>Log</Filter>
     </ClInclude>
+    <ClInclude Include="LogStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogConsoleStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogFileStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -33,6 +42,12 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="LogWorker.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogConsoleStream.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogFileStream.cpp">
       <Filter>Log</Filter>
     </ClCompile>
   </ItemGroup>

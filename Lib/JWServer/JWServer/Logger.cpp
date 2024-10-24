@@ -15,7 +15,7 @@ namespace jw
         {}
         std::shared_ptr<ProducerObj> logProducer;
         LogType logLevel;
-        bool isRun;
+        bool isRun{ true };
     };
 
     Logger::Logger() :

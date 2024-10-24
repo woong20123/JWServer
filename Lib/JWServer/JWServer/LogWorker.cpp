@@ -1,15 +1,33 @@
 #include "LogWorker.h"
 #include "LogBuffer.h"
-//#include "LogStream.h"
+#include "LogStream.h"
 #include <memory>
 #include <array>
 
 namespace jw
 {
-    // 작업 처리 내용을 등록합니다. 
-    void LogWorker::handle(const queueObject& obj)
+    void LogWorker::RegisterLogStream(const std::shared_ptr<LogStream>& stream)
     {
-        obj->MakePreFix();
-        std::cout << obj->GetPrefix() << obj->GetMsg() << "\r\n";
+        if (LOG_STREAM_MAX_COUNT <= _logStreamCnt) return;
+
+        _logStreams.push_back(stream);
+        ++_logStreamCnt;
+    }
+
+    // 작업 처리 내용을 등록합니다. 
+    void LogWorker::handle(const std::list<queueObject>& objs)
+    {
+        if (objs.empty()) return;
+
+        for (const auto& obj : objs) {
+            obj->MakePreFix();
+            for (const auto& stream : _logStreams)
+            {
+                stream->Write(obj);
+            }
+        }
+
+        for (const auto& stream : _logStreams)
+            stream->Flush();
     }
 }

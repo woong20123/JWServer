@@ -4,6 +4,7 @@
 #include <memory>
 #include <thread>
 #include <iostream>
+#include <list>
 #include "Producer.hpp"
 namespace jw
 {
@@ -39,7 +40,7 @@ namespace jw
     protected:
         virtual void prepare();										///  프로세서를 실행하기 전에 해야 할 작업을 등록합니다.
         void execute();										        ///  생산자 큐에서 오브젝트를 받아와 Handler에 넘깁니다.
-        virtual void handle(const queueObject& obj) = 0;			///  생산자의 object를 처리합니다.
+        virtual void handle(const std::list<queueObject>& objs) = 0;			///  생산자의 object를 처리합니다.
 
     private:
         std::string                         _name;
@@ -89,8 +90,8 @@ namespace jw
 
             std::list<queueObject> queueObjects;
             _pProducer->Wait(queueObjects);
-            for (const auto& queueObject : queueObjects)
-                handle(queueObject);
+            if (!queueObjects.empty())
+                handle(queueObjects);
         }
     }
 
@@ -106,6 +107,6 @@ public: \
     CLASSNAME(const std::shared_ptr<ProducerObj>& producer) : Consumer(producer) {} \
     CLASSNAME(const std::shared_ptr<ProducerObj>& producer, const size_t threadCount) : Consumer(producer, threadCount) {} \
 private: \
-    void handle(const Consumer::queueObject& obj) override;
+    void handle(const std::list<queueObject>& objs) override;
 
 #endif //__JW_CONSUMER_HPP__

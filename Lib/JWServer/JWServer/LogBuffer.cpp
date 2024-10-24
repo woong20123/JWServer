@@ -13,7 +13,7 @@ namespace jw
         }
         std::chrono::system_clock::time_point   logtime;
         LogType	                                type;
-        const	char* filePath;
+        const	char*                           filePath;
         int				                        line;
     };
 
@@ -68,9 +68,16 @@ namespace jw
             millis.count(), fileName, _pImpl->info.line);
     }
 
-    int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
+    void LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
     {
-        return strncpy_s(_pImpl->msg, msg, strlen(msg));
+        size_t maxSize{ Impl::MSG_SIZE }, pos{ 0 };
+        const BufferType * suffix = "\r\n";
+        const auto msgLength{ strlen(msg) }, suffixLength(strlen(suffix));
+
+        strncpy_s(_pImpl->msg + pos, msgLength + 1, msg, maxSize);
+        maxSize -= msgLength; pos += msgLength;
+        strncpy_s(_pImpl->msg + pos, suffixLength + 1, suffix, maxSize);
+        maxSize -= suffixLength; pos += suffixLength;
     }
 
     const LogBuffer::BufferType* LogBuffer::GetPrefix() const
