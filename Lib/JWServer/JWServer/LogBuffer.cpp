@@ -2,7 +2,9 @@
 #include <chrono>
 #include "LogBuffer.h"
 #include "Logger.h"
+#include "TypeDefinition.h"
 #include <iostream>
+
 
 namespace jw
 {
@@ -13,27 +15,26 @@ namespace jw
         }
         std::chrono::system_clock::time_point   logtime;
         LogType	                                type;
-        const	char*                           filePath;
+        const LogBuffer::BufferType* filePath;
         int				                        line;
     };
 
     struct LogBuffer::Impl
     {
         // LogBuffer 객체의 사이즈를 페이지 사이즈인 4KB로 고정 시킵니다. 
-        static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo) - PRIFIX_SIZE;
-        BufferType prefix[PRIFIX_SIZE];
-        BufferType msg[MSG_SIZE] = { 0, };
+        static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo) - (PRIFIX_SIZE * sizeof(BufferType)) - (SUFFIX_SIZE * sizeof(BufferType));
+        BufferType prefix[PRIFIX_SIZE] = { 0 };
+        BufferType msg[MSG_SIZE] = { 0 };
+        BufferType suffix[MSG_SIZE] = { 0 };
         LogBufferInfo info;
     };
 
     LogBuffer::LogBuffer() : _pImpl{ std::make_unique<Impl>() }
     {
-//        std::cout << "new LogBuffer" << std::endl;
     }
 
     LogBuffer::~LogBuffer()
     {
-//        std::cout << "delete LogBuffer" << std::endl;
     }
 
     void LogBuffer::Initialize(LogType logType, const BufferType* filePath, int line)
@@ -42,6 +43,7 @@ namespace jw
         _pImpl->info.type = static_cast<decltype(_pImpl->info.type)>(logType);
         _pImpl->info.filePath = filePath;
         _pImpl->info.line = line;
+        STRNCPY(_pImpl->suffix, countof(_pImpl->suffix), L"\r\n", wcslen(L"\r\n"));
     }
 
     int LogBuffer::MakePreFix() {
@@ -54,30 +56,24 @@ namespace jw
         const auto millis = duration_cast<milliseconds>(_pImpl->info.logtime.time_since_epoch()) % 1000;
 
         // filename
-        constexpr size_t MAX_PATH = 260;
+        constexpr size_t MAX_PATH = 256;
         BufferType fileName[MAX_PATH] = { 0 };
         if (_pImpl->info.filePath) {
             BufferType name[MAX_PATH], ext[MAX_PATH];
-            _splitpath_s(_pImpl->info.filePath, NULL, 0, NULL, 0, name, sizeof(name), ext, sizeof(ext));
-            snprintf(fileName, MAX_PATH, "%s%s", name, ext);
+            errno_t err = _wsplitpath_s(_pImpl->info.filePath, NULL, 0, NULL, 0, name, countof(name), ext, countof(ext));
+            _snwprintf_s(fileName, MAX_PATH, L"%s%s", name, ext);
         }
 
-        return snprintf(_pImpl->prefix, PRIFIX_SIZE, "%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
-            tmLogTime.tm_year + 1900, tmLogTime.tm_mon, tmLogTime.tm_mday,
+        return _snwprintf_s(_pImpl->prefix, PRIFIX_SIZE, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
+            tmLogTime.tm_year + 1900, tmLogTime.tm_mon + 1, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
             millis.count(), fileName, _pImpl->info.line);
     }
 
-    void LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
+    int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
     {
-        size_t maxSize{ Impl::MSG_SIZE }, pos{ 0 };
-        const BufferType * suffix = "\r\n";
-        const auto msgLength{ strlen(msg) }, suffixLength(strlen(suffix));
-
-        strncpy_s(_pImpl->msg + pos, msgLength + 1, msg, maxSize);
-        maxSize -= msgLength; pos += msgLength;
-        strncpy_s(_pImpl->msg + pos, suffixLength + 1, suffix, maxSize);
-        maxSize -= suffixLength; pos += suffixLength;
+        size_t pos{ 0 };
+        return STRNCPY(_pImpl->msg, countof(_pImpl->msg), msg, wcslen(msg));
     }
 
     const LogBuffer::BufferType* LogBuffer::GetPrefix() const
@@ -89,6 +85,12 @@ namespace jw
     {
         return _pImpl->msg;
     }
+
+    const LogBuffer::BufferType* LogBuffer::GetSuffix() const
+    {
+        return _pImpl->suffix;
+    }
+
     constexpr size_t LogBuffer::GetMsgTotalSize() const
     {
         return Impl::MSG_SIZE;

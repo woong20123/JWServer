@@ -50,6 +50,9 @@
     <ClCompile Include="LogFileStream.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="TypeDefinition.h">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

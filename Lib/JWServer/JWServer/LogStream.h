@@ -11,6 +11,7 @@ namespace jw
         LogStream() {};
         virtual ~LogStream() {}
 
+        virtual void Initialize() {}
         virtual void Write(const std::shared_ptr<LogBuffer>& logBuffer) = 0;
         virtual void Flush() {};
     };

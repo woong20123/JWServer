@@ -1,8 +1,9 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_LOGGER_H__
 #define __JW_LOGGER_H__
 #include "Singleton.hpp"
 #include "Producer.hpp"
+#include "TypeDefinition.h"
 #include <string>
 #include <memory>
 #if _HAS_CXX20 
@@ -28,8 +29,8 @@ namespace jw
         using ProducerObj = Producer<std::shared_ptr<LogBuffer>>;
 
         static constexpr size_t LOG_BUFFER_SIZE = 2000;
-        using msgType = char;
-        using msgString = std::string;
+        using msgType = wchar_t;
+        using msgString = std::wstring;
 
         void Initialize(const std::shared_ptr<ProducerObj>& producer);
 
@@ -45,7 +46,7 @@ namespace jw
         void WriteFormat(LogType type, const msgType* file, const int line, const msgType* fmt, _Types&&... args) const
         {
             if (!isEnable(type)) return;
-            return WriteString(type, file, line, std::vformat(std::string_view(fmt), std::make_format_args(args...)));
+            return WriteString(type, file, line, std::vformat(std::wstring_view(fmt), std::make_wformat_args(args...)));
         }
 #endif // _HAS_CXX20
 
@@ -66,17 +67,23 @@ namespace jw
 }
 
 #if _HAS_CXX20 
-#define LOGGER_FETAL(fmt, ...)          Logger::GetInstance().WriteFormat(LogType::LOG_FATAL ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_ERROR(fmt, ...)          Logger::GetInstance().WriteFormat(LogType::LOG_ERROR ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_WARN(fmt, ...)           Logger::GetInstance().WriteFormat(LogType::LOG_WARN ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_INFO(fmt, ...)           Logger::GetInstance().WriteFormat(LogType::LOG_INFO ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_DEBUG(fmt, ...)          Logger::GetInstance().WriteFormat(LogType::LOG_DEBUG ,__FILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_FETAL_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt)
+#define LOG_ERROR_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt)
+#define LOG_WARN_STRING(fmt)           Logger::GetInstance().WriteString(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt)
+#define LOG_INFO_STRING(fmt)           Logger::GetInstance().WriteString(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt)
+#define LOG_DEBUG_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt)
+
+#define LOG_FETAL(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_ERROR(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_WARN(fmt, ...)           Logger::GetInstance().WriteFormat(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_INFO(fmt, ...)           Logger::GetInstance().WriteFormat(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_DEBUG(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
 #else
-#define LOGGER_FETAL(fmt, ...)          Logger::GetInstance().Write(LogType::LOG_FATAL ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_ERROR(fmt, ...)          Logger::GetInstance().Write(LogType::LOG_ERROR ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_WARN(fmt, ...)           Logger::GetInstance().Write(LogType::LOG_WARN ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_INFO(fmt, ...)           Logger::GetInstance().Write(LogType::LOG_INFO ,__FILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOGGER_DEBUG(fmt, ...)          Logger::GetInstance().Write(LogType::LOG_DEBUG ,__FILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGGER_FETAL(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGGER_ERROR(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGGER_WARN(fmt, ...)           Logger::GetInstance().Write(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGGER_INFO(fmt, ...)           Logger::GetInstance().Write(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGGER_DEBUG(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
 #endif // _HAS_CXX20
 
 #endif // __JW_LOGGER_H__

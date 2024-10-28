@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_ARGUMENTS_H__
 #define __JW_ARGUMENTS_H__
 #include <memory>
@@ -13,18 +13,20 @@ namespace jw
     class Arguments : public Singleton<Arguments>
     {
     public:
+        using ArgumentType = char;
+
         Arguments(const Arguments&) = delete;
         Arguments& operator=(const Arguments&) = delete;
 
-        void Initialize(int argc, char* argv[]);
+        void Initialize(int argc, ArgumentType* argv[]);
         void HandleArgument();
         void SetHandler(ArgumentsHandler* handler);
     protected:
         Arguments();
         ~Arguments();
     private:
-        void setAgumentContainer(int argc, char* argv[]);
-        void makeProcessName(const char* arg);
+        void setAgumentContainer(int argc, ArgumentType* argv[]);
+        void makeProcessName(const ArgumentType* arg);
 
         struct Impl;
         std::unique_ptr<Impl> _pImpl;
@@ -35,6 +37,5 @@ namespace jw
 #define ARGUMENT Arguments::GetInstance
 }
 
-
-
 #endif // __JW_ARGUMENTS_H__
+

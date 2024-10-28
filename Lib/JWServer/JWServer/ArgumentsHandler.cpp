@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <unordered_map>
 #include "ArgumentsHandler.h"
 #include "Logger.h"
@@ -9,7 +9,7 @@ namespace jw
     {
         using HandlerContainer = std::unordered_map<HandlerKey, HandlerValue>;
         HandlerContainer                        handlerContainer;
-        std::string                             processName;
+        std::wstring                            processName;
     };
 
     ArgumentsHandler::ArgumentsHandler() : _pImpl{ std::make_unique<Impl>() }
@@ -37,12 +37,12 @@ namespace jw
         }
     }
 
-    const std::string& ArgumentsHandler::GetProcessName() const
+    const std::wstring& ArgumentsHandler::GetProcessName() const
     {
         return _pImpl->processName;
     }
 
-    void ArgumentsHandler::Initialize(const std::string& processName)
+    void ArgumentsHandler::Initialize(const std::wstring& processName)
     {
         _pImpl->processName = processName;
         registerHandler();
@@ -65,13 +65,11 @@ namespace jw
 
     void DefaultArgumentHandler::printHelp()
     {
-        printf("%s 사용법\r\n", GetProcessName().c_str());
-        printf("%s : 사용방법을 출력합니다.\r\n", HELP_OPTION);
+        wprintf(L"%s 사용법\r\n", GetProcessName().c_str());
+        wprintf(L"%s : 사용방법을 출력합니다.\r\n", HELP_OPTION);
 
-        for (int i = 0; i < 10; ++i) 
-        {
-            LOGGER_DEBUG("{:s} 사용법 ", GetProcessName().c_str());
-            LOGGER_DEBUG("{:s} : 사용방법을 출력합니다.", HELP_OPTION);
-        }
+        LOG_DEBUG(L"{:s} 사용법 ", GetProcessName().c_str());
+        LOG_DEBUG(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
+        LOG_DEBUG_STRING(L"사용방법을 출력합니다.");
     }
 }

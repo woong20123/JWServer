@@ -2,6 +2,7 @@
 #include "LogBuffer.h"
 #include <iostream>
 #include <cstdarg>
+#include <Windows.h>
 namespace jw
 {
     struct Logger::Impl
@@ -32,6 +33,9 @@ namespace jw
     {
         _pImpl->logProducer = producer;
         _pImpl->isRun = true;
+        std::setlocale(LC_ALL, "KOREAN");
+        std::wcout.imbue(std::locale(""));
+        //::SetConsoleOutputCP(CP_UTF8);
     }
 
     void Logger::SetLevel(LogType logLevel)
@@ -51,7 +55,7 @@ namespace jw
         if (!_pImpl->isRun) return;
 
         Logger::msgType msg[LOG_BUFFER_SIZE] = { 0, };
-        vsprintf_s(msg, fmt, args);
+        vswprintf_s(msg, fmt, args);
 
         std::shared_ptr<LogBuffer> logBuffer = std::make_shared<LogBuffer>();
         logBuffer->Initialize(type, file, line);

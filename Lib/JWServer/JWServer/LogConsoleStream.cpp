@@ -1,15 +1,30 @@
 #include "LogConsoleStream.h"
 #include "LogBuffer.h"
+#include "TypeDefinition.h"
 
 namespace jw
 {
     struct LogConsoleStream::Impl
     {
-        static constexpr size_t BUFFER_SIZE = 409600;
-        Impl() : bufferPos{ 0 }
-        {}
-        LogBuffer::BufferType logBuffer[BUFFER_SIZE] = { 0, };
+        static constexpr size_t DEFUALT_BUFFER_SIZE = 204800;
+        Impl(size_t bufferSize = DEFUALT_BUFFER_SIZE) : logBuffer{ nullptr }, bufferPos{ 0 }, bufferSize{ bufferSize }
+        {
+            logBuffer = new LogBuffer::BufferType[bufferSize];
+        }
+        ~Impl()
+        {
+            if (logBuffer)
+            {
+                delete[] logBuffer;
+                logBuffer = nullptr;
+            }
+
+        }
+        LogBuffer::BufferType* logBuffer;
         size_t bufferPos;
+        size_t bufferSize;
+
+        inline const size_t remainBuffer() { return bufferSize - bufferPos; }
     };
 
     LogConsoleStream::LogConsoleStream() : _pImpl{ std::make_unique<LogConsoleStream::Impl>() }
@@ -20,23 +35,26 @@ namespace jw
 
     void LogConsoleStream::Write(const std::shared_ptr<LogBuffer>& logBuffer)
     {
-        const auto prefixLen = strlen(logBuffer->GetPrefix());
-        const auto msgLen = strlen(logBuffer->GetMsg());
-        size_t totalMsgLen = prefixLen + msgLen;
+        const auto prefixLen = STRLEN(logBuffer->GetPrefix());
+        const auto msgLen = STRLEN(logBuffer->GetMsg());
+        const auto suffixLen = STRLEN(logBuffer->GetSuffix());
+        size_t totalMsgLen = prefixLen + msgLen + suffixLen;
 
-        if (Impl::BUFFER_SIZE <= _pImpl->bufferPos + totalMsgLen)
+        if (_pImpl->bufferSize <= _pImpl->bufferPos + totalMsgLen)
             Flush();
 
         // 메시지 복사
-        strncpy_s(&_pImpl->logBuffer[_pImpl->bufferPos], Impl::BUFFER_SIZE - _pImpl->bufferPos, logBuffer->GetPrefix(), prefixLen);
+        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetPrefix(), prefixLen);
         _pImpl->bufferPos += prefixLen;
-        strncpy_s(&_pImpl->logBuffer[_pImpl->bufferPos], Impl::BUFFER_SIZE - _pImpl->bufferPos, logBuffer->GetMsg(), msgLen);
+        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetMsg(), msgLen);
         _pImpl->bufferPos += msgLen;
+        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetSuffix(), suffixLen);
+        _pImpl->bufferPos += suffixLen;
     }
 
     void LogConsoleStream::Flush()
     {
-        printf_s("%s", _pImpl->logBuffer);
+        wprintf_s(L"%s", _pImpl->logBuffer);
         initBuffer();
     }
 

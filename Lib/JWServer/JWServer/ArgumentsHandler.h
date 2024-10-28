@@ -15,17 +15,17 @@ namespace jw
     class ArgumentsHandler
     {
     public:
-        using ArgumentContainer = std::vector<std::string >;
-        using HandlerKey = std::string;
+        using ArgumentContainer = std::vector<std::wstring >;
+        using HandlerKey = std::wstring;
         using HandlerValue = std::function<void(uint16_t)>;
 
         ArgumentsHandler();
         virtual ~ArgumentsHandler();
-        void Initialize(const std::string& processName);
+        void Initialize(const std::wstring& processName);
 
         void HandleArgument(const ArgumentContainer& arguments);
 
-        const std::string& GetProcessName() const;
+        const std::wstring& GetProcessName() const;
     protected:
         bool addHandler(const HandlerKey& key, const HandlerValue& value);
         virtual void registerHandler() = 0;
@@ -40,7 +40,7 @@ namespace jw
     class DefaultArgumentHandler : public ArgumentsHandler
     {
     public:
-        static constexpr const char* HELP_OPTION = "--help";
+        static constexpr const wchar_t * HELP_OPTION = L"--help";
 
         virtual ~DefaultArgumentHandler();
     protected:

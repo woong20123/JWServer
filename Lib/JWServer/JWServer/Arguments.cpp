@@ -2,15 +2,15 @@
 #include "ArgumentsHandler.h"
 #include <cassert>
 #include <vector>
-#include <string>
+#include "TypeDefinition.h"
 
 namespace jw
 {
     struct Arguments::Impl
     {
-        using ArgumentContainer = std::vector<std::string>;
-        std::string                         processName;
-        ArgumentContainer        argument;
+        using ArgumentContainer = std::vector<std::wstring>;
+        std::wstring                        processName;
+        ArgumentContainer                   argument;
         std::unique_ptr<ArgumentsHandler>   handler;
     };
 
@@ -19,28 +19,39 @@ namespace jw
 
     Arguments::~Arguments() {}
 
-    void Arguments::setAgumentContainer(int argc, char* argv[])
+    void Arguments::setAgumentContainer(int argc, ArgumentType* argv[])
     {
         _pImpl->argument.reserve(argc);
 
-        if (argc <= 0)
-            assert(false);
+        if (1 <= argc)
+            makeProcessName(argv[0]);
 
-        makeProcessName(argv[0]);
+        for (int i = 1; i < argc; ++i) {
 
-        for (int i = 1; i < argc; ++i)
-            _pImpl->argument.emplace_back(argv[i]);
+            size_t newSize{ strlen(argv[i]) + 1 };
+            size_t convertedChars{ 0 };
+            wchar_t* wargv = new wchar_t[newSize];
+            mbstowcs_s(&convertedChars, wargv, newSize, argv[i], _TRUNCATE);
+            _pImpl->argument.emplace_back(wargv);
+            delete[]wargv; wargv = nullptr;
+        }
     }
 
-    void Arguments::makeProcessName(const char* arg)
+    void Arguments::makeProcessName(const ArgumentType* arg)
     {
-        std::string executePath{ arg };
+        size_t newSize{ strlen(arg) + 1 };
+        size_t convertedChars{ 0 };
+        wchar_t* warg = new wchar_t[newSize];
+        mbstowcs_s(&convertedChars, warg, newSize, arg, _TRUNCATE);
+        std::wstring executePath{ warg };
+        delete[]warg; warg = nullptr;
+
         auto findIndex = executePath.find_last_of('\\');
         if (std::string::npos != findIndex)
             _pImpl->processName = executePath.substr(findIndex + 1, _pImpl->processName.length() - findIndex);
     }
 
-    void Arguments::Initialize(int argc, char* argv[])
+    void Arguments::Initialize(int argc, ArgumentType* argv[])
     {
         setAgumentContainer(argc, argv);
         _pImpl->handler = std::make_unique<DefaultArgumentHandler>();

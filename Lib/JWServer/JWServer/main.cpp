@@ -1,7 +1,9 @@
-#include "Arguments.h"
+﻿#include "Arguments.h"
 #include "Logger.h"
 #include "LogWorker.h"
 #include "LogStream.h"
+#include "LogConsoleStream.h"
+#include "LogFileStream.h"
 #include <memory>
 
 int main(int argc, char* argv[])
@@ -10,8 +12,10 @@ int main(int argc, char* argv[])
 	jw::Logger::GetInstance().Initialize(producer);
 	jw::LogWorker logWorker{ producer };
 	logWorker.RegisterLogStream(std::make_shared<jw::LogConsoleStream>());
-	logWorker.RegisterLogStream(std::make_shared<jw::LogFileStream>("", "jwServer.log"));
+	logWorker.RegisterLogStream(std::make_shared<jw::LogFileStream>(L"log\\", L"JWServer"));
 	logWorker.RunThread();
+
+	jw::LOG_FETAL_STRING(L"테스트 기록용");
 
 	jw::ARGUMENT().Initialize(argc, argv);
 	jw::ARGUMENT().HandleArgument();
