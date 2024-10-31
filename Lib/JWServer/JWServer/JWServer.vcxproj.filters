@@ -27,6 +27,15 @@
     <ClInclude Include="LogFileStream.h">
       <Filter>Log</Filter>
     </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="LogBufferPool.h">
+      <Filter>Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -53,6 +62,15 @@
     <ClCompile Include="TypeDefinition.h">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="LogBufferPool.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">
@@ -60,6 +78,9 @@
     </Filter>
     <Filter Include="Util">
       <UniqueIdentifier>{65eeeb7d-b5e3-43de-a9d1-9277c04ce257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{84320413-131f-46a1-b702-cc0aafc98bb6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include "LogConsoleStream.h"
+﻿#include "LogConsoleStream.h"
 #include "LogBuffer.h"
 #include "TypeDefinition.h"
 
@@ -37,8 +37,8 @@ namespace jw
     {
         const auto prefixLen = STRLEN(logBuffer->GetPrefix());
         const auto msgLen = STRLEN(logBuffer->GetMsg());
-        const auto suffixLen = STRLEN(logBuffer->GetSuffix());
-        size_t totalMsgLen = prefixLen + msgLen + suffixLen;
+        const auto lineBreakLen = STRLEN(logBuffer->GetLineBreak());
+        size_t totalMsgLen = prefixLen + msgLen + lineBreakLen;
 
         if (_pImpl->bufferSize <= _pImpl->bufferPos + totalMsgLen)
             Flush();
@@ -48,8 +48,8 @@ namespace jw
         _pImpl->bufferPos += prefixLen;
         STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetMsg(), msgLen);
         _pImpl->bufferPos += msgLen;
-        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetSuffix(), suffixLen);
-        _pImpl->bufferPos += suffixLen;
+        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
+        _pImpl->bufferPos += lineBreakLen;
     }
 
     void LogConsoleStream::Flush()

@@ -1,4 +1,4 @@
-#include "LogFileStream.h"
+﻿#include "LogFileStream.h"
 #include "LogBuffer.h"
 #include "TypeDefinition.h"
 #include <string>
@@ -50,8 +50,8 @@ namespace jw
     {
         const auto prefixLen = STRLEN(logBuffer->GetPrefix());
         const auto msgLen = STRLEN(logBuffer->GetMsg());
-        const auto suffixLen = STRLEN(logBuffer->GetSuffix());
-        size_t totalMsgLen = prefixLen + msgLen + suffixLen;
+        const auto lineBreakLen = STRLEN(logBuffer->GetLineBreak());
+        size_t totalMsgLen = prefixLen + msgLen + lineBreakLen;
 
         if (_pImpl->bufferSize <= _pImpl->bufferPos + totalMsgLen)
             Flush();
@@ -61,8 +61,8 @@ namespace jw
         _pImpl->bufferPos += prefixLen;
         STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetMsg(), msgLen);
         _pImpl->bufferPos += msgLen;
-        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetSuffix(), suffixLen);
-        _pImpl->bufferPos += suffixLen;
+        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
+        _pImpl->bufferPos += lineBreakLen;
     }
 
     void LogFileStream::Flush()
@@ -108,18 +108,25 @@ namespace jw
 
     void LogFileStream::makeFileName()
     {
+        constexpr int YEAR_DIGIT = 1000000;
+        constexpr int MONTH_DIGIT = 10000;
+        constexpr int DAY_DIGIT = 100;
+
         time_t now = time(NULL);
         struct tm tmNow;
         localtime_s(&tmNow, &now);
-        const auto timeTick = (tmNow.tm_year + 1900) * 1000000 + (tmNow.tm_mon + 1) * 10000 + tmNow.tm_mday * 100 + tmNow.tm_hour;
+        const auto timeTick = (tmNow.tm_year + 1900) * YEAR_DIGIT + (tmNow.tm_mon + 1) * MONTH_DIGIT + tmNow.tm_mday * DAY_DIGIT + tmNow.tm_hour;
 
         if (_pImpl->fileNameTick != timeTick)
         {
-            auto hour = timeTick % 100;
+            const auto year = timeTick / YEAR_DIGIT;
+            const auto month = (timeTick % YEAR_DIGIT) / MONTH_DIGIT;
+            const auto day = (timeTick % MONTH_DIGIT) / DAY_DIGIT;
+            const auto hour = timeTick % DAY_DIGIT;
             _pImpl->fullFileName.clear();
             _pImpl->fullFileName.append(_pImpl->path);
             _pImpl->fullFileName.append(_pImpl->processname);
-            _pImpl->fullFileName.append(std::format(L"({})_{}-{:02}.log", ::GetCurrentProcessId(), timeTick / 100, hour));
+            _pImpl->fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour));
             _pImpl->fileNameTick = timeTick;
         }
     }

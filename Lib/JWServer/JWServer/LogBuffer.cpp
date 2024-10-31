@@ -1,4 +1,4 @@
-#include <ctime>
+﻿#include <ctime>
 #include <chrono>
 #include "LogBuffer.h"
 #include "Logger.h"
@@ -15,27 +15,35 @@ namespace jw
         }
         std::chrono::system_clock::time_point   logtime;
         LogType	                                type;
-        const LogBuffer::BufferType* filePath;
+        const LogBuffer::BufferType*            filePath;
         int				                        line;
     };
 
     struct LogBuffer::Impl
     {
-        // LogBuffer 객체의 사이즈를 페이지 사이즈인 4KB로 고정 시킵니다. 
-        static constexpr size_t MSG_SIZE = MEMORY_PAGE_SIZE - sizeof(LogBufferInfo) - (PRIFIX_SIZE * sizeof(BufferType)) - (SUFFIX_SIZE * sizeof(BufferType));
-        BufferType prefix[PRIFIX_SIZE] = { 0 };
-        BufferType msg[MSG_SIZE] = { 0 };
-        BufferType suffix[MSG_SIZE] = { 0 };
+        // logBuffer의 사이즈는 페이지의 크기인 4KB를 기준으로 설정합니다. 
+        static constexpr size_t LOG_BUFFER_SIZE = 1024 * 4;
+        static constexpr size_t PRIFIX_COUNT = 128;
+        static constexpr size_t PRIFIX_SIZE = (PRIFIX_COUNT * sizeof(BufferType));
+        static constexpr size_t SUFFIX_COUNT = 32;
+        static constexpr size_t SUFFIX_SIZE = (SUFFIX_COUNT * sizeof(BufferType));
+        // 메시지의 크기는 LOG_BUFFER_SIZE를 기준으로 구합니다. 
+        static constexpr size_t MSG_SIZE = LOG_BUFFER_SIZE - sizeof(LogBufferInfo) - PRIFIX_SIZE - SUFFIX_SIZE;
+        static constexpr size_t MSG_COUNT = MSG_SIZE / sizeof(BufferType);
+
+        static constexpr const BufferType* LINE_BREAK = L"\r\n";
+
+        BufferType prefix[PRIFIX_COUNT] = { 0 };
+        BufferType msg[MSG_COUNT] = { 0 };
+        BufferType suffix[SUFFIX_COUNT] = { 0 };
         LogBufferInfo info;
     };
 
     LogBuffer::LogBuffer() : _pImpl{ std::make_unique<Impl>() }
-    {
-    }
+    {}
 
     LogBuffer::~LogBuffer()
-    {
-    }
+    {}
 
     void LogBuffer::Initialize(LogType logType, const BufferType* filePath, int line)
     {
@@ -64,7 +72,7 @@ namespace jw
             _snwprintf_s(fileName, MAX_PATH, L"%s%s", name, ext);
         }
 
-        return _snwprintf_s(_pImpl->prefix, PRIFIX_SIZE, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
+        return _snwprintf_s(_pImpl->prefix, Impl::PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
             tmLogTime.tm_year + 1900, tmLogTime.tm_mon + 1, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
             millis.count(), fileName, _pImpl->info.line);
@@ -89,6 +97,10 @@ namespace jw
     const LogBuffer::BufferType* LogBuffer::GetSuffix() const
     {
         return _pImpl->suffix;
+    }
+    const LogBuffer::BufferType* LogBuffer::GetLineBreak() const
+    {
+        return Impl::LINE_BREAK;
     }
 
     constexpr size_t LogBuffer::GetMsgTotalSize() const

@@ -134,23 +134,29 @@
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="ArgumentsHandler.h" />
     <ClInclude Include="Consumer.hpp" />
+    <ClInclude Include="Listener.h" />
     <ClInclude Include="LogBuffer.h" />
+    <ClInclude Include="LogBufferPool.h" />
     <ClInclude Include="LogConsoleStream.h" />
     <ClInclude Include="LogFileStream.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="LogStream.h" />
     <ClInclude Include="LogWorker.h" />
+    <ClInclude Include="Network.h" />
     <ClInclude Include="Singleton.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
+    <ClCompile Include="Listener.cpp" />
     <ClCompile Include="LogBuffer.cpp" />
+    <ClCompile Include="LogBufferPool.cpp" />
     <ClCompile Include="LogConsoleStream.cpp" />
     <ClCompile Include="LogFileStream.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LogWorker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Network.cpp" />
     <ClCompile Include="Producer.hpp" />
     <ClCompile Include="TypeDefinition.h" />
   </ItemGroup>

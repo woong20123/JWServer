@@ -1,5 +1,6 @@
-#include "Logger.h"
+﻿#include "Logger.h"
 #include "LogBuffer.h"
+#include "LogBufferPool.h"
 #include <iostream>
 #include <cstdarg>
 #include <Windows.h>
@@ -57,7 +58,7 @@ namespace jw
         Logger::msgType msg[LOG_BUFFER_SIZE] = { 0, };
         vswprintf_s(msg, fmt, args);
 
-        std::shared_ptr<LogBuffer> logBuffer = std::make_shared<LogBuffer>();
+        std::shared_ptr<LogBuffer> logBuffer{ LOG_BUFFER_POOL().Acquire(), [](LogBuffer* obj) { LOG_BUFFER_POOL().Release(obj); } };
         logBuffer->Initialize(type, file, line);
         logBuffer->WriteMsg(msg);
 
@@ -80,7 +81,7 @@ namespace jw
     void Logger::WriteString(LogType type, const msgType* file, const int line, const msgString& msg) const
     {
         if (!isEnable(type)) return;
-        std::shared_ptr<LogBuffer> logBuffer = std::make_shared<LogBuffer>();
+        std::shared_ptr<LogBuffer> logBuffer{ LOG_BUFFER_POOL().Acquire(), [](LogBuffer* obj) { LOG_BUFFER_POOL().Release(obj); } };
         logBuffer->Initialize(type, file, line);
         logBuffer->WriteMsg(msg.c_str());
 

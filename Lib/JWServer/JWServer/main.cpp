@@ -4,21 +4,24 @@
 #include "LogStream.h"
 #include "LogConsoleStream.h"
 #include "LogFileStream.h"
+#include "Network.h"
 #include <memory>
 
 int main(int argc, char* argv[])
 {
 	std::shared_ptr<jw::Logger::ProducerObj> producer = std::make_shared<jw::Logger::ProducerObj>();
-	jw::Logger::GetInstance().Initialize(producer);
+	LOGGER().Initialize(producer);
 	jw::LogWorker logWorker{ producer };
 	logWorker.RegisterLogStream(std::make_shared<jw::LogConsoleStream>());
 	logWorker.RegisterLogStream(std::make_shared<jw::LogFileStream>(L"log\\", L"JWServer"));
 	logWorker.RunThread();
 
-	jw::LOG_FETAL_STRING(L"테스트 기록용");
+	LOG_FETAL_STRING(L"테스트 기록용");
 
-	jw::ARGUMENT().Initialize(argc, argv);
-	jw::ARGUMENT().HandleArgument();
+	ARGUMENT().Initialize(argc, argv);
+	ARGUMENT().HandleArgument();
+
+	NETWORK().Initialize();
 
 	int a;
 	std::cin >> a;

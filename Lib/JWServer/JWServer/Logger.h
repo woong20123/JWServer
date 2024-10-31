@@ -66,18 +66,20 @@ namespace jw
     };
 }
 
-#if _HAS_CXX20 
-#define LOG_FETAL_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt)
-#define LOG_ERROR_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt)
-#define LOG_WARN_STRING(fmt)           Logger::GetInstance().WriteString(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt)
-#define LOG_INFO_STRING(fmt)           Logger::GetInstance().WriteString(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt)
-#define LOG_DEBUG_STRING(fmt)          Logger::GetInstance().WriteString(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt)
+#define LOGGER jw::Logger::GetInstance
 
-#define LOG_FETAL(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOG_ERROR(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOG_WARN(fmt, ...)           Logger::GetInstance().WriteFormat(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOG_INFO(fmt, ...)           Logger::GetInstance().WriteFormat(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
-#define LOG_DEBUG(fmt, ...)          Logger::GetInstance().WriteFormat(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#if _HAS_CXX20 
+#define LOG_FETAL_STRING(fmt)           jw::Logger::GetInstance().WriteString(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt)
+#define LOG_ERROR_STRING(fmt)           jw::Logger::GetInstance().WriteString(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt)
+#define LOG_WARN_STRING(fmt)            jw::Logger::GetInstance().WriteString(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt)
+#define LOG_INFO_STRING(fmt)            jw::Logger::GetInstance().WriteString(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt)
+#define LOG_DEBUG_STRING(fmt)           jw::Logger::GetInstance().WriteString(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt)
+
+#define LOG_FETAL(fmt, ...)             jw::Logger::GetInstance().WriteFormat(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_ERROR(fmt, ...)             jw::Logger::GetInstance().WriteFormat(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_WARN(fmt, ...)              jw::Logger::GetInstance().WriteFormat(jw::LogType::LOG_WARN ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_INFO(fmt, ...)              jw::Logger::GetInstance().WriteFormat(jw::LogType::LOG_INFO ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_DEBUG(fmt, ...)             jw::Logger::GetInstance().WriteFormat(jw::LogType::LOG_DEBUG ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
 #else
 #define LOGGER_FETAL(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
 #define LOGGER_ERROR(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_ERROR ,__WFILE__, __LINE__, fmt, __VA_ARGS__)
