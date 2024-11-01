@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_PRODUCER_HPP__
 #define __JW_PRODUCER_HPP__
 #include <cstdint>
@@ -20,11 +20,9 @@ namespace jw
     class Producer
     {
     public:
-        static constexpr size_t DEFAULT_POP_MAX_NUMBER_PER_TICK = 100;
         using queueObject = object;
 
         Producer();
-        Producer(size_t popMaxNumberPerTick);
         virtual ~Producer();
 
         void							Wait(std::list<object>& objList);
@@ -36,17 +34,13 @@ namespace jw
     private:
         std::condition_variable_any			_cv;
         std::shared_mutex					_shared_mutex;
-        std::queue<queueObject>				_queue;
+        std::list<queueObject>				_list;
         size_t								_popMaxNumberPerTick;
         std::atomic<bool>					_isStop;
     };
 
     template<typename object>
-    Producer<object>::Producer() : Producer(DEFAULT_POP_MAX_NUMBER_PER_TICK)
-    {}
-
-    template<typename object>
-    Producer<object>::Producer(size_t popMaxNumberPerTick) : _popMaxNumberPerTick{ popMaxNumberPerTick }, _isStop{ false }
+    Producer<object>::Producer() : _isStop{ false }
     {}
     template<typename object>
     Producer<object>::~Producer()
@@ -57,21 +51,18 @@ namespace jw
     {
         using namespace std::chrono_literals;
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
-        _cv.wait_for(lk, 100ms, [this] {return !_queue.empty(); });
+        _cv.wait_for(lk, 100ms, [this] {return !_list.empty(); });
 
-        for (int i = 0; i < _popMaxNumberPerTick && !_queue.empty(); ++i)
-        {
-            object obj = _queue.front();
-            _queue.pop();
-            objList.emplace_back(obj);
-        }
+        if (_list.empty()) return;
+
+        objList.splice(objList.begin(), _list);
     }
 
     template<typename object>
     void Producer<object>::Push(const object& obj)
     {
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
-        _queue.push(obj);
+        _list.push_back(obj);
     }
 
     template<typename object>
@@ -95,7 +86,7 @@ namespace jw
     size_t Producer<object>::Size()
     {
         std::shared_lock<std::shared_mutex> lk(_shared_mutex);
-        return _queue.size();
+        return _list.size();
     }
 }
 #endif // __JW_PRODUCER_HPP__

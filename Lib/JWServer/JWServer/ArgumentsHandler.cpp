@@ -68,8 +68,7 @@ namespace jw
         wprintf(L"%s 사용법\r\n", GetProcessName().c_str());
         wprintf(L"%s : 사용방법을 출력합니다.\r\n", HELP_OPTION);
 
-        LOG_DEBUG(L"{:s} 사용법 ", GetProcessName().c_str());
-        LOG_DEBUG(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
-        LOG_DEBUG_STRING(L"사용방법을 출력합니다.");
+        LOG_FETAL(L"{:s} 사용법 ", GetProcessName().c_str());
+        LOG_FETAL(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
     }
 }

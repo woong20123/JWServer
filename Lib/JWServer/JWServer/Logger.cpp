@@ -36,7 +36,6 @@ namespace jw
         _pImpl->isRun = true;
         std::setlocale(LC_ALL, "KOREAN");
         std::wcout.imbue(std::locale(""));
-        //::SetConsoleOutputCP(CP_UTF8);
     }
 
     void Logger::SetLevel(LogType logLevel)

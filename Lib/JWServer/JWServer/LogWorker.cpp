@@ -1,4 +1,4 @@
-#include "LogWorker.h"
+﻿#include "LogWorker.h"
 #include "LogBuffer.h"
 #include "LogStream.h"
 #include <memory>
@@ -6,6 +6,12 @@
 
 namespace jw
 {
+    void LogWorker::prepare()
+    {
+        for (const auto& stream : _logStreams)
+            stream->Initialize();
+    }
+
     void LogWorker::RegisterLogStream(const std::shared_ptr<LogStream>& stream)
     {
         if (LOG_STREAM_MAX_COUNT <= _logStreamCnt) return;

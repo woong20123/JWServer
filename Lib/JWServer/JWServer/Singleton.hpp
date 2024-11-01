@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_SINGLETON_HPP__
 #define __JW_SINGLETON_HPP__
 
@@ -22,4 +22,4 @@ namespace jw
     };
 }
 
-#endif // __JW_SINGLETON_HPP__
+#endif // !__JW_SINGLETON_HPP__

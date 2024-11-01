@@ -3,6 +3,7 @@
 #define __JW_LOG_BUFFER_POOL_H__
 #include <memory>
 #include "Singleton.hpp"
+#include "ObjectPool.hpp"
 
 namespace jw
 {
@@ -10,15 +11,16 @@ namespace jw
 	class LogBufferPool : public Singleton<LogBufferPool>
 	{
 	public:
+		static constexpr size_t BASE_ALLOCATE_COUNT = 16;
+		static constexpr size_t MAX_ALLOCATE_COUNT = 512;
 
-		LogBuffer * Acquire();
-		void Release(LogBuffer *& obj);
+		LogBuffer* Acquire();
+		void Release(LogBuffer* obj);
 	protected:
 		LogBufferPool();
-		~LogBufferPool();
 	private:
-		struct Impl;
-		std::unique_ptr<Impl> _mImpl;
+		std::atomic<uint64_t>											_useCount;
+		ObjectPool<LogBuffer, BASE_ALLOCATE_COUNT, MAX_ALLOCATE_COUNT>	_objectPool;
 		friend class Singleton<LogBufferPool>;
 	};
 }

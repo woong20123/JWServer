@@ -71,6 +71,12 @@
     <ClCompile Include="LogBufferPool.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectPool.hpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="StopWatch.h">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">
