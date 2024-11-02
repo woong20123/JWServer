@@ -47,7 +47,7 @@
     <ClCompile Include="LogBuffer.cpp">
       <Filter>Log</Filter>
     </ClCompile>
-    <ClCompile Include="Producer.hpp">
+    <ClCompile Include="ProducerConsumerContainer.hpp">
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="LogWorker.cpp">

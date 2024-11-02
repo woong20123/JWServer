@@ -2,7 +2,7 @@
 #ifndef __JW_LOGGER_H__
 #define __JW_LOGGER_H__
 #include "Singleton.hpp"
-#include "Producer.hpp"
+#include "ProducerConsumerContainer.hpp"
 #include "TypeDefinition.h"
 #include <string>
 #include <memory>
@@ -27,13 +27,14 @@ namespace jw
     class Logger : public Singleton<Logger>
     {
     public:
-        using ProducerObj = Producer<std::shared_ptr<LogBuffer>>;
+        
+        using PCContainer = ProducerConsumerContainer<std::shared_ptr<LogBuffer>>;
 
         static constexpr size_t LOG_BUFFER_SIZE = 2000;
         using msgType = wchar_t;
         using msgString = std::wstring;
 
-        void Initialize(const std::shared_ptr<ProducerObj>& producer);
+        void Initialize(const std::shared_ptr<PCContainer>& producer);
 
         void SetLevel(LogType logType);
         void Stop();
@@ -79,7 +80,7 @@ namespace jw
         bool enableLogLevel(const LogType level) const;
         bool isEnable(const LogType level) const;
 
-        std::shared_ptr<ProducerObj> _logProducer;
+        std::shared_ptr<PCContainer> _logProducer;
         LogType _logLevel;
         bool _isRun;
 

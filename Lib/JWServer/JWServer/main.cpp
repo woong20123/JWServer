@@ -12,9 +12,9 @@
 
 int main(int argc, char* argv[])
 {
-	std::shared_ptr<jw::Logger::ProducerObj> producer = std::make_shared<jw::Logger::ProducerObj>();
-	LOGGER().Initialize(producer);
-	jw::LogWorker logWorker{ producer };
+	std::shared_ptr<jw::Logger::PCContainer> container = std::make_shared<jw::Logger::PCContainer>();
+	LOGGER().Initialize(container);
+	jw::LogWorker logWorker{ container };
 
 #ifdef DEBUG
 	std::vector<jw::LogType> consoleLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO, jw::LogType::LOG_DEBUG };

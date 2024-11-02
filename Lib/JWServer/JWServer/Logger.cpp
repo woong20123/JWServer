@@ -19,7 +19,7 @@ namespace jw
     Logger::~Logger()
     {}
 
-    void Logger::Initialize(const std::shared_ptr<ProducerObj>& producer)
+    void Logger::Initialize(const std::shared_ptr<PCContainer>& producer)
     {
         _logProducer = producer;
         _isRun = true;
@@ -52,6 +52,7 @@ namespace jw
 
         // worker에 메시지를 전달합니다. 
         _logProducer->Push(logBuffer);
+        _logProducer->Flush();
     }
 
     void Logger::Write(LogType type, const msgType* file, const int line, const msgType* fmt, ...) const
@@ -74,6 +75,7 @@ namespace jw
         logBuffer->WriteMsg(msg.c_str());
 
         _logProducer->Push(logBuffer);
+        _logProducer->Flush();
     }
 
     bool Logger::isEnable(const LogType level) const

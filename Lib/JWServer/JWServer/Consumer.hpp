@@ -1,32 +1,32 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_CONSUMER_HPP__
 #define __JW_CONSUMER_HPP__
 #include <memory>
 #include <thread>
 #include <iostream>
 #include <list>
-#include "Producer.hpp"
+#include "ProducerConsumerContainer.hpp"
 namespace jw
 {
-    /// <summary>
-    /// 등록된 Producer의 Queue를 실시간으로 감지하여 데이터가 들어오면
-    /// Handle함수로 보내집니다.
-    /// Handle함수는 사용자가 정의합니다.
-    /// </summary>
-    /// <typeparam name="Producer"></typeparam>
+    // ProducerConsumerContainer를 사용하는 소비자 스레드 객체에 대한 일반화된 클래스 규격을 제공합니다. 
+    // [object의 이동 순서]
+    // 생산자 스레드에서 ProducerConsumerContainer::Push 호출
+    // 소비자 스레드에서 Consumer::execute -> ProducerConsumerContainer::Wait -> Consumer::handle 순서로 호출
+    //
+    // Consumer를 상속하는 객체는 Consumer::handle(필수), Consumer::prepare 함수를 override 해야 합니다.  
     template<typename object>
     class Consumer
     {
     public:
-        using queueObject = object;
-        using ProducerObj = Producer<object>;
+        using obj = object;
+        using PCContainer = ProducerConsumerContainer<object>;
         static constexpr size_t DEFAULT_THREAD_COUNT = 1;
 
         explicit Consumer();
-        explicit Consumer(const std::shared_ptr<ProducerObj>& producer, size_t threadCount = DEFAULT_THREAD_COUNT);
+        explicit Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount = DEFAULT_THREAD_COUNT);
         virtual ~Consumer();
 
-        void SetProducer(std::shared_ptr<ProducerObj>& producer) {
+        void SetProducer(std::shared_ptr<PCContainer>& producer) {
             _pProducer = producer;
         }
 
@@ -38,13 +38,16 @@ namespace jw
         void RunThread();
 
     protected:
-        virtual void prepare();										///  프로세서를 실행하기 전에 해야 할 작업을 등록합니다.
-        void execute();										        ///  생산자 큐에서 오브젝트를 받아와 Handler에 넘깁니다.
-        virtual void handle(const std::list<queueObject>& objs) = 0;			///  생산자의 object를 처리합니다.
+        // Producer에서 object를 전달 받는 로직을 실행 전에 수행해야 할 작업을 등록합니다. 
+        virtual void prepare();										
+        // Producer에서 전달 된 object를 handle로 전달합니다. 
+        void execute();										        
+        // 전달 받은 object를 처리하는 로직을 등록합니다. 
+        virtual void handle(const std::list<obj>& objs) = 0;			
 
     private:
         std::string                         _name;
-        std::shared_ptr<ProducerObj>	    _pProducer;
+        std::shared_ptr<PCContainer>	    _pProducer;
         std::vector<std::thread>	        _threads;
         size_t                              _threadCount{ 1 };
     };
@@ -54,7 +57,7 @@ namespace jw
     {}
 
     template<typename object>
-    Consumer<object>::Consumer(const std::shared_ptr<ProducerObj>& producer, size_t threadCount) : _pProducer{ producer }, _threadCount{ threadCount }
+    Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducer{ producer }, _threadCount{ threadCount }
     {
     }
 
@@ -84,11 +87,11 @@ namespace jw
         {
             if (_pProducer->IsStop())
             {
-                std::cerr << "Producer<" << typeid(queueObject).name() << "> " << _name.c_str() << " is stop" << std::endl;
+                std::cerr << "Producer<" << typeid(obj).name() << "> " << _name.c_str() << " is stop" << std::endl;
                 break;
             }
 
-            std::list<queueObject> queueObjects;
+            std::list<obj> queueObjects;
             _pProducer->Wait(queueObjects);
             if (!queueObjects.empty())
                 handle(queueObjects);
@@ -101,12 +104,12 @@ namespace jw
 
 #define CONSUMER_BASE_DECLARE(CLASSNAME, OBJ) \
 public: \
-    using ProducerObj = Producer<std::shared_ptr<OBJ>>; \
+    using PCContainer = ProducerConsumerContainer<std::shared_ptr<OBJ>>; \
     CLASSNAME() : Consumer() {} \
     virtual ~CLASSNAME() {} \
-    CLASSNAME(const std::shared_ptr<ProducerObj>& producer) : Consumer(producer) {} \
-    CLASSNAME(const std::shared_ptr<ProducerObj>& producer, const size_t threadCount) : Consumer(producer, threadCount) {} \
+    CLASSNAME(const std::shared_ptr<PCContainer>& producer) : Consumer(producer) {} \
+    CLASSNAME(const std::shared_ptr<PCContainer>& producer, const size_t threadCount) : Consumer(producer, threadCount) {} \
 private: \
-    void handle(const std::list<queueObject>& objs) override;
+    void handle(const std::list<obj>& objs) override;
 
 #endif //__JW_CONSUMER_HPP__
