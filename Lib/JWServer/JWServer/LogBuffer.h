@@ -49,8 +49,11 @@ namespace jw
         const BufferType* GetSuffix() const;
         const BufferType* GetLineBreak() const;
         constexpr size_t GetMsgTotalSize() const;
+        const LogType GetLogType() const;
 
     private:
+
+        
 
         BufferType      _prefix[PRIFIX_COUNT] = { 0 };
         BufferType      _msg[MSG_COUNT] = { 0 };

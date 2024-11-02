@@ -154,6 +154,7 @@
     <ClCompile Include="LogConsoleStream.cpp" />
     <ClCompile Include="LogFileStream.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="LogStream.cpp" />
     <ClCompile Include="LogWorker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Network.cpp" />

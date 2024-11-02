@@ -14,11 +14,12 @@ namespace jw
 {
     enum class LogType : int16_t
     {
-        LOG_FATAL,
-        LOG_ERROR,
-        LOG_WARN,
-        LOG_INFO,
-        LOG_DEBUG,
+        LOG_NONE = 0,
+        LOG_FATAL   = 1 << 0,
+        LOG_ERROR   = 1 << 1, 
+        LOG_WARN    = 1 << 2,
+        LOG_INFO    = 1 << 3,
+        LOG_DEBUG   = 1 << 4,
     };
 
     class LogBuffer;
@@ -50,6 +51,24 @@ namespace jw
         }
 #endif // _HAS_CXX20
 
+        static const Logger::msgType* LogTypeToString(LogType type)
+        {
+            switch (type)
+            {
+            case LogType::LOG_FATAL:
+                return L"fetal";
+            case LogType::LOG_ERROR:
+                return L"error";
+            case LogType::LOG_WARN:
+                return L"warn";
+            case LogType::LOG_INFO:
+                return L"info";
+            case LogType::LOG_DEBUG:
+                return L"debug";
+            }
+            return L"none";
+        }
+
     protected:
         Logger();
         ~Logger();
@@ -60,9 +79,12 @@ namespace jw
         bool enableLogLevel(const LogType level) const;
         bool isEnable(const LogType level) const;
 
-        struct Impl;
-        std::unique_ptr<Impl> _pImpl;
+        std::shared_ptr<ProducerObj> _logProducer;
+        LogType _logLevel;
+        bool _isRun;
+
         friend class Singleton<Logger>;
+        
     };
 }
 

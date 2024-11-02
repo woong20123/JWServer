@@ -29,7 +29,8 @@ namespace jw
             obj->MakePreFix();
             for (const auto& stream : _logStreams)
             {
-                stream->Write(obj);
+                if(stream->EnableLogType(obj->GetLogType()))
+                    stream->Write(obj);
             }
         }
 

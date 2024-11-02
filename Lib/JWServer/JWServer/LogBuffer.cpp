@@ -41,10 +41,10 @@ namespace jw
             _snwprintf_s(fileName, MAX_PATH, L"%s%s", name, ext);
         }
 
-        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,",
+        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,(%s),",
             tmLogTime.tm_year + 1900, tmLogTime.tm_mon + 1, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
-            millis.count(), fileName, _info.line);
+            millis.count(), fileName, _info.line, Logger::LogTypeToString(_info.type));
     }
 
     int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
@@ -70,6 +70,11 @@ namespace jw
     const LogBuffer::BufferType* LogBuffer::GetLineBreak() const
     {
         return LINE_BREAK;
+    }
+
+    const LogType LogBuffer::GetLogType() const
+    {
+        return _info.type;
     }
 
     constexpr size_t LogBuffer::GetMsgTotalSize() const

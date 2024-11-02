@@ -1,5 +1,4 @@
 ﻿#include "LogFileStream.h"
-#include "LogBuffer.h"
 #include "TypeDefinition.h"
 #include <string>
 #include <windows.h>
@@ -7,43 +6,27 @@
 
 namespace jw
 {
-
-    struct LogFileStream::Impl
+    LogFileStream::LogFileStream(const wchar_t* path, const wchar_t* processName, size_t bufferSize) : 
+        _path{ path }, 
+        _processname{ processName },
+        _bufferPos{ 0 }, 
+        _fileNameTick{ 0 }, 
+        _bufferSize{ bufferSize }
     {
-        static constexpr size_t DEFUALT_BUFFER_SIZE = 204800;
-
-        Impl(const wchar_t* path, const wchar_t* processName, size_t bufferSize = DEFUALT_BUFFER_SIZE)
-            : path{ path }, processname{ processName }, bufferPos{ 0 }, fileNameTick{ 0 }, bufferSize{ bufferSize }
-        {
-            logBuffer = new LogBuffer::BufferType[bufferSize];
-        }
-        ~Impl()
-        {
-            if (logBuffer) {
-                delete[] logBuffer;
-                logBuffer = nullptr;
-            }
-        }
-        LogBuffer::BufferType* logBuffer{ nullptr };
-        size_t bufferPos;
-        size_t bufferSize;
-        std::wstring processname;
-        std::wstring path;
-        std::wstring fullFileName;
-        size_t fileNameTick;
-
-        inline const size_t remainBuffer() { return bufferSize - bufferPos; }
-    };
-
-    LogFileStream::LogFileStream(const wchar_t* path, const wchar_t* filename) : _pImpl{ std::make_unique<LogFileStream::Impl>(path, filename) }
-    {}
+        _logBuffer = new LogBuffer::BufferType[bufferSize];
+    }
 
     LogFileStream::~LogFileStream()
-    {}
+    {
+        if (_logBuffer) {
+            delete[] _logBuffer;
+            _logBuffer = nullptr;
+        }
+    }
 
     void LogFileStream::Initialize() {
-        if (!std::filesystem::is_directory(_pImpl->path))
-            makeFolder(_pImpl->path);
+        if (!std::filesystem::is_directory(_path))
+            makeFolder(_path);
     }
 
     void LogFileStream::Write(const std::shared_ptr<LogBuffer>& logBuffer)
@@ -53,16 +36,16 @@ namespace jw
         const auto lineBreakLen = STRLEN(logBuffer->GetLineBreak());
         size_t totalMsgLen = prefixLen + msgLen + lineBreakLen;
 
-        if (_pImpl->bufferSize <= _pImpl->bufferPos + totalMsgLen)
+        if (_bufferSize <= _bufferPos + totalMsgLen)
             Flush();
 
         // 메시지 복사
-        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetPrefix(), prefixLen);
-        _pImpl->bufferPos += prefixLen;
-        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetMsg(), msgLen);
-        _pImpl->bufferPos += msgLen;
-        STRNCPY(&_pImpl->logBuffer[_pImpl->bufferPos], _pImpl->remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
-        _pImpl->bufferPos += lineBreakLen;
+        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetPrefix(), prefixLen);
+        _bufferPos += prefixLen;
+        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetMsg(), msgLen);
+        _bufferPos += msgLen;
+        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
+        _bufferPos += lineBreakLen;
     }
 
     void LogFileStream::Flush()
@@ -72,14 +55,14 @@ namespace jw
         constexpr int TRY_COUNT = 20;
         for (int i = 1; i < TRY_COUNT; ++i)
         {
-            if (INVALID_HANDLE_VALUE != (h = CreateFileW(_pImpl->fullFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)))
+            if (INVALID_HANDLE_VALUE != (h = CreateFileW(_fullFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)))
                 break;
             Sleep(100);
         }
 
         if (INVALID_HANDLE_VALUE == h)
         {
-            _pImpl->bufferPos = 0;
+            _bufferPos = 0;
             return;
         }
 
@@ -95,15 +78,15 @@ namespace jw
             result = ::WriteFile(h, &mark, sizeof(mark), &written, NULL);
         }
 
-        result = ::WriteFile(h, _pImpl->logBuffer, (DWORD)_pImpl->bufferPos * sizeof(wchar_t), &written, NULL);
+        result = ::WriteFile(h, _logBuffer, (DWORD)_bufferPos * sizeof(wchar_t), &written, NULL);
         ::CloseHandle(h);
 
         initBuffer();
     }
     void LogFileStream::initBuffer()
     {
-        _pImpl->bufferPos = 0;
-        _pImpl->logBuffer[0] = '\0';
+        _bufferPos = 0;
+        _logBuffer[0] = '\0';
     }
 
     void LogFileStream::makeFileName()
@@ -117,17 +100,17 @@ namespace jw
         localtime_s(&tmNow, &now);
         const auto timeTick = (tmNow.tm_year + 1900) * YEAR_DIGIT + (tmNow.tm_mon + 1) * MONTH_DIGIT + tmNow.tm_mday * DAY_DIGIT + tmNow.tm_hour;
 
-        if (_pImpl->fileNameTick != timeTick)
+        if (_fileNameTick != timeTick)
         {
             const auto year = timeTick / YEAR_DIGIT;
             const auto month = (timeTick % YEAR_DIGIT) / MONTH_DIGIT;
             const auto day = (timeTick % MONTH_DIGIT) / DAY_DIGIT;
             const auto hour = timeTick % DAY_DIGIT;
-            _pImpl->fullFileName.clear();
-            _pImpl->fullFileName.append(_pImpl->path);
-            _pImpl->fullFileName.append(_pImpl->processname);
-            _pImpl->fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour));
-            _pImpl->fileNameTick = timeTick;
+            _fullFileName.clear();
+            _fullFileName.append(_path);
+            _fullFileName.append(_processname);
+            _fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour));
+            _fileNameTick = timeTick;
         }
     }
 
