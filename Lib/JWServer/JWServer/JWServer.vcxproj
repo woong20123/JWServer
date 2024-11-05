@@ -134,6 +134,7 @@
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="ArgumentsHandler.h" />
     <ClInclude Include="Consumer.hpp" />
+    <ClInclude Include="IOWorker.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="LogBuffer.h" />
     <ClInclude Include="LogBufferPool.h" />
@@ -143,11 +144,14 @@
     <ClInclude Include="LogStream.h" />
     <ClInclude Include="LogWorker.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="NetworkHelper.h" />
     <ClInclude Include="Singleton.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
+    <ClCompile Include="AsyncIOObject.h" />
+    <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="LogBuffer.cpp" />
     <ClCompile Include="LogBufferPool.cpp" />
@@ -158,6 +162,7 @@
     <ClCompile Include="LogWorker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="NetworkHelper.cpp" />
     <ClCompile Include="ObjectPool.hpp" />
     <ClCompile Include="ProducerConsumerContainer.hpp" />
     <ClCompile Include="StopWatch.h" />

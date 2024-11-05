@@ -13,7 +13,7 @@ namespace jw
     // 생산자 스레드에서 ProducerConsumerContainer::Push 호출
     // 소비자 스레드에서 Consumer::execute -> ProducerConsumerContainer::Wait -> Consumer::handle 순서로 호출
     //
-    // Consumer를 상속하는 객체는 Consumer::handle(필수), Consumer::prepare 함수를 override 해야 합니다.  
+    // Consumer를 상속하는 객체는 Consumer::handle(필수), Consumer::prepare 함수를 override 합니다. 
     template<typename object>
     class Consumer
     {

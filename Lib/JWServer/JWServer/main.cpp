@@ -7,6 +7,7 @@
 #include "LogFileStream.h"
 #include "Network.h"
 #include "StopWatch.h"
+#include "Listener.h"
 #include <memory>
 #include <list>
 
@@ -40,6 +41,9 @@ int main(int argc, char* argv[])
 	ARGUMENT().HandleArgument();
 
 	NETWORK().Initialize();
+
+	jw::Listener listener;
+	listener.Initialize(NETWORK().GetAcceptExFunc(), NETWORK().GetAcceptExSockAddrFunc(), 23211);
 
 
 	int a;
