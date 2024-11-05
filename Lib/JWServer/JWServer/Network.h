@@ -18,6 +18,7 @@ namespace jw
         LPFN_GETACCEPTEXSOCKADDRS       GetAcceptExSockAddrFunc();
         LPFN_CONNECTEX                  GetConnectExFunc();
         LPFN_DISCONNECTEX               GetisConnectExFunc();
+        HANDLE                          GetIOCPHandle();
     protected:
         Network();
         ~Network();

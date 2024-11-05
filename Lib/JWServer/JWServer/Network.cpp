@@ -25,7 +25,7 @@ namespace jw
             return false;
         }
 
-        _iocpHandle = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);//NetworkHelper::CreateIOCPHandle();
+        _iocpHandle = NetworkHelper::CreateNewIOCP();
         if (NULL == _iocpHandle || INVALID_HANDLE_VALUE == _iocpHandle)
         {
             LOG_FETAL(L"CreateIOCPHandle Fail, _iocpHandle:{}", _iocpHandle);
@@ -59,6 +59,11 @@ namespace jw
     LPFN_DISCONNECTEX Network::GetisConnectExFunc()
     {
         return _disConnectExFunc;
+    }
+
+    HANDLE Network::GetIOCPHandle()
+    {
+        return _iocpHandle;
     }
 
     bool Network::initializeWSASocketFunc()

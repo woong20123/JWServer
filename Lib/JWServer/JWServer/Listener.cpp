@@ -13,6 +13,7 @@ namespace jw
 		LPFN_GETACCEPTEXSOCKADDRS        getAcceptExSockAddrFunc;
 		uint16_t		port;
 		SOCKET			listenSocket;
+		HANDLE			iocpHandle;
 		bool			nagle{ false };
 	};
 
@@ -21,7 +22,7 @@ namespace jw
 	Listener::~Listener()
 	{}
 
-	void Listener::Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port)
+	void Listener::Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port, HANDLE iocpHandle)
 	{
 		if (!acceptexFunc)
 		{
@@ -31,6 +32,7 @@ namespace jw
 		_pImpl->acceptexFunc = acceptexFunc;
 		_pImpl->getAcceptExSockAddrFunc = acceptexSockAddrFunc;
 		_pImpl->port = port;
+		_pImpl->iocpHandle = iocpHandle;
 
 		SOCKADDR_IN addr;
 		SOCKET s = MakeTCPSocket();
@@ -75,14 +77,15 @@ namespace jw
 			return;
 		}
 
+		if (!NetworkHelper::AssociateDeviceWithIOCP((HANDLE)_pImpl->listenSocket, _pImpl->iocpHandle, (uint64_t)this))
+		{
+			LOG_FETAL_STRING(L"AssociateDeviceWithIOCP fail");
+			return;
+		}
+
 		for (int i = 0; i < CONTEXT_COUNT; ++i)
 		{
 			auto& context{ _context[i] };
-			context._index = i;
-			context._socket = INVALID_SOCKET;
-			context._recvdSize = 0;
-			context._localAddrSize = sizeof(SOCKADDR) + 16;
-			context._remoteAddrSize = sizeof(SOCKADDR) + 16;
 
 			if (!asyncAccept(i))
 			{

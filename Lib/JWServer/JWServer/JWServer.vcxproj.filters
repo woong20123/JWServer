@@ -39,7 +39,9 @@
     <ClInclude Include="NetworkHelper.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="IOWorker.h" />
+    <ClInclude Include="IOWorker.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -90,7 +92,9 @@
     <ClCompile Include="AsyncIOObject.h">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="IOWorker.cpp" />
+    <ClCompile Include="IOWorker.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

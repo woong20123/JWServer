@@ -12,8 +12,8 @@ namespace jw
     public:
         static void SetSocketOptNoBuffer(SOCKET& s);
 
-        static HANDLE CreateIOCPHandle();
-        static bool RegistIOCP(HANDLE h, HANDLE iocpHandle, uint64_t key);
+        static HANDLE CreateNewIOCP();
+        static bool AssociateDeviceWithIOCP(HANDLE h, HANDLE iocpHandle, uint64_t key);
     };
 }
 

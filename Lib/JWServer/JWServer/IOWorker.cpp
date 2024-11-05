@@ -34,7 +34,7 @@ namespace jw
         unsigned long numOfBytes{ 0 };
         AsyncIOObject* object{ nullptr };
         OVERLAPPED* context{ nullptr };
-        constexpr int MAX_WAIT = 100;
+        constexpr int MAX_WAIT = 1000;
 
         while (true)
         {
@@ -44,13 +44,14 @@ namespace jw
             {
                 if (!object->HandleEvent(context, numOfBytes))
                 {
-                    LOG_FETAL(L"HandleEvent fail, eventId:{}", object->GetEventID());
+                    LOG_FETAL(L"HandleEvent fail, eventId:{}", object->GetID());
                 }
             }
             else
             {
                 auto err = ::WSAGetLastError();
-                LOG_FETAL(L"GetQueuedCompletionStatus fail, error:{}", err);
+                if(WAIT_TIMEOUT != err)
+                    LOG_FETAL(L"GetQueuedCompletionStatus fail, error:{}", err);
             }
         }
     }

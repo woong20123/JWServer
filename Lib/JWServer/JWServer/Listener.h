@@ -7,30 +7,39 @@
 
 namespace jw
 {
+	struct AcceptContext : public AsyncContext
+	{
+		AcceptContext() : AsyncContext(ASYNC_CONTEXT_ID_ACCEPT),
+			_index{ 0 }, 
+			_socket{ INVALID_SOCKET },
+			_recvdSize{ 0 }, 
+			_localAddrSize{ sizeof(SOCKADDR) + 16 }, 
+			_remoteAddrSize{ sizeof(SOCKADDR) + 16 }
+		{}
+
+		static constexpr size_t CONTEXT_BUFFER_COUNT = 128;
+
+		uint16_t	_index;
+		SOCKET		_socket;
+		uint32_t	_recvdSize;
+		uint32_t	_localAddrSize;
+		uint32_t	_remoteAddrSize;
+		uint8_t		_buffer[CONTEXT_BUFFER_COUNT];
+	};
+
 	class Listener : public AsyncIOObject
 	{
 	public:
 		Listener();
 		~Listener();
-		void Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port);
-		uint32_t GetEventID() const override { return 1; }
+		void Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port, HANDLE iocpHandle);
+		uint32_t GetID() const override { return ASYNC_IO_OBJ_LISTENER; }
 		bool HandleEvent(OVERLAPPED* context, unsigned long bytes) override;
 
 
 		void Clear();
 	private:
 		static constexpr size_t CONTEXT_COUNT = 128;
-		static constexpr size_t CONTEXT_BUFFER = 256;
-
-		struct AcceptContext : public OVERLAPPED
-		{
-			uint16_t	_index;
-			SOCKET		_socket;
-			uint32_t	_recvdSize;
-			uint32_t	_localAddrSize;
-			uint32_t	_remoteAddrSize;
-			uint8_t		_buffer[CONTEXT_BUFFER];
-		};
 
 		bool asyncAccept(int index);
 		bool accepted(AcceptContext& context);
