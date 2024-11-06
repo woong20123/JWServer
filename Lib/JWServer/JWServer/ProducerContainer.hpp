@@ -15,13 +15,13 @@ namespace jw
     // 생산자 스레드에서 ProducerConsumerContainer::Push 호출
     // 소비자 스레드에서 Consumer::execute -> ProducerConsumerContainer::Wait -> Consumer::handle 순서로 호출
     template<typename object>
-    class ProducerConsumerContainer
+    class ProducerContainer
     {
     public:
         using obj = object;
 
-        ProducerConsumerContainer();
-        virtual ~ProducerConsumerContainer();
+        ProducerContainer();
+        virtual ~ProducerContainer();
 
         void							Wait(std::list<object>& objList);
         void							Push(const object& obj);
@@ -38,14 +38,14 @@ namespace jw
     };
 
     template<typename object>
-    ProducerConsumerContainer<object>::ProducerConsumerContainer() : _isStop{ false }
+    ProducerContainer<object>::ProducerContainer() : _isStop{ false }
     {}
     template<typename object>
-    ProducerConsumerContainer<object>::~ProducerConsumerContainer()
+    ProducerContainer<object>::~ProducerContainer()
     {}
 
     template<typename object>
-    void ProducerConsumerContainer<object>::Wait(std::list<object>& objList)
+    void ProducerContainer<object>::Wait(std::list<object>& objList)
     {
         using namespace std::chrono_literals;
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
@@ -57,36 +57,36 @@ namespace jw
     }
 
     template<typename object>
-    void ProducerConsumerContainer<object>::Push(const object& obj)
+    void ProducerContainer<object>::Push(const object& obj)
     {
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
         _list.push_back(obj);
     }
 
     template<typename object>
-    void ProducerConsumerContainer<object>::Flush()
+    void ProducerContainer<object>::Flush()
     {
         _cv.notify_one();
     }
     template<typename object>
-    void ProducerConsumerContainer<object>::SetStopSignal()
+    void ProducerContainer<object>::SetStopSignal()
     {
         _isStop.store(true);
     }
 
     template<typename object>
-    bool ProducerConsumerContainer<object>::IsStop()
+    bool ProducerContainer<object>::IsStop()
     {
         return _isStop.load();
     }
 
     template<typename object>
-    size_t ProducerConsumerContainer<object>::Size()
+    size_t ProducerContainer<object>::Size()
     {
         std::shared_lock<std::shared_mutex> lk(_shared_mutex);
         return _list.size();
     }
 }
 
-#define PCCON(obj)  jw::ProducerConsumerContainer<obj>
+#define PCCON(obj)  jw::ProducerContainer<obj>
 #endif // __JW_PRODUCER_HPP__

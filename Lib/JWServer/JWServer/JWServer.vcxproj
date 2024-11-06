@@ -164,7 +164,7 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="NetworkHelper.cpp" />
     <ClCompile Include="ObjectPool.hpp" />
-    <ClCompile Include="ProducerConsumerContainer.hpp" />
+    <ClCompile Include="ProducerContainer.hpp" />
     <ClCompile Include="StopWatch.h" />
     <ClCompile Include="TypeDefinition.h" />
   </ItemGroup>

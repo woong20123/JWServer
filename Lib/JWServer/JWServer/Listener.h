@@ -10,12 +10,14 @@ namespace jw
 	struct AcceptContext : public AsyncContext
 	{
 		AcceptContext() : AsyncContext(ASYNC_CONTEXT_ID_ACCEPT),
-			_index{ 0 }, 
+			_index{ 0 },
 			_socket{ INVALID_SOCKET },
-			_recvdSize{ 0 }, 
-			_localAddrSize{ sizeof(SOCKADDR) + 16 }, 
+			_recvdSize{ 0 },
+			_localAddrSize{ sizeof(SOCKADDR) + 16 },
 			_remoteAddrSize{ sizeof(SOCKADDR) + 16 }
-		{}
+		{
+			::memset(_buffer, 0x00, sizeof(_buffer));
+		}
 
 		static constexpr size_t CONTEXT_BUFFER_COUNT = 128;
 

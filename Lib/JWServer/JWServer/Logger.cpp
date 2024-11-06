@@ -67,12 +67,12 @@ namespace jw
     }
 
 
-    void Logger::WriteString(LogType type, const msgType* file, const int line, const msgString& msg) const
+    void Logger::WriteString(LogType type, const msgType* file, const int line, const msgStringView msg) const
     {
         if (!isEnable(type)) return;
         std::shared_ptr<LogBuffer> logBuffer{ LOG_BUFFER_POOL().Acquire(), [](LogBuffer* obj) { LOG_BUFFER_POOL().Release(obj); } };
         logBuffer->Initialize(type, file, line);
-        logBuffer->WriteMsg(msg.c_str());
+        logBuffer->WriteMsg(msg.data());
 
         _logProducer->Push(logBuffer);
         _logProducer->Flush();

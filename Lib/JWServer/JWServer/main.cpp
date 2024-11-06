@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 	logWorker.RegisterLogStream(fileStream);
 	logWorker.RunThread();
 
-	LOG_FETAL_STRING(L"테스트 기록용");
+	LOG_FETAL(L"테스트 기록용");
 
 	ARGUMENT().Initialize(argc, argv);
 	ARGUMENT().HandleArgument();

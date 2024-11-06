@@ -15,7 +15,7 @@ namespace jw
         _iocpHandle = iocpHandle;
         if (INVALID_HANDLE_VALUE == _iocpHandle)
         {
-            LOG_FETAL_STRING(L"INVALID iocpHandle");
+            LOG_FETAL(L"INVALID iocpHandle");
         }
 
     }

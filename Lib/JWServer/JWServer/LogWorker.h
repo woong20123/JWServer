@@ -1,7 +1,7 @@
 ﻿#pragma once
 #ifndef __JW_LOG_WORKER_H__
 #define __JW_LOG_WORKER_H__
-#include "ProducerConsumerContainer.hpp"
+#include "ProducerContainer.hpp"
 #include "Singleton.hpp"
 #include "Consumer.hpp"
 #include "LogStream.h"

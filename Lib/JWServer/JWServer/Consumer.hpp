@@ -5,13 +5,13 @@
 #include <thread>
 #include <iostream>
 #include <list>
-#include "ProducerConsumerContainer.hpp"
+#include "ProducerContainer.hpp"
 namespace jw
 {
-    // ProducerConsumerContainer를 사용하는 소비자 스레드 객체에 대한 일반화된 클래스 규격을 제공합니다. 
+    // ProducerContainer를 사용하는 소비자 스레드 객체에 대한 일반화된 클래스 규격을 제공합니다. 
     // [object의 이동 순서]
-    // 생산자 스레드에서 ProducerConsumerContainer::Push 호출
-    // 소비자 스레드에서 Consumer::execute -> ProducerConsumerContainer::Wait -> Consumer::handle 순서로 호출
+    // 생산자 스레드에서 ProducerContainer::Push 호출
+    // 소비자 스레드에서 Consumer::execute -> ProducerContainer::Wait -> Consumer::handle 순서로 호출
     //
     // Consumer를 상속하는 객체는 Consumer::handle(필수), Consumer::prepare 함수를 override 합니다. 
     template<typename object>
@@ -19,7 +19,7 @@ namespace jw
     {
     public:
         using obj = object;
-        using PCContainer = ProducerConsumerContainer<object>;
+        using PCContainer = ProducerContainer<object>;
         static constexpr size_t DEFAULT_THREAD_COUNT = 1;
 
         explicit Consumer();
@@ -104,7 +104,7 @@ namespace jw
 
 #define CONSUMER_BASE_DECLARE(CLASSNAME, OBJ) \
 public: \
-    using PCContainer = ProducerConsumerContainer<std::shared_ptr<OBJ>>; \
+    using PCContainer = ProducerContainer<std::shared_ptr<OBJ>>; \
     CLASSNAME() : Consumer() {} \
     virtual ~CLASSNAME() {} \
     CLASSNAME(const std::shared_ptr<PCContainer>& producer) : Consumer(producer) {} \

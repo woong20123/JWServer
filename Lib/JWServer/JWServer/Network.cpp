@@ -34,7 +34,7 @@ namespace jw
 
         if (!initializeWSASocketFunc())
         {
-            LOG_FETAL_STRING(L"initializeWSASocketFunc Fail");
+            LOG_FETAL(L"initializeWSASocketFunc Fail");
             return false;
         }
 

@@ -26,7 +26,7 @@ namespace jw
 	{
 		if (!acceptexFunc)
 		{
-			LOG_FETAL_STRING(L"acceptexFunc is nullptr");
+			LOG_FETAL(L"acceptexFunc is nullptr");
 		}
 
 		_pImpl->acceptexFunc = acceptexFunc;
@@ -38,7 +38,7 @@ namespace jw
 		SOCKET s = MakeTCPSocket();
 		if (INVALID_SOCKET == s)
 		{
-			LOG_FETAL_STRING(L"initialize socket");
+			LOG_FETAL(L"initialize socket");
 			return;
 		}
 
@@ -49,7 +49,7 @@ namespace jw
 
 		if (SOCKET_ERROR == ::bind(s, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr)))
 		{
-			LOG_FETAL_STRING(L"fail socket bind");
+			LOG_FETAL(L"fail socket bind");
 			::closesocket(s);
 			return;
 		}
@@ -60,7 +60,7 @@ namespace jw
 			int optval = 1;
 			if (SOCKET_ERROR == ::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval)))
 			{
-				LOG_FETAL_STRING(L"setsocket, TCP_NODELAY set fail");
+				LOG_FETAL(L"setsocket, TCP_NODELAY set fail");
 				::closesocket(s);
 				return;
 			}
@@ -72,14 +72,15 @@ namespace jw
 
 		if (SOCKET_ERROR == ::listen(_pImpl->listenSocket, SOMAXCONN))
 		{
-			LOG_FETAL_STRING(L"listen fail");
-			::closesocket(s);
+			LOG_FETAL(L"listen fail");
+			::closesocket(_pImpl->listenSocket);
+			_pImpl->listenSocket = INVALID_SOCKET;
 			return;
 		}
 
 		if (!NetworkHelper::AssociateDeviceWithIOCP((HANDLE)_pImpl->listenSocket, _pImpl->iocpHandle, (uint64_t)this))
 		{
-			LOG_FETAL_STRING(L"AssociateDeviceWithIOCP fail");
+			LOG_DEBUG(L"AssociateDeviceWithIOCP fail");
 			return;
 		}
 
@@ -90,7 +91,8 @@ namespace jw
 			if (!asyncAccept(i))
 			{
 				LOG_FETAL(L"asyncAccept Fail, index:{}", i);
-				::closesocket(s);
+				::closesocket(_pImpl->listenSocket);
+				_pImpl->listenSocket = INVALID_SOCKET;
 				break;
 			}
 		}
@@ -99,7 +101,18 @@ namespace jw
 
 	bool Listener::HandleEvent(OVERLAPPED* context, unsigned long bytes)
 	{
-		LOG_INFO_STRING(L"handle event");
+		const auto acceptContext = static_cast<AcceptContext*>(context);
+
+		if (!acceptContext || !accepted(*acceptContext))
+		{
+			::closesocket(acceptContext->_socket);
+			acceptContext->_socket = INVALID_SOCKET;
+			return false;
+		}
+
+		asyncAccept(acceptContext->_index);
+
+		LOG_INFO(L"accept success, index:{}", acceptContext->_index);
 		return true;
 	}
 
@@ -118,7 +131,7 @@ namespace jw
 			context._socket = MakeTCPSocket();
 			if (INVALID_SOCKET == context._socket)
 			{
-				LOG_FETAL_STRING(L"initialize socket");
+				LOG_FETAL(L"initialize socket");
 				return false;
 			}
 		}
@@ -147,7 +160,7 @@ namespace jw
 
 		if (SOCKET_ERROR == ::setsockopt(context._socket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, (char*)&context._socket, sizeof(context._socket)))
 		{
-			LOG_FETAL_STRING(L"setsockopt fail SO_UPDATE_ACCEPT_CONTEXT");
+			LOG_FETAL(L"setsockopt fail SO_UPDATE_ACCEPT_CONTEXT");
 			return false;
 		}
 
@@ -161,6 +174,8 @@ namespace jw
 		_pImpl->getAcceptExSockAddrFunc(&context._buffer, context._recvdSize, context._localAddrSize, context._localAddrSize,
 			reinterpret_cast<LPSOCKADDR*>(&localAddr), &localAddrSize,
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
+
+		// 세션 생성
 
 		return true;
 	}
