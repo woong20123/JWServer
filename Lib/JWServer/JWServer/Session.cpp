@@ -13,20 +13,25 @@ namespace jw
     {
     }
 
-    bool Session::Initialize(int64_t id, SOCKET socket, long ip, uint16_t port)
+    bool Session::Initialize(int64_t id, SOCKET socket, sockaddr_in* remoteAddr)
     {
         if (INVALID_ID == id || INVALID_SOCKET == socket ||
-            0 == ip || 0 == port)
+            nullptr == remoteAddr)
         {
-            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}, port:{}", id, socket, ip, port);
+            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}", id, socket);
             return false;
         }
 
         _id = id;
         _socket = socket;
-        _ip = ip;
-        _port = port;
+        _ip = remoteAddr->sin_addr.S_un.S_addr;
+        _port = remoteAddr->sin_port;
         _recvBuffer = std::make_unique<SessionRecvBuffer>();
+
+        wchar_t ipAddress[16]{ 0, };
+        _ipString = InetNtopW(AF_INET, &remoteAddr->sin_addr, ipAddress, sizeof(ipAddress));
+
+        LOG_INFO(L"Session Initialize, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
 
         return true;
     }
@@ -51,8 +56,7 @@ namespace jw
             }
 
             // 패킷 핸들
-
-
+            LOG_DEBUG(L"on async recved, id:{}, bytes:{}", GetId(), bytes);
             if (!Recv())
             {
                 LOG_ERROR(L"next async recv error, id:{}, error:{}", GetId(), WSAGetLastError());
@@ -70,10 +74,14 @@ namespace jw
         return true;
     }
 
-    bool Session::OnAccept(int64_t sessionId, SOCKET socket, long ip, uint16_t port)
+    bool Session::OnAccept()
     {
-        Initialize(sessionId, socket, ip, port);
-        NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(socket), NETWORK().GetIOCPHandle(), reinterpret_cast<uint64_t>(this));
+        if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_socket), NETWORK().GetIOCPHandle(), reinterpret_cast<uint64_t>(this)))
+        {
+            LOG_FETAL(L"sessionSocket fail AssociateDeviceWithIOCP, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
+            return false;
+        }
+        LOG_INFO(L"OnAccept Session, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port)
         return true;
     }
 

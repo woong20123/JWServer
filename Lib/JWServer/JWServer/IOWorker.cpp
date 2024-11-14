@@ -17,9 +17,7 @@ namespace jw
         {
             LOG_FETAL(L"INVALID iocpHandle");
         }
-
     }
-
 
     void IOWorker::RunThread()
     {

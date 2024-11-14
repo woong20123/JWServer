@@ -5,21 +5,12 @@
 
 namespace jw
 {
-	struct Listener::Impl
-	{
-		Impl() : listenSocket{ INVALID_SOCKET }, port{ 0 }
-		{}
-
-		LPFN_ACCEPTEX	acceptexFunc;
-		LPFN_GETACCEPTEXSOCKADDRS        getAcceptExSockAddrFunc;
-		uint16_t		port;
-		SOCKET			listenSocket;
-		HANDLE			iocpHandle;
-		bool			nagle{ false };
-	};
-
-	Listener::Listener() : _pImpl{ std::make_unique<Impl>() }
+	Listener::Listener() : 
+		_nagle{false},
+		_port{0},
+		_listenSocket{INVALID_SOCKET}
 	{}
+
 	Listener::~Listener()
 	{}
 
@@ -30,10 +21,10 @@ namespace jw
 			LOG_FETAL(L"acceptexFunc is nullptr");
 		}
 
-		_pImpl->acceptexFunc = acceptexFunc;
-		_pImpl->getAcceptExSockAddrFunc = acceptexSockAddrFunc;
-		_pImpl->port = port;
-		_pImpl->iocpHandle = iocpHandle;
+		_acceptexFunc = acceptexFunc;
+		_getAcceptExSockAddrFunc = acceptexSockAddrFunc;
+		_port = port;
+		_iocpHandle = iocpHandle;
 
 		SOCKADDR_IN addr;
 		SOCKET s = MakeTCPSocket();
@@ -46,7 +37,7 @@ namespace jw
 		::memset(&addr, 0, sizeof(addr));
 		addr.sin_family = AF_INET;
 		addr.sin_addr.S_un.S_addr = INADDR_ANY;
-		addr.sin_port = ::htons(_pImpl->port);
+		addr.sin_port = ::htons(_port);
 
 		if (SOCKET_ERROR == ::bind(s, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr)))
 		{
@@ -56,7 +47,7 @@ namespace jw
 		}
 
 		// nagle 옵션이 꺼져 있다면 딜레이 없이 동작하도록 설정 합니다. 
-		if (!_pImpl->nagle)
+		if (!_nagle)
 		{
 			int optval = 1;
 			if (SOCKET_ERROR == ::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval)))
@@ -67,21 +58,21 @@ namespace jw
 			}
 		}
 
-		_pImpl->listenSocket = s;
+		_listenSocket = s;
 
 		// listenSocket을 IOCP에 연결하는 작업 수행 필요
 
-		if (SOCKET_ERROR == ::listen(_pImpl->listenSocket, SOMAXCONN))
+		if (SOCKET_ERROR == ::listen(_listenSocket, SOMAXCONN))
 		{
 			LOG_FETAL(L"listen fail");
-			::closesocket(_pImpl->listenSocket);
-			_pImpl->listenSocket = INVALID_SOCKET;
+			::closesocket(_listenSocket);
+			_listenSocket = INVALID_SOCKET;
 			return;
 		}
 
-		if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_pImpl->listenSocket), _pImpl->iocpHandle, reinterpret_cast<uint64_t>(this)))
+		if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_listenSocket), _iocpHandle, reinterpret_cast<uint64_t>(this)))
 		{
-			LOG_DEBUG(L"AssociateDeviceWithIOCP fail");
+			LOG_FETAL(L"listenSocket fail AssociateDeviceWithIOCP");
 			return;
 		}
 
@@ -92,11 +83,13 @@ namespace jw
 			if (!asyncAccept(i))
 			{
 				LOG_FETAL(L"asyncAccept Fail, index:{}", i);
-				::closesocket(_pImpl->listenSocket);
-				_pImpl->listenSocket = INVALID_SOCKET;
+				::closesocket(_listenSocket);
+				_listenSocket = INVALID_SOCKET;
 				break;
 			}
 		}
+
+		LOG_INFO(L"Listener Initialize OK, port:{}", _port)
 
 	}
 
@@ -119,7 +112,7 @@ namespace jw
 
 	void Listener::Clear()
 	{
-		SOCKET s = ::InterlockedExchange64(reinterpret_cast<int64_t volatile*>(_pImpl->listenSocket), INVALID_SOCKET);
+		SOCKET s = ::InterlockedExchange64(reinterpret_cast<int64_t volatile*>(_listenSocket), INVALID_SOCKET);
 		if (INVALID_SOCKET != s)
 			::closesocket(s);
 	}
@@ -140,7 +133,7 @@ namespace jw
 		int addrSize{ sizeof(SOCKADDR) + 16 };
 		unsigned long recvedSize{ 0 };
 
-		if (_pImpl->acceptexFunc(_pImpl->listenSocket, context._socket, context._buffer, 0,
+		if (_acceptexFunc(_listenSocket, context._socket, context._buffer, 0,
 			addrSize, addrSize, &recvedSize, &(context)))
 		{
 			if (const auto errCode = ::WSAGetLastError();
@@ -172,20 +165,20 @@ namespace jw
 		sockaddr_in* localAddr;
 		sockaddr_in* remoteAddr;
 
-		_pImpl->getAcceptExSockAddrFunc(&context._buffer, context._recvdSize, context._localAddrSize, context._localAddrSize,
+		_getAcceptExSockAddrFunc(&context._buffer, context._recvdSize, context._localAddrSize, context._localAddrSize,
 			reinterpret_cast<LPSOCKADDR*>(&localAddr), &localAddrSize,
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
 		// 세션 생성
 		int64_t sessionId{ INVALID_ID };
 		Session* session = Session::MakeSession(sessionId);
-		if (!session)
+		if (!session || !session->Initialize(sessionId, context._socket, remoteAddr))
 		{
 			LOG_ERROR(L"can not make session, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 
-		if (!session->OnAccept(sessionId, context._socket, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port)))
+		if (!session->OnAccept())
 		{
 			LOG_ERROR(L"session onAccept fail, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;

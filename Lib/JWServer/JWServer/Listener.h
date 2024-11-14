@@ -46,10 +46,13 @@ namespace jw
 		bool asyncAccept(int index);
 		bool onAccept(AcceptContext& context);
 
-		struct Impl;
-		std::unique_ptr<Impl> _pImpl;
-
-		std::array<AcceptContext, CONTEXT_COUNT> _context;
+		LPFN_ACCEPTEX								_acceptexFunc;
+		LPFN_GETACCEPTEXSOCKADDRS					_getAcceptExSockAddrFunc;
+		uint16_t									_port;
+		SOCKET										_listenSocket;
+		HANDLE										_iocpHandle;
+		bool										_nagle{ false };
+		std::array<AcceptContext, CONTEXT_COUNT>	_context;
 	};
 }
 

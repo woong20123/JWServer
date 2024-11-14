@@ -43,14 +43,14 @@ namespace jw
     {
     public:
 
-        using PCContainer = ProducerContainer<std::shared_ptr<LogBuffer>>;
+        using PContainer = ProducerContainer<std::shared_ptr<LogBuffer>>;
 
         static constexpr size_t LOG_BUFFER_SIZE = 2000;
         using msgType = wchar_t;
         using msgString = std::wstring;
         using msgStringView = std::wstring_view;
 
-        void Initialize(const std::shared_ptr<PCContainer>& producer);
+        void Initialize(const std::shared_ptr<PContainer>& producerCon);
 
         void SetLevel(LogType logType);
         void Stop();
@@ -61,19 +61,11 @@ namespace jw
 
 #if _HAS_CXX20 
         template <class... _Types>
-        static constexpr size_t ArgsCount(_Types&&... args)
-        {
-            return sizeof...(args);
-        }
-
-        template <class... _Types>
         void WriteFormat(LogType type, const msgType* file, const int line, const msgType* fmt, _Types&&... args) const
         {
             if (!isEnable(type)) return;
             return WriteString(type, file, line, std::vformat(std::wstring_view(fmt), std::make_wformat_args(args...)));
         }
-
-
 #endif // _HAS_CXX20
 
         static const Logger::msgType* LogTypeToString(LogType type)
@@ -104,9 +96,9 @@ namespace jw
         bool enableLogLevel(const LogType level) const;
         bool isEnable(const LogType level) const;
 
-        std::shared_ptr<PCContainer> _logProducer;
-        LogType _logLevel;
-        bool _isRun;
+        std::shared_ptr<PContainer>     _logProducerCon;
+        LogType                         _logLevel;
+        bool                            _isRun;
 
         friend class Singleton<Logger>;
 

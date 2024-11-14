@@ -54,14 +54,10 @@ namespace jw
 
     private:
 
-
-
         BufferType      _prefix[PRIFIX_COUNT] = { 0 };
         BufferType      _msg[MSG_COUNT] = { 0 };
         BufferType      _suffix[SUFFIX_COUNT] = { 0 };
         LogBufferInfo   _info;
-        /*struct Impl;
-        std::unique_ptr<Impl> _pImpl;*/
     };
 }
 #endif // __JW_LOG_BUFFER_H__

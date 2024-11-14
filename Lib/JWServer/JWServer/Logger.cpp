@@ -19,9 +19,9 @@ namespace jw
     Logger::~Logger()
     {}
 
-    void Logger::Initialize(const std::shared_ptr<PCContainer>& producer)
+    void Logger::Initialize(const std::shared_ptr<PContainer>& producerCon)
     {
-        _logProducer = producer;
+        _logProducerCon = producerCon;
         _isRun = true;
         std::setlocale(LC_ALL, "KOREAN");
         std::wcout.imbue(std::locale(""));
@@ -34,7 +34,7 @@ namespace jw
 
     void Logger::Stop()
     {
-        _logProducer->SetStopSignal();
+        _logProducerCon->SetStopSignal();
         _isRun = false;
     }
 
@@ -51,8 +51,8 @@ namespace jw
         logBuffer->WriteMsg(msg);
 
         // worker에 메시지를 전달합니다. 
-        _logProducer->Push(logBuffer);
-        _logProducer->Flush();
+        _logProducerCon->Push(logBuffer);
+        _logProducerCon->Flush();
     }
 
     void Logger::Write(LogType type, const msgType* file, const msgType* func, const int line, const msgType* fmt, ...) const
@@ -74,8 +74,8 @@ namespace jw
         logBuffer->Initialize(type, file, func, line);
         logBuffer->WriteMsg(msg.data());
 
-        _logProducer->Push(logBuffer);
-        _logProducer->Flush();
+        _logProducerCon->Push(logBuffer);
+        _logProducerCon->Flush();
     }
 
     bool Logger::isEnable(const LogType level) const

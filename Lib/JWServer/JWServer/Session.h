@@ -47,14 +47,14 @@ namespace jw
     public:
         Session();
 
-        bool Initialize(int64_t id, SOCKET socket, long ip, uint16_t port);
+        bool Initialize(int64_t id, SOCKET socket, sockaddr_in* remoteAddr);
 
         int64_t GetId() const;
 
         uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_SESSION; }
         bool HandleEvent(OVERLAPPED* context, paramType bytes) override;
 
-        bool OnAccept(int64_t sessionId, SOCKET socket, long ip, uint16_t port);
+        bool OnAccept();
         bool Recv();
 
         static Session* MakeSession(int64_t& sessionId);
@@ -66,6 +66,7 @@ namespace jw
         int64_t                                 _id;
         SOCKET                                  _socket;
         long                                    _ip;
+        std::wstring                            _ipString;
         uint16_t                                _port;
         std::unique_ptr<SessionRecvBuffer>      _recvBuffer;
 
