@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cassert>
 #include <iostream>
@@ -26,5 +26,8 @@
             assert(CONDITION); \
         } \
     } while (false)
+
+
+static constexpr int64_t INVALID_ID = 0;
 
 #endif

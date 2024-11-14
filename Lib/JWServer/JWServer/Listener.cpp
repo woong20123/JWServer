@@ -1,6 +1,7 @@
 ﻿#include "Listener.h"
 #include "Logger.h"
 #include "NetworkHelper.h"
+#include "Session.h"
 
 namespace jw
 {
@@ -78,7 +79,7 @@ namespace jw
 			return;
 		}
 
-		if (!NetworkHelper::AssociateDeviceWithIOCP((HANDLE)_pImpl->listenSocket, _pImpl->iocpHandle, (uint64_t)this))
+		if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_pImpl->listenSocket), _pImpl->iocpHandle, reinterpret_cast<uint64_t>(this)))
 		{
 			LOG_DEBUG(L"AssociateDeviceWithIOCP fail");
 			return;
@@ -103,7 +104,7 @@ namespace jw
 	{
 		const auto acceptContext = static_cast<AcceptContext*>(context);
 
-		if (!acceptContext || !accepted(*acceptContext))
+		if (!acceptContext || !onAccept(*acceptContext))
 		{
 			::closesocket(acceptContext->_socket);
 			acceptContext->_socket = INVALID_SOCKET;
@@ -152,7 +153,7 @@ namespace jw
 		return true;
 	}
 
-	bool Listener::accepted(AcceptContext& context)
+	bool Listener::onAccept(AcceptContext& context)
 	{
 		ASSERT_WITH_MSG(0 <= context._index && context._index < CONTEXT_COUNT, std::format(L"INVALID AcceptContext index {}", context._index).c_str());
 		int addrSize{ sizeof(SOCKADDR) + 16 };
@@ -176,6 +177,24 @@ namespace jw
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
 		// 세션 생성
+		int64_t sessionId{ INVALID_ID };
+		Session* session = Session::MakeSession(sessionId);
+		if (!session)
+		{
+			LOG_ERROR(L"can not make session, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			return false;
+		}
+
+		if (!session->OnAccept(sessionId, context._socket, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port)))
+		{
+			LOG_ERROR(L"session onAccept fail, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			return false;
+		}
+
+		if (!session->Recv())
+		{
+			LOG_ERROR(L"async recv error, id:{}, error:{}", sessionId, WSAGetLastError());
+		}
 
 		return true;
 	}

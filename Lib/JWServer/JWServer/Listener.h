@@ -35,7 +35,7 @@ namespace jw
 		Listener();
 		~Listener();
 		void Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port, HANDLE iocpHandle);
-		uint32_t GetID() const override { return ASYNC_IO_OBJ_LISTENER; }
+		uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_LISTENER; }
 		bool HandleEvent(OVERLAPPED* context, unsigned long bytes) override;
 
 
@@ -44,7 +44,7 @@ namespace jw
 		static constexpr size_t CONTEXT_COUNT = 128;
 
 		bool asyncAccept(int index);
-		bool accepted(AcceptContext& context);
+		bool onAccept(AcceptContext& context);
 
 		struct Impl;
 		std::unique_ptr<Impl> _pImpl;

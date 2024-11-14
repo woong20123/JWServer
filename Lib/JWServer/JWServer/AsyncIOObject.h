@@ -11,26 +11,39 @@ namespace jw
     {
         ASYNC_CONTEXT_ID_NONE,
         ASYNC_CONTEXT_ID_ACCEPT,
+        ASYNC_CONTEXT_ID_RECV,
+        ASYNC_CONTEXT_ID_SEND,
+        ASYNC_CONTEXT_ID_CONNECT,
     };
+
     struct AsyncContext : public OVERLAPPED
     {
-        AsyncContext(uint32_t id) : id{id}
-        {}
-        uint32_t id;
+        AsyncContext(uint32_t id) : _id{ id }
+        {
+            hEvent = nullptr;
+            Internal = 0;
+            InternalHigh = 0;
+            Offset = 0;
+            OffsetHigh = 0;
+        }
+        uint32_t _id;
     };
 
     class AsyncIOObject
     {
     public:
+        using paramType = unsigned long;
+
         enum
         {
             ASYNC_IO_OBJ_NONE = 0,
             ASYNC_IO_OBJ_LISTENER,
+            ASYNC_IO_OBJ_SESSION,
             ASYNC_IO_OBJ_MAX
         };
 
-        virtual uint32_t GetID() const = 0;
-        virtual bool HandleEvent(OVERLAPPED* context, unsigned long param) = 0;
+        virtual uint32_t GetAsyncObjectId() const = 0;
+        virtual bool HandleEvent(OVERLAPPED* context, paramType param) = 0;
     };
 }
 

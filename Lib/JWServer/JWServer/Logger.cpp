@@ -38,7 +38,7 @@ namespace jw
         _isRun = false;
     }
 
-    void Logger::WriteV(LogType type, const msgType* file, const int line, const msgType* fmt, va_list args) const
+    void Logger::WriteV(LogType type, const msgType* file, const msgType* func, const int line, const msgType* fmt, va_list args) const
     {
         if (!isEnable(type)) return;
         if (!_isRun) return;
@@ -47,7 +47,7 @@ namespace jw
         vswprintf_s(msg, fmt, args);
 
         std::shared_ptr<LogBuffer> logBuffer{ LOG_BUFFER_POOL().Acquire(), [](LogBuffer* obj) { LOG_BUFFER_POOL().Release(obj); } };
-        logBuffer->Initialize(type, file, line);
+        logBuffer->Initialize(type, file, func, line);
         logBuffer->WriteMsg(msg);
 
         // worker에 메시지를 전달합니다. 
@@ -55,23 +55,23 @@ namespace jw
         _logProducer->Flush();
     }
 
-    void Logger::Write(LogType type, const msgType* file, const int line, const msgType* fmt, ...) const
+    void Logger::Write(LogType type, const msgType* file, const msgType* func, const int line, const msgType* fmt, ...) const
     {
         if (!isEnable(type)) return;
         if (!_isRun) return;
 
         va_list	args;
         va_start(args, fmt);
-        WriteV(type, file, line, fmt, args);
+        WriteV(type, file, func, line, fmt, args);
         va_end(args);
     }
 
 
-    void Logger::WriteString(LogType type, const msgType* file, const int line, const msgStringView msg) const
+    void Logger::WriteString(LogType type, const msgType* file, const msgType* func, const int line, const msgStringView msg) const
     {
         if (!isEnable(type)) return;
         std::shared_ptr<LogBuffer> logBuffer{ LOG_BUFFER_POOL().Acquire(), [](LogBuffer* obj) { LOG_BUFFER_POOL().Release(obj); } };
-        logBuffer->Initialize(type, file, line);
+        logBuffer->Initialize(type, file, func, line);
         logBuffer->WriteMsg(msg.data());
 
         _logProducer->Push(logBuffer);

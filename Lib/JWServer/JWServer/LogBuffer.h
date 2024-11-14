@@ -16,14 +16,15 @@ namespace jw
         }
         std::chrono::system_clock::time_point   logtime;
         LogType	                                type;
-        const BufferType*                       filePath;
+        const BufferType* filePath;
+        const BufferType* func;
         int				                        line;
     };
 
     class LogBuffer
     {
     private:
-        
+
     public:
         using BufferType = wchar_t;
         // logBuffer의 사이즈는 페이지의 크기인 4KB를 기준으로 설정합니다. 
@@ -40,7 +41,7 @@ namespace jw
 
         LogBuffer();
         ~LogBuffer();
-        void Initialize(LogType logType, const BufferType* filePath, int line);
+        void Initialize(LogType logType, const BufferType* filePath, const BufferType* func, int line);
 
         int MakePreFix();
         int WriteMsg(const BufferType* msg);
@@ -53,7 +54,7 @@ namespace jw
 
     private:
 
-        
+
 
         BufferType      _prefix[PRIFIX_COUNT] = { 0 };
         BufferType      _msg[MSG_COUNT] = { 0 };

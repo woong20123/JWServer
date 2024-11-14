@@ -16,7 +16,7 @@ namespace jw
         void RunThread();
     protected:
         virtual void prepare() {};
-        virtual void execute();
+        void execute();
     private:
         std::thread	        _thread;
         HANDLE              _iocpHandle;

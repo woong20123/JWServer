@@ -14,11 +14,12 @@ namespace jw
     LogBuffer::~LogBuffer()
     {}
 
-    void LogBuffer::Initialize(LogType logType, const BufferType* filePath, int line)
+    void LogBuffer::Initialize(LogType logType, const BufferType* filePath, const BufferType* func, int line)
     {
         _info.logtime = std::chrono::system_clock::now();
         _info.type = static_cast<decltype(_info.type)>(logType);
         _info.filePath = filePath;
+        _info.func = func;
         _info.line = line;
         STRNCPY(_suffix, countof(_suffix), L"\r\n", wcslen(L"\r\n"));
     }
@@ -41,10 +42,10 @@ namespace jw
             _snwprintf_s(fileName, MAX_PATH, L"%s%s", name, ext);
         }
 
-        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,(%s),",
+        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%s,%d,(%s),",
             tmLogTime.tm_year + 1900, tmLogTime.tm_mon + 1, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
-            millis.count(), fileName, _info.line, Logger::LogTypeToString(_info.type));
+            millis.count(), fileName, _info.func, _info.line, Logger::LogTypeToString(_info.type));
     }
 
     int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)

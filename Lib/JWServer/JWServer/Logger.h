@@ -55,9 +55,9 @@ namespace jw
         void SetLevel(LogType logType);
         void Stop();
 
-        void WriteV(LogType type, const msgType* file, const int line, const msgType* fmt, va_list args) const;
-        void Write(LogType type, const msgType* file, const int line, const msgType* fmt, ...) const;
-        void WriteString(LogType type, const msgType* file, const int line, const msgStringView stringMsg) const;
+        void WriteV(LogType type, const msgType* file, const msgType* func, const int line, const msgType* fmt, va_list args) const;
+        void Write(LogType type, const msgType* file, const msgType* func, const int line, const msgType* fmt, ...) const;
+        void WriteString(LogType type, const msgType* file, const msgType* func, const int line, const msgStringView stringMsg) const;
 
 #if _HAS_CXX20 
         template <class... _Types>
@@ -118,7 +118,7 @@ namespace jw
 #if _HAS_CXX20 
 #define LOG_WRITE(type, fmt, ...) \
 {jw::WrapperFormat wformat{fmt};\
-jw::Logger::GetInstance().WriteString(type ,__WFILE__, __LINE__, wformat.makeFormat(__VA_ARGS__));}
+jw::Logger::GetInstance().WriteString(type ,__WFILE__, __FUNCTIONW__, __LINE__, wformat.makeFormat(__VA_ARGS__));}
 
 #define LOG_FETAL(fmt, ...)             LOG_WRITE(jw::LogType::LOG_FATAL, fmt, __VA_ARGS__)
 #define LOG_ERROR(fmt, ...)             LOG_WRITE(jw::LogType::LOG_ERROR, fmt, __VA_ARGS__)
