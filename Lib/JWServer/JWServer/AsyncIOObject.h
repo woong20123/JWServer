@@ -43,7 +43,8 @@ namespace jw
         };
 
         virtual uint32_t GetAsyncObjectId() const = 0;
-        virtual bool HandleEvent(OVERLAPPED* context, paramType param) = 0;
+        virtual bool HandleEvent(AsyncContext* context, paramType param) = 0;
+        virtual void HandleFailedEvent(AsyncContext* context, paramType param) { };
     };
 }
 
