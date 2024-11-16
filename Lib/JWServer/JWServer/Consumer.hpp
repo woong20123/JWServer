@@ -26,8 +26,8 @@ namespace jw
         explicit Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount = DEFAULT_THREAD_COUNT);
         virtual ~Consumer();
 
-        void SetProducer(std::shared_ptr<PCContainer>& producer) {
-            _pProducer = producer;
+        void SetProducerCon(std::shared_ptr<PCContainer>& producerCon) {
+            _pProducerCon = producerCon;
         }
 
         void SetName(const std::string& name)
@@ -47,17 +47,17 @@ namespace jw
 
     private:
         std::string                         _name;
-        std::shared_ptr<PCContainer>	    _pProducer;
+        std::shared_ptr<PCContainer>	    _pProducerCon;
         std::vector<std::thread>	        _threads;
         size_t                              _threadCount{ 1 };
     };
 
     template<typename object>
-    Consumer<object>::Consumer() : _pProducer{ nullptr }
+    Consumer<object>::Consumer() : _pProducerCon{ nullptr }
     {}
 
     template<typename object>
-    Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducer{ producer }, _threadCount{ threadCount }
+    Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducerCon{ producer }, _threadCount{ threadCount }
     {
     }
 
@@ -85,14 +85,14 @@ namespace jw
 
         while (true)
         {
-            if (_pProducer->IsStop())
+            if (_pProducerCon->IsStop())
             {
                 std::cerr << "Producer<" << typeid(obj).name() << "> " << _name.c_str() << " is stop" << std::endl;
                 break;
             }
 
             std::list<obj> queueObjects;
-            _pProducer->Wait(queueObjects);
+            _pProducerCon->Wait(queueObjects);
             if (!queueObjects.empty())
                 handle(queueObjects);
         }

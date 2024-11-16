@@ -13,32 +13,34 @@ namespace jw
     {
     }
 
-    bool Session::Initialize(int64_t id, SOCKET socket, sockaddr_in* remoteAddr)
+    bool Session::Initialize(SessionID sessionId, SOCKET socket, sockaddr_in* remoteAddr)
     {
-        if (INVALID_ID == id || INVALID_SOCKET == socket ||
+        if (INVALID_ID == sessionId.id || INVALID_SOCKET == socket ||
             nullptr == remoteAddr)
         {
-            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}", id, socket);
+            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}", sessionId.id, socket);
             return false;
         }
 
-        _id = id;
+        _id = sessionId;
         _socket = socket;
         _ip = remoteAddr->sin_addr.S_un.S_addr;
         _port = remoteAddr->sin_port;
         _recvBuffer = std::make_unique<SessionRecvBuffer>();
 
         wchar_t ipAddress[16]{ 0, };
-        _ipString = InetNtopW(AF_INET, &remoteAddr->sin_addr, ipAddress, sizeof(ipAddress));
+        _ipString = InetNtopW(AF_INET, &remoteAddr->sin_addr, ipAddress, sizeof(wchar_t) * 16);
 
         LOG_INFO(L"Session Initialize, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
 
         return true;
     }
 
-    int64_t Session::GetId() const { return _id; }
+    int64_t Session::GetId() const { return _id.id; }
+    int16_t Session::GetPortId() const { return _id.portId; }
+    int32_t Session::GetIndex() const { return _id.index; }
 
-    bool Session::HandleEvent(OVERLAPPED* context, paramType bytes)
+    bool Session::HandleEvent(AsyncContext* context, paramType bytes)
     {
         auto* asyncContext{ static_cast<AsyncContext*>(context) };
         switch (asyncContext->_id)
@@ -82,13 +84,13 @@ namespace jw
             return false;
         }
         LOG_INFO(L"OnAccept Session, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port)
-        return true;
+            return true;
     }
 
     bool Session::Recv()
     {
         {
-            std::unique_lock lock{ _mutex };
+            WRITE_LOCK(_mutex);
             asyncRecv();
         }
         return true;
@@ -117,21 +119,13 @@ namespace jw
         return true;
     }
 
-    Session* Session::MakeSession(int64_t& sessionId)
+    SessionID Session::MakeSessionID(uint32_t index, uint16_t portId)
     {
-        Session* session{ new Session() };
-        if (!session) return nullptr;
-
-        static std::atomic<int64_t> sessionGen{ 1 };
-        sessionId = sessionGen;
-        sessionGen.fetch_add(1);
-
-        if (INVALID_ID == sessionId)
-        {
-            LOG_FETAL(L"sessionId is zero, sessionId:{}, sessionGen:{}", sessionId, sessionGen.load());
-            return nullptr;
-        }
-        return session;
+        SessionID sessionId;
+        sessionId.padding = 0;
+        sessionId.index = index;
+        sessionId.portId = portId;
+        return sessionId;
     }
 }
 

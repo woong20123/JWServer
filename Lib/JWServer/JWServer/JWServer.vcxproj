@@ -145,6 +145,8 @@
     <ClInclude Include="LogWorker.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="NetworkHelper.h" />
+    <ClInclude Include="Port.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionBuffer.h" />
     <ClInclude Include="Singleton.hpp" />
@@ -166,7 +168,9 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="NetworkHelper.cpp" />
     <ClCompile Include="ObjectPool.hpp" />
+    <ClCompile Include="Port.cpp" />
     <ClCompile Include="ProducerContainer.hpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionBuffer.cpp" />
     <ClCompile Include="StopWatch.h" />

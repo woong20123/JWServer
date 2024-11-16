@@ -1,6 +1,8 @@
 ﻿#include "Network.h"
 #include "NetworkHelper.h"
 #include "Logger.h"
+#include "IOWorker.h"
+#include "Port.h"
 #include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
@@ -8,20 +10,22 @@
 namespace jw
 {
 
-    Network::Network()
+    Network::Network() :
+        _ioWorker{ nullptr },
+        _NullPort{ nullptr }
     {}
 
     Network::~Network() {
         WSACleanup();
     }
 
-    bool Network::Initialize()
+    bool Network::Initialize(const uint16_t workerThreadCount)
     {
-        WSADATA	wsaData;
-        const auto ret = ::WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (0 != ret)
+        _ioWorker = std::make_unique<IOWorker>();
+
+        if (!initializeWinSock())
         {
-            LOG_FETAL(L"WSAStartup Fail, ret:{}", ret);
+            LOG_FETAL(L"initializeWinSock Fail");
             return false;
         }
 
@@ -38,32 +42,76 @@ namespace jw
             return false;
         }
 
+        initializeIOWorkers(workerThreadCount);
+
         return true;
     }
 
-    LPFN_ACCEPTEX Network::GetAcceptExFunc()
+    LPFN_ACCEPTEX Network::GetAcceptExFunc() const
     {
         return _acceptExFunc;
     }
 
-    LPFN_GETACCEPTEXSOCKADDRS Network::GetAcceptExSockAddrFunc()
+    LPFN_GETACCEPTEXSOCKADDRS Network::GetAcceptExSockAddrFunc() const
     {
         return _getAcceptExSockAddrFunc;
     }
 
-    LPFN_CONNECTEX Network::GetConnectExFunc()
+    LPFN_CONNECTEX Network::GetConnectExFunc() const
     {
         return _connectExFunc;
     }
 
-    LPFN_DISCONNECTEX Network::GetisConnectExFunc()
+    LPFN_DISCONNECTEX Network::GetisConnectExFunc() const
     {
         return _disConnectExFunc;
     }
 
-    HANDLE Network::GetIOCPHandle()
+    HANDLE Network::GetIOCPHandle() const
     {
         return _iocpHandle;
+    }
+
+    bool Network::RegistPort(const Network::PortId_t portId, std::shared_ptr<Port>& port)
+    {
+        if (portId == INVALID_PORT_ID_TYPE || port == nullptr)
+        {
+            LOG_FETAL(L"invalid parameter, portId:{}", portId);
+            return false;
+        }
+
+        if (_portContainer.contains(portId))
+        {
+            LOG_FETAL(L"already registed port, portId:{}", portId);
+            return false;
+        }
+
+        _portContainer[portId] = port;
+
+        return true;
+    }
+
+    std::pair<Session*, uint16_t> Network::MakeSession(const PortId_t portId)
+    {
+        if (auto& port = getPort(portId);
+            nullptr != port)
+        {
+            return port->MakeSession();
+        }
+
+        return { nullptr, 0 };
+    }
+
+    bool Network::initializeWinSock()
+    {
+        WSADATA	wsaData;
+        const auto ret = ::WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (0 != ret)
+        {
+            LOG_FETAL(L"WSAStartup Fail, ret:{}", ret);
+            return false;
+        }
+        return true;
     }
 
     bool Network::initializeWSASocketFunc()
@@ -104,5 +152,24 @@ namespace jw
             }
         }
         return true;
+    }
+
+    bool Network::initializeIOWorkers(const uint16_t workerThreadCount)
+    {
+        _ioWorker->Initialize(GetIOCPHandle());
+        _ioWorker->RunThreads(workerThreadCount);
+
+        return true;
+    }
+
+    std::shared_ptr<Port>& Network::getPort(const PortId_t portId)
+    {
+        if (_portContainer.contains(portId))
+        {
+            return _portContainer[portId];
+        }
+
+        LOG_ERROR(L"not find portNumber, portId:{}", portId);
+        return _NullPort;
     }
 }

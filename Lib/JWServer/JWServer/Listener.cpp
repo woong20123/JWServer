@@ -1,49 +1,56 @@
 ﻿#include "Listener.h"
 #include "Logger.h"
+#include "Network.h"
 #include "NetworkHelper.h"
 #include "Session.h"
 
 namespace jw
 {
-	Listener::Listener() : 
-		_nagle{false},
-		_port{0},
-		_listenSocket{INVALID_SOCKET}
+	Listener::Listener() :
+		_nagle{ false },
+		_portNumber{ 0 },
+		_listenSocket{ INVALID_SOCKET },
+		_iocpHandle{ INVALID_HANDLE_VALUE }
 	{}
 
 	Listener::~Listener()
 	{}
 
-	void Listener::Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port, HANDLE iocpHandle)
+	bool Listener::Initialize(uint32_t portId, uint16_t portNumber, HANDLE iocpHandle, const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc)
 	{
-		if (!acceptexFunc)
+		if (portId < 0 || portNumber < 0 || iocpHandle == INVALID_HANDLE_VALUE ||
+			!acceptexFunc || !acceptexSockAddrFunc)
 		{
-			LOG_FETAL(L"acceptexFunc is nullptr");
+			LOG_FETAL(L"intialize failed parameter invalid, portId:{}, portNumber:{}, iocpHandle:{}, acceptexFunc:{}, acceptexSockAddrFunc:{}"
+				, portId, portNumber, iocpHandle, (void*)acceptexFunc, (void*)acceptexSockAddrFunc);
+			return false;
 		}
 
+		_portId = portId;
+		_portNumber = portNumber;
+		_iocpHandle = iocpHandle;
 		_acceptexFunc = acceptexFunc;
 		_getAcceptExSockAddrFunc = acceptexSockAddrFunc;
-		_port = port;
-		_iocpHandle = iocpHandle;
+
 
 		SOCKADDR_IN addr;
 		SOCKET s = MakeTCPSocket();
 		if (INVALID_SOCKET == s)
 		{
-			LOG_FETAL(L"initialize socket");
-			return;
+			LOG_FETAL(L"initialize failed make listen socket, portId:{}, portNumber:{}", _portId, _portNumber);
+			return false;
 		}
 
 		::memset(&addr, 0, sizeof(addr));
 		addr.sin_family = AF_INET;
 		addr.sin_addr.S_un.S_addr = INADDR_ANY;
-		addr.sin_port = ::htons(_port);
+		addr.sin_port = ::htons(_portNumber);
 
 		if (SOCKET_ERROR == ::bind(s, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr)))
 		{
 			LOG_FETAL(L"fail socket bind");
 			::closesocket(s);
-			return;
+			return false;
 		}
 
 		// nagle 옵션이 꺼져 있다면 딜레이 없이 동작하도록 설정 합니다. 
@@ -52,9 +59,9 @@ namespace jw
 			int optval = 1;
 			if (SOCKET_ERROR == ::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval)))
 			{
-				LOG_FETAL(L"setsocket, TCP_NODELAY set fail");
+				LOG_FETAL(L"initialize failed TCP_NODELAY set fail, portId:{}, portNumber:{}", _portId, _portNumber);
 				::closesocket(s);
-				return;
+				return false;
 			}
 		}
 
@@ -64,16 +71,16 @@ namespace jw
 
 		if (SOCKET_ERROR == ::listen(_listenSocket, SOMAXCONN))
 		{
-			LOG_FETAL(L"listen fail");
+			LOG_FETAL(L"initialize failed listen fail, portId:{}, portNumber:{}", _portId, _portNumber);
 			::closesocket(_listenSocket);
 			_listenSocket = INVALID_SOCKET;
-			return;
+			return false;
 		}
 
 		if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_listenSocket), _iocpHandle, reinterpret_cast<uint64_t>(this)))
 		{
-			LOG_FETAL(L"listenSocket fail AssociateDeviceWithIOCP");
-			return;
+			LOG_FETAL(L"listenSocket fail AssociateDeviceWithIOCP, portId:{}, portNumber:{}", _portId, _portNumber);
+			return false;
 		}
 
 		for (int i = 0; i < CONTEXT_COUNT; ++i)
@@ -82,18 +89,18 @@ namespace jw
 
 			if (!asyncAccept(i))
 			{
-				LOG_FETAL(L"asyncAccept Fail, index:{}", i);
+				LOG_FETAL(L"asyncAccept Fail, index:{}, portId:{}, portNumber:{}", i, _portId, _portNumber);
 				::closesocket(_listenSocket);
 				_listenSocket = INVALID_SOCKET;
-				break;
+				return false;
 			}
 		}
 
-		LOG_INFO(L"Listener Initialize OK, port:{}", _port)
-
+		LOG_INFO(L"Listener Initialize OK, portId:{}, portNumber:{}", _portId, _portNumber);
+		return true;
 	}
 
-	bool Listener::HandleEvent(OVERLAPPED* context, unsigned long bytes)
+	bool Listener::HandleEvent(AsyncContext* context, unsigned long bytes)
 	{
 		const auto acceptContext = static_cast<AcceptContext*>(context);
 
@@ -106,7 +113,7 @@ namespace jw
 
 		asyncAccept(acceptContext->_index);
 
-		LOG_INFO(L"accept success, index:{}", acceptContext->_index);
+		LOG_INFO(L"accept success, index:{}, portId:{}, portNumber:{}", acceptContext->_index, _portId, _portNumber);
 		return true;
 	}
 
@@ -125,7 +132,7 @@ namespace jw
 			context._socket = MakeTCPSocket();
 			if (INVALID_SOCKET == context._socket)
 			{
-				LOG_FETAL(L"initialize socket");
+				LOG_FETAL(L"initialize socket, portId:{}, portNumber:{}", _portId, _portNumber);
 				return false;
 			}
 		}
@@ -154,7 +161,7 @@ namespace jw
 
 		if (SOCKET_ERROR == ::setsockopt(context._socket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, (char*)&context._socket, sizeof(context._socket)))
 		{
-			LOG_FETAL(L"setsockopt fail SO_UPDATE_ACCEPT_CONTEXT");
+			LOG_FETAL(L"setsockopt fail SO_UPDATE_ACCEPT_CONTEXT portId:{}, portNumber:{}", _portId, _portNumber);
 			return false;
 		}
 
@@ -170,23 +177,26 @@ namespace jw
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
 		// 세션 생성
-		int64_t sessionId{ INVALID_ID };
-		Session* session = Session::MakeSession(sessionId);
+		const auto makeSessionInfo = NETWORK().MakeSession(_portId);
+		Session* session = makeSessionInfo.first;
+		uint32_t sessionIndex{ makeSessionInfo.second };
+		SessionID sessionId = Session::MakeSessionID(sessionIndex, _portId);
+
 		if (!session || !session->Initialize(sessionId, context._socket, remoteAddr))
 		{
-			LOG_ERROR(L"can not make session, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			LOG_ERROR(L"can not make session, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", sessionId.id, _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 
 		if (!session->OnAccept())
 		{
-			LOG_ERROR(L"session onAccept fail, sessionId:{}, remoteAddress:{}, remotePort:{}", sessionId, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			LOG_ERROR(L"session onAccept fail, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", sessionId.id, _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 
 		if (!session->Recv())
 		{
-			LOG_ERROR(L"async recv error, id:{}, error:{}", sessionId, WSAGetLastError());
+			LOG_ERROR(L"async recv error, id:{}, error:{}, _portNumber:{}", sessionId.id, WSAGetLastError(), _portNumber);
 		}
 
 		return true;

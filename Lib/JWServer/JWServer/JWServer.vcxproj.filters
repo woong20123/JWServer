@@ -48,6 +48,10 @@
     <ClInclude Include="SessionBuffer.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="Port.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -107,6 +111,10 @@
     <ClCompile Include="SessionBuffer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="Port.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

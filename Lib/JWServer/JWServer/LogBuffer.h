@@ -11,13 +11,17 @@ namespace jw
     struct LogBufferInfo
     {
         using BufferType = wchar_t;
-        LogBufferInfo() : type{ 0 }, filePath{ nullptr }, line{ 0 }
+        LogBufferInfo() : 
+            type{ 0 }, 
+            filePath{ nullptr },
+            func{nullptr},
+            line{ 0 }
         {
         }
         std::chrono::system_clock::time_point   logtime;
         LogType	                                type;
-        const BufferType* filePath;
-        const BufferType* func;
+        const BufferType*                       filePath;
+        const BufferType*                       func;
         int				                        line;
     };
 

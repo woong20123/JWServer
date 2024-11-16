@@ -3,35 +3,58 @@
 #define __JW_NETWORK_H__
 #include "Singleton.hpp"
 #include <memory>
+#include <unordered_map>
 #include <WinSock2.h>
 #include <ws2tcpip.h>
 #include <mswsock.h>
 
 namespace jw
 {
+    class IOWorker;
+    class Port;
+    class Session;
     class Network : public Singleton<Network>
     {
     public:
-        bool Initialize();
+        using PortId_t = uint16_t;
+        using PortContainer = std::unordered_map<uint16_t, std::shared_ptr<Port>>;
 
-        LPFN_ACCEPTEX                   GetAcceptExFunc();
-        LPFN_GETACCEPTEXSOCKADDRS       GetAcceptExSockAddrFunc();
-        LPFN_CONNECTEX                  GetConnectExFunc();
-        LPFN_DISCONNECTEX               GetisConnectExFunc();
-        HANDLE                          GetIOCPHandle();
+        static constexpr PortId_t INVALID_PORT_ID_TYPE = 0;
+
+        bool Initialize(const uint16_t workerThreadCount);
+
+        LPFN_ACCEPTEX                   GetAcceptExFunc() const;
+        LPFN_GETACCEPTEXSOCKADDRS       GetAcceptExSockAddrFunc() const;
+        LPFN_CONNECTEX                  GetConnectExFunc() const;
+        LPFN_DISCONNECTEX               GetisConnectExFunc() const;
+        HANDLE                          GetIOCPHandle() const;
+
+        bool                            RegistPort(const PortId_t portId, std::shared_ptr<Port>& port);
+        std::pair<Session*, uint16_t>  MakeSession(const PortId_t portId);
+
+
     protected:
         Network();
         ~Network();
         Network(const Network&) = delete;
         Network& operator=(const Network&) = delete;
     private:
+        bool initializeWinSock();
         bool initializeWSASocketFunc();
+        bool initializeIOWorkers(const uint16_t workerThreadCount);
 
-        LPFN_ACCEPTEX                    _acceptExFunc{ nullptr };
-        LPFN_GETACCEPTEXSOCKADDRS        _getAcceptExSockAddrFunc{ nullptr };
-        LPFN_CONNECTEX                   _connectExFunc{ nullptr };
-        LPFN_DISCONNECTEX                _disConnectExFunc{ nullptr };
-        HANDLE  _iocpHandle;
+        std::shared_ptr<Port>& getPort(const PortId_t portId);
+
+        LPFN_ACCEPTEX                       _acceptExFunc{ nullptr };
+        LPFN_GETACCEPTEXSOCKADDRS           _getAcceptExSockAddrFunc{ nullptr };
+        LPFN_CONNECTEX                      _connectExFunc{ nullptr };
+        LPFN_DISCONNECTEX                   _disConnectExFunc{ nullptr };
+        HANDLE                              _iocpHandle;
+        uint16_t                            _workerThreadCount;
+        std::unique_ptr<IOWorker>           _ioWorker;
+        PortContainer                       _portContainer;
+
+        std::shared_ptr<Port>               _NullPort;
         friend class Singleton<Network>;
     };
 }

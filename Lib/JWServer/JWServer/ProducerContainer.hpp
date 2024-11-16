@@ -33,12 +33,12 @@ namespace jw
         std::condition_variable_any			_cv;
         std::shared_mutex					_shared_mutex;
         std::list<obj>				        _list;
-        size_t								_popMaxNumberPerTick;
         std::atomic<bool>					_isStop;
     };
 
     template<typename object>
-    ProducerContainer<object>::ProducerContainer() : _isStop{ false }
+    ProducerContainer<object>::ProducerContainer() : 
+        _isStop{ false }
     {}
     template<typename object>
     ProducerContainer<object>::~ProducerContainer()

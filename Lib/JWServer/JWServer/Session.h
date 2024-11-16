@@ -42,28 +42,41 @@ namespace jw
         {}
     };
 
+    union SessionID
+    {
+        uint64_t id;
+        struct
+        {
+            uint32_t index;
+            uint16_t portId;
+            uint16_t padding;
+        };
+    };
+
     class Session : public AsyncIOObject
     {
     public:
         Session();
 
-        bool Initialize(int64_t id, SOCKET socket, sockaddr_in* remoteAddr);
+        bool Initialize(SessionID sessionId, SOCKET socket, sockaddr_in* remoteAddr);
 
         int64_t GetId() const;
+        int16_t GetPortId() const;
+        int32_t GetIndex() const;
 
         uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_SESSION; }
-        bool HandleEvent(OVERLAPPED* context, paramType bytes) override;
+        bool HandleEvent(AsyncContext* context, paramType bytes) override;
 
         bool OnAccept();
         bool Recv();
 
-        static Session* MakeSession(int64_t& sessionId);
+        static SessionID MakeSessionID(uint32_t index, uint16_t portId);
 
     private:
         bool asyncRecv();
         bool onRecvEvent(AsyncContext* context, paramType bytes) {}
 
-        int64_t                                 _id;
+        SessionID                               _id;
         SOCKET                                  _socket;
         long                                    _ip;
         std::wstring                            _ipString;

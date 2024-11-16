@@ -48,4 +48,4 @@ namespace jw
     };
 }
 
-#endif // !__JW_ASYNCIO_OBJECT_H__
+#endif // !__JW_ASYNCIO_OBJECT_H__git

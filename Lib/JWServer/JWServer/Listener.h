@@ -4,6 +4,8 @@
 #include "AsyncIOObject.h"
 #include <memory>
 #include <array>
+#include <ws2tcpip.h>
+#include <mswsock.h>
 
 namespace jw
 {
@@ -34,9 +36,9 @@ namespace jw
 	public:
 		Listener();
 		~Listener();
-		void Initialize(const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc, uint16_t port, HANDLE iocpHandle);
+		bool Initialize(uint32_t portId, uint16_t portNumber, HANDLE iocpHandle, const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc);
 		uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_LISTENER; }
-		bool HandleEvent(OVERLAPPED* context, unsigned long bytes) override;
+		bool HandleEvent(AsyncContext* context, unsigned long bytes) override;
 
 
 		void Clear();
@@ -48,7 +50,8 @@ namespace jw
 
 		LPFN_ACCEPTEX								_acceptexFunc;
 		LPFN_GETACCEPTEXSOCKADDRS					_getAcceptExSockAddrFunc;
-		uint16_t									_port;
+		uint32_t									_portId;
+		uint16_t									_portNumber;
 		SOCKET										_listenSocket;
 		HANDLE										_iocpHandle;
 		bool										_nagle{ false };

@@ -19,9 +19,10 @@ namespace jw
         }
     }
 
-    void IOWorker::RunThread()
+    void IOWorker::RunThreads(uint16_t workerThreadCount)
     {
-        _thread = std::thread(&IOWorker::execute, this);
+        for (int i = 0; i < workerThreadCount; ++i)
+            _threads.emplace_back(&IOWorker::execute, this);
     }
 
     void IOWorker::execute()
@@ -31,12 +32,12 @@ namespace jw
         BOOL result{ FALSE };
         unsigned long numOfBytes{ 0 };
         AsyncIOObject* object{ nullptr };
-        OVERLAPPED* context{ nullptr };
+        AsyncContext* context{ nullptr };
         constexpr int MAX_WAIT = 1000;
 
         while (true)
         {
-            result = ::GetQueuedCompletionStatus(_iocpHandle, &numOfBytes, (ULONG_PTR*)&object, &context, MAX_WAIT);
+            result = ::GetQueuedCompletionStatus(_iocpHandle, &numOfBytes, reinterpret_cast<ULONG_PTR*>(&object), reinterpret_cast<OVERLAPPED**>(&context), MAX_WAIT);
 
             if (result)
             {
