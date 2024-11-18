@@ -14,24 +14,25 @@ namespace jw
     class Listener;
     class Session;
 
+    struct PortInfo
+    {
+        uint32_t id{ 0 };
+        uint16_t portNumber{ 0 };
+        HANDLE iocpHandle{ nullptr };
+        size_t sesionMaxCount{ 0 };
+    };
+
     class Port
     {
     public:
         static constexpr size_t MAX_SESSION_COUNT = 5000;
         using SessionIndexCon = std::queue<uint16_t>;
 
-        struct InitData
-        {
-            uint32_t id{ 0 };
-            uint16_t portNumber{ 0 };
-            HANDLE iocpHandle{ nullptr };
-            size_t sesionMaxCount{ 0 };
-        };
 
         Port();
         ~Port();
 
-        bool Initialize(const InitData& data);
+        bool Initialize(const PortInfo& data);
         uint32_t GetId() const;
         std::pair<Session*, uint16_t> MakeSession();
 

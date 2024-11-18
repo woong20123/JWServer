@@ -14,6 +14,8 @@ namespace jw
 
         static HANDLE CreateNewIOCP();
         static bool AssociateDeviceWithIOCP(HANDLE h, HANDLE iocpHandle, uint64_t key);
+
+        static uint16_t GetProcessorCount();
     };
 }
 

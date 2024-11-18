@@ -1,6 +1,7 @@
 ﻿#include "LogWorker.h"
 #include "LogBuffer.h"
 #include "LogStream.h"
+#include "TypeDefinition.h"
 #include <memory>
 #include <array>
 
@@ -15,9 +16,17 @@ namespace jw
     void LogWorker::RegisterLogStream(const std::shared_ptr<LogStream>& stream)
     {
         if (LOG_STREAM_MAX_COUNT <= _logStreamCnt) return;
+        {
+            WRITE_LOCK(_logStreamMutex);
+            _logStreams.push_back(stream);
+            ++_logStreamCnt;
+        }
+    }
 
-        _logStreams.push_back(stream);
-        ++_logStreamCnt;
+    size_t LogWorker::getRegistedLogStreamCount()
+    {
+        READ_LOCK(_logStreamMutex);
+        return _logStreamCnt;
     }
 
     // 작업 처리 내용을 등록합니다. 
@@ -29,7 +38,7 @@ namespace jw
             obj->MakePreFix();
             for (const auto& stream : _logStreams)
             {
-                if(stream->EnableLogType(obj->GetLogType()))
+                if (stream->EnableLogType(obj->GetLogType()))
                     stream->Write(obj);
             }
         }

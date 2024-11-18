@@ -39,11 +39,11 @@ namespace jw
 
     protected:
         // Producer에서 object를 전달 받는 로직을 실행 전에 수행해야 할 작업을 등록합니다. 
-        virtual void prepare();										
+        virtual void prepare();
         // Producer에서 전달 된 object를 handle로 전달합니다. 
-        void execute();										        
+        void execute();
         // 전달 받은 object를 처리하는 로직을 등록합니다. 
-        virtual void handle(const std::list<obj>& objs) = 0;			
+        virtual void handle(const std::list<obj>& objs) = 0;
 
     private:
         std::string                         _name;
@@ -74,6 +74,8 @@ namespace jw
     template<typename object>
     void Consumer<object>::RunThread()
     {
+        prepare();
+
         for (int i = 0; i < _threadCount; i++)
             _threads.push_back(std::thread(&Consumer::execute, this));
     }
@@ -81,8 +83,6 @@ namespace jw
     template<typename object>
     void Consumer<object>::execute()
     {
-        prepare();
-
         while (true)
         {
             if (_pProducerCon->IsStop())

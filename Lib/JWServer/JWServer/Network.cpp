@@ -19,7 +19,7 @@ namespace jw
         WSACleanup();
     }
 
-    bool Network::Initialize(const uint16_t workerThreadCount)
+    bool Network::Initialize()
     {
         _ioWorker = std::make_unique<IOWorker>();
 
@@ -42,8 +42,23 @@ namespace jw
             return false;
         }
 
-        initializeIOWorkers(workerThreadCount);
+        initializeIOWorkers();
 
+        return true;
+    }
+
+    bool Network::Start(const uint16_t workerThreadCount)
+    {
+        if (nullptr == _ioWorker)
+        {
+            return false;
+        }
+
+        _workerThreadCount = workerThreadCount;
+
+
+        _ioWorker->RunThreads(_workerThreadCount);
+        LOG_INFO(L"Network start, workerThreadCount:{}", _workerThreadCount);
         return true;
     }
 
@@ -154,11 +169,9 @@ namespace jw
         return true;
     }
 
-    bool Network::initializeIOWorkers(const uint16_t workerThreadCount)
+    bool Network::initializeIOWorkers()
     {
         _ioWorker->Initialize(GetIOCPHandle());
-        _ioWorker->RunThreads(workerThreadCount);
-
         return true;
     }
 

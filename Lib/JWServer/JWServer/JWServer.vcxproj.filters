@@ -52,6 +52,7 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Server.h" />
+    <ClInclude Include="SampleServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -115,6 +116,7 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="SampleServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

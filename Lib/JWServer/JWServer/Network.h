@@ -20,8 +20,12 @@ namespace jw
         using PortContainer = std::unordered_map<uint16_t, std::shared_ptr<Port>>;
 
         static constexpr PortId_t INVALID_PORT_ID_TYPE = 0;
+        // 해당 값으로 설정시 (프로세서 * 2)개의 스레드를 생성합니다 .
+        static constexpr uint16_t DEFAULT_WORKER_THREAD_COUNT = 0;
 
-        bool Initialize(const uint16_t workerThreadCount);
+        bool Initialize();
+
+        bool Start(const uint16_t workerThreadCount);
 
         LPFN_ACCEPTEX                   GetAcceptExFunc() const;
         LPFN_GETACCEPTEXSOCKADDRS       GetAcceptExSockAddrFunc() const;
@@ -41,7 +45,7 @@ namespace jw
     private:
         bool initializeWinSock();
         bool initializeWSASocketFunc();
-        bool initializeIOWorkers(const uint16_t workerThreadCount);
+        bool initializeIOWorkers();
 
         std::shared_ptr<Port>& getPort(const PortId_t portId);
 

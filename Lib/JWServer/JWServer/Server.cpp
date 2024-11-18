@@ -3,11 +3,11 @@
 #include "Logger.h"
 #include "LogWorker.h"
 #include "LogStream.h"
-#include "LogBuffer.h"
+#include "Network.h"
+#include "NetworkHelper.h"
+#include "IOWorker.h"
 #include "LogConsoleStream.h"
 #include "LogFileStream.h"
-#include "Network.h"
-#include "IOWorker.h"
 #include "Port.h"
 #include <list>
 
@@ -35,62 +35,102 @@ namespace jw
             return false;
         }
 
-        initializeLog();
+        startLog();
 
-        ARGUMENT().Initialize(argc, argv);
-        ARGUMENT().HandleArgument();
+        setArgument(argc, argv);
 
-        initializeNetwork();
+        startNetwork();
 
         LOG_INFO(L"on start, name:{}", _name);
 
         return true;
     }
 
-    bool Server::initializeLog()
+    bool Server::startLog()
     {
+        // logger와 logWorker를 container로 연결 
         std::shared_ptr<jw::Logger::PContainer> container = std::make_shared<jw::Logger::PContainer>();
         LOGGER().Initialize(container);
         _logWorker->SetProducerCon(container);
 
-#ifdef _DEBUG
-        std::vector<jw::LogType> consoleLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO, jw::LogType::LOG_DEBUG };
-        std::vector<jw::LogType> fileLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO, jw::LogType::LOG_DEBUG };
-#else
-        std::vector<jw::LogType> consoleLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO };
-        std::vector<jw::LogType> fileLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO };
-#endif // DEBUG
+        onStartLog();
 
-        auto consoleStream = std::make_shared<jw::LogConsoleStream>();
-        consoleStream->OnLogTypeFlags(consoleLogFlags);
-
-        auto fileStream = std::make_shared<jw::LogFileStream>(L"log\\", L"JWServer");
-        fileStream->OnLogTypeFlags(fileLogFlags);
-
-        _logWorker->RegisterLogStream(consoleStream);
-        _logWorker->RegisterLogStream(fileStream);
         _logWorker->RunThread();
 
-        LOG_INFO(L"initialize Log Success, name:{}", _name);
+        LOG_INFO(L"initialize Log Success, name:{}, registLogStreamCount:{}", _name, _logWorker->getRegistedLogStreamCount());
         return true;
     }
 
-    bool Server::initializeNetwork()
+    void Server::registConsoleLogStream(const std::span<LogType> logFlags)
     {
-        uint16_t workerThreadCount{ 4 };
-        NETWORK().Initialize(workerThreadCount);
+        std::wstring flags;
+        for (const auto flag : logFlags)
+        {
+            flags.append(std::format(L"{},", Logger::LogTypeToString(flag)));
+        }
 
-        Port::InitData data;
-        data.id = CLIENT_PORT_ID;
-        data.portNumber = 13211;
-        data.iocpHandle = NETWORK().GetIOCPHandle();
-        data.sesionMaxCount = 5000;
+        auto consoleStream = std::make_shared<jw::LogConsoleStream>();
+        consoleStream->OnLogTypeFlags(logFlags);
+        registLogStream(consoleStream);
+        LOG_INFO(L"regist consoleStream, onflags:{}", flags.c_str());
+    }
 
-        std::shared_ptr<Port> basePort = std::make_shared<Port>();
-        basePort->Initialize(data);
-        NETWORK().RegistPort(CLIENT_PORT_ID, basePort);
+    void Server::registFileLogStream(const std::span<LogType> logFlags)
+    {
 
-        LOG_INFO(L"initialize Network Success, name:{}, workerThreadCount:{}", _name, workerThreadCount);
+        const wchar_t* fileStreamPath = L"log\\";
+        const wchar_t* fileStreamName = L"JWServer";
+
+        std::wstring flags;
+        for (const auto flag : logFlags)
+        {
+            flags.append(std::format(L"{},", Logger::LogTypeToString(flag)));
+        }
+
+        auto fileStream = std::make_shared<jw::LogFileStream>(fileStreamPath, fileStreamName);
+        fileStream->OnLogTypeFlags(logFlags);
+        registLogStream(fileStream);
+        LOG_INFO(L"regist fileStream, path:{}, name:{}, onflags:{}", fileStreamPath, fileStreamName, flags.c_str());
+    }
+
+    void Server::registLogStream(const std::shared_ptr<LogStream>& logStream)
+    {
+        _logWorker->RegisterLogStream(logStream);
+    }
+
+    void Server::setNetworkWorkerThread(uint16_t workerThreadCount)
+    {
+        _workerThreadCount = workerThreadCount;
+    }
+
+    void Server::reigstPort(const PortInfo& portInfo)
+    {
+        std::shared_ptr<Port> port = std::make_shared<Port>();
+        port->Initialize(portInfo);
+        NETWORK().RegistPort(portInfo.id, port);
+    }
+
+    bool Server::setArgument(int argc, char* argv[])
+    {
+        ARGUMENT().Initialize(argc, argv);
+        ARGUMENT().HandleArgument();
+        return true;
+    }
+
+    bool Server::startNetwork()
+    {
+        NETWORK().Initialize();
+
+        onStartNetwork();
+
+        if (Network::DEFAULT_WORKER_THREAD_COUNT == _workerThreadCount)
+        {
+            _workerThreadCount = NetworkHelper::GetProcessorCount() * 2;
+        }
+
+        NETWORK().Start(_workerThreadCount);
+
+        LOG_INFO(L"initialize Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
 
         return true;
     }

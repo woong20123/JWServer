@@ -26,7 +26,7 @@ namespace jw
         }
     }
 
-    bool Port::Initialize(const Port::InitData& data)
+    bool Port::Initialize(const PortInfo& data)
     {
         _listerner = std::make_unique<Listener>();
         _sessionList = new std::shared_ptr<Session>[data.sesionMaxCount];

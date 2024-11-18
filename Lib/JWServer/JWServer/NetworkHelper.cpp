@@ -1,4 +1,5 @@
 ﻿#include "NetworkHelper.h"
+#include <thread>
 
 namespace jw
 {
@@ -19,4 +20,18 @@ namespace jw
         HANDLE h = ::CreateIoCompletionPort(registerHandle, iocpHandle, key, 0);
         return (h == iocpHandle);
     }
+
+    uint16_t NetworkHelper::GetProcessorCount()
+    {
+#if _HAS_CXX17 
+
+        return static_cast<uint16_t>(std::thread::hardware_concurrency());
+
+#else 
+        SYSTEM_INFO sysInfo;
+        GetSystemInfo(&sysInfo);
+        return static_cast<uint16_t>(sysInfo.dwNumberOfProcessors);
+#endif
+    }
 }
+
