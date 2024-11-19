@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3a6a49b4-d879-4c75-9a2e-2f739c063157}</ProjectGuid>
-    <RootNamespace>JWServer</RootNamespace>
+    <ProjectGuid>{7d4b1845-cb2f-4243-9baa-581d57708e83}</ProjectGuid>
+    <RootNamespace>SampleServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\JWServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,8 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>..\JWServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,50 +130,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Arguments.h" />
-    <ClInclude Include="ArgumentsHandler.h" />
-    <ClInclude Include="Consumer.hpp" />
-    <ClInclude Include="IOWorker.h" />
-    <ClInclude Include="Listener.h" />
-    <ClInclude Include="LogBuffer.h" />
-    <ClInclude Include="LogBufferPool.h" />
-    <ClInclude Include="LogConsoleStream.h" />
-    <ClInclude Include="LogFileStream.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="LogStream.h" />
-    <ClInclude Include="LogWorker.h" />
-    <ClInclude Include="Network.h" />
-    <ClInclude Include="NetworkHelper.h" />
-    <ClInclude Include="Port.h" />
-    <ClInclude Include="Server.h" />
-    <ClInclude Include="Session.h" />
-    <ClInclude Include="SessionBuffer.h" />
-    <ClInclude Include="SessionHandler.h" />
-    <ClInclude Include="Singleton.hpp" />
+    <ProjectReference Include="..\JWServer\JWServer.vcxproj">
+      <Project>{3a6a49b4-d879-4c75-9a2e-2f739c063157}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Arguments.cpp" />
-    <ClCompile Include="ArgumentsHandler.cpp" />
-    <ClCompile Include="AsyncIOObject.h" />
-    <ClCompile Include="IOWorker.cpp" />
-    <ClCompile Include="Listener.cpp" />
-    <ClCompile Include="LogBuffer.cpp" />
-    <ClCompile Include="LogBufferPool.cpp" />
-    <ClCompile Include="LogConsoleStream.cpp" />
-    <ClCompile Include="LogFileStream.cpp" />
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="LogStream.cpp" />
-    <ClCompile Include="LogWorker.cpp" />
-    <ClCompile Include="Network.cpp" />
-    <ClCompile Include="NetworkHelper.cpp" />
-    <ClCompile Include="ObjectPool.hpp" />
-    <ClCompile Include="Port.cpp" />
-    <ClCompile Include="ProducerContainer.hpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="Session.cpp" />
-    <ClCompile Include="SessionBuffer.cpp" />
-    <ClCompile Include="StopWatch.h" />
-    <ClCompile Include="TypeDefinition.h" />
+    <ClCompile Include="GameSessionHandler.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SampleServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameSessionHandler.h" />
+    <ClInclude Include="SampleServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

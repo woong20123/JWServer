@@ -177,26 +177,23 @@ namespace jw
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
 		// 세션 생성
-		const auto makeSessionInfo = NETWORK().MakeSession(_portId);
-		Session* session = makeSessionInfo.first;
-		uint32_t sessionIndex{ makeSessionInfo.second };
-		SessionID sessionId = Session::MakeSessionID(sessionIndex, _portId);
+		const auto session = NETWORK().CreateSession(_portId);
 
-		if (!session || !session->Initialize(sessionId, context._socket, remoteAddr))
+		if (!session || !session->SetSocketInfo(context._socket, remoteAddr))
 		{
-			LOG_ERROR(L"can not make session, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", sessionId.id, _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			LOG_ERROR(L"can not make session, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", session->GetId(), _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 
 		if (!session->OnAccept())
 		{
-			LOG_ERROR(L"session onAccept fail, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", sessionId.id, _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			LOG_ERROR(L"session onAccept fail, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", session->GetId(), _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 
 		if (!session->Recv())
 		{
-			LOG_ERROR(L"async recv error, id:{}, error:{}, _portNumber:{}", sessionId.id, WSAGetLastError(), _portNumber);
+			LOG_ERROR(L"async recv error, id:{}, error:{}, _portNumber:{}", session->GetId(), WSAGetLastError(), _portNumber);
 		}
 
 		return true;

@@ -44,13 +44,16 @@ namespace jw
                 if (!object->HandleEvent(context, numOfBytes))
                 {
                     LOG_FETAL(L"HandleEvent fail, eventId:{}", object->GetAsyncObjectId());
+                    object->HandleFailedEvent(context, numOfBytes);
                 }
             }
             else
             {
                 auto err = ::WSAGetLastError();
-                if (WAIT_TIMEOUT != err)
+                if (WAIT_TIMEOUT != err) {
                     LOG_FETAL(L"GetQueuedCompletionStatus fail, error:{}", err);
+                    object->HandleFailedEvent(context, numOfBytes);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿#include "Session.h"
 #include "SessionBuffer.h"
+#include "SessionHandler.h"
 #include "Network.h"
 #include "NetworkHelper.h"
 #include "Logger.h"
@@ -8,30 +9,49 @@
 namespace jw
 {
     Session::Session() :
-        _id{ INVALID_ID },
-        _recvBuffer{ nullptr }
+        _id{ INVALID_VALUE },
+        _port{ INVALID_VALUE },
+        _socket{ INVALID_SOCKET },
+        _recvBuffer{ nullptr },
+        _sessionHandler{ nullptr },
+        _state{ SessionState::SESSION_STATE_NONE }
     {
     }
 
-    bool Session::Initialize(SessionID sessionId, SOCKET socket, sockaddr_in* remoteAddr)
+    bool Session::Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler)
     {
-        if (INVALID_ID == sessionId.id || INVALID_SOCKET == socket ||
-            nullptr == remoteAddr)
+        if (INVALID_VALUE == sessionId.id || !sessionHandler)
         {
-            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}", sessionId.id, socket);
+            LOG_ERROR(L"invalid parameter, id:{}, sessionHandler:{}", sessionId.id, reinterpret_cast<void*>(sessionHandler.get()));
             return false;
         }
 
         _id = sessionId;
+        _sessionHandler = sessionHandler;
+        _recvBuffer = std::make_unique<SessionRecvBuffer>();
+
+        setState(SessionState::SESSION_STATE_CREATE);
+
+        LOG_INFO(L"Session Initialize, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
+
+        return true;
+    }
+    bool Session::SetSocketInfo(SOCKET socket, sockaddr_in* remoteAddr)
+    {
+        if (INVALID_SOCKET == socket || nullptr == remoteAddr)
+        {
+            LOG_ERROR(L"invalid parameter, id:{}, socket:{}, ip:{}", GetId(), socket);
+            return false;
+        }
+
         _socket = socket;
         _ip = remoteAddr->sin_addr.S_un.S_addr;
         _port = remoteAddr->sin_port;
-        _recvBuffer = std::make_unique<SessionRecvBuffer>();
 
-        wchar_t ipAddress[16]{ 0, };
-        _ipString = InetNtopW(AF_INET, &remoteAddr->sin_addr, ipAddress, sizeof(wchar_t) * 16);
+        wchar_t ipAddress[32]{ 0, };
+        _ipString = InetNtopW(AF_INET, &remoteAddr->sin_addr, ipAddress, 16);
 
-        LOG_INFO(L"Session Initialize, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
+        LOG_INFO(L"Session Socket Info, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
 
         return true;
     }
@@ -48,6 +68,7 @@ namespace jw
         case ASYNC_CONTEXT_ID_RECV:
             if (0 == bytes) {
                 LOG_ERROR(L"recv zero, socket has closed, id:{}", GetId());
+                Close(CloseReason::CLOSE_REASON_CLIENT_DISCONNECTED);
                 return false;
             }
 
@@ -76,6 +97,12 @@ namespace jw
         return true;
     }
 
+    void Session::HandleFailedEvent(AsyncContext* context, paramType param)
+    {
+        if (!IsClosed())
+            Close(CloseReason::CLOSE_REASON_UNKNOWN);
+    }
+
     bool Session::OnAccept()
     {
         if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_socket), NETWORK().GetIOCPHandle(), reinterpret_cast<uint64_t>(this)))
@@ -83,17 +110,62 @@ namespace jw
             LOG_FETAL(L"sessionSocket fail AssociateDeviceWithIOCP, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
             return false;
         }
-        LOG_INFO(L"OnAccept Session, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port)
-            return true;
+
+        if (!_sessionHandler->OnAccepted(this))
+        {
+            Close(CloseReason::CLOSE_REASON_ACCEPT_FAIL);
+            return false;
+        }
+
+        setState(SessionState::SESSION_STATE_CONNECTED);
+
+        LOG_INFO(L"OnAccept Session, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
+        return true;
     }
 
     bool Session::Recv()
     {
+        WRITE_LOCK(_mutex);
+        if (!asyncRecv())
         {
-            WRITE_LOCK(_mutex);
-            asyncRecv();
+            Close(CloseReason::CLOSE_REASON_RECV_FAIL);
+            return false;
         }
         return true;
+    }
+
+    bool Session::Close(CloseReason reason)
+    {
+        uint32_t iReason = static_cast<uint32_t>(reason);
+        if (INVALID_SOCKET == _socket)
+        {
+            LOG_ERROR(L"socket is invalid, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
+            return false;
+        }
+
+        ::closesocket(_socket);
+        _socket = INVALID_SOCKET;
+        setState(SessionState::SESSION_STATE_CLOSED);
+
+        _sessionHandler->OnClosed(this);
+
+        /*if (!NETWORK().DestroySession(GetPortId(), this))
+        {
+            LOG_ERROR(L"DestorySession Fail, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
+            return false;
+        }*/
+
+        LOG_INFO(L"Session is Close, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
+        return true;
+    }
+
+    bool Session::IsConnected() const
+    {
+        return _state == SessionState::SESSION_STATE_CONNECTED;
+    }
+    bool Session::IsClosed() const
+    {
+        return _state == SessionState::SESSION_STATE_CLOSED;
     }
 
     bool Session::asyncRecv()
@@ -117,6 +189,14 @@ namespace jw
         }
 
         return true;
+    }
+
+    void Session::setState(SessionState state)
+    {
+        const auto oldState = static_cast<uint16_t>(_state);
+        const auto newState = static_cast<uint16_t>(state);
+        _state = state;
+        LOG_DEBUG(L"Session set state, id:{}, oldState:{}, newState:{}", GetId(), oldState, newState);
     }
 
     SessionID Session::MakeSessionID(uint32_t index, uint16_t portId)

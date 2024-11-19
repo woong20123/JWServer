@@ -20,7 +20,7 @@ namespace jw
     public:
         using obj = object;
 
-        ProducerContainer();
+        ProducerContainer(uint32_t durationMilliseconds);
         virtual ~ProducerContainer();
 
         void							Wait(std::list<object>& objList);
@@ -34,10 +34,12 @@ namespace jw
         std::shared_mutex					_shared_mutex;
         std::list<obj>				        _list;
         std::atomic<bool>					_isStop;
+        uint32_t                            _durationMilliseconds;
     };
 
     template<typename object>
-    ProducerContainer<object>::ProducerContainer() : 
+    ProducerContainer<object>::ProducerContainer(uint32_t durationMilliseconds) :
+        _durationMilliseconds{ durationMilliseconds },
         _isStop{ false }
     {}
     template<typename object>
@@ -49,7 +51,8 @@ namespace jw
     {
         using namespace std::chrono_literals;
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
-        _cv.wait_for(lk, 100ms, [this] {return !_list.empty(); });
+        std::chrono::duration < int64_t, std::milli> duration{ _durationMilliseconds };
+        _cv.wait_for(lk, duration, [this] {return !_list.empty(); });
 
         if (_list.empty()) return;
 

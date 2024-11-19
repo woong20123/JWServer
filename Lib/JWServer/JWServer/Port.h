@@ -13,13 +13,15 @@ namespace jw
 {
     class Listener;
     class Session;
+    class SessionHandler;
 
     struct PortInfo
     {
-        uint32_t id{ 0 };
-        uint16_t portNumber{ 0 };
-        HANDLE iocpHandle{ nullptr };
-        size_t sesionMaxCount{ 0 };
+        uint32_t _id{ 0 };
+        uint16_t _portNumber{ 0 };
+        HANDLE _iocpHandle{ nullptr };
+        size_t _sesionMaxCount{ 0 };
+        std::shared_ptr<SessionHandler> _sessionHandler;
     };
 
     class Port
@@ -34,7 +36,8 @@ namespace jw
 
         bool Initialize(const PortInfo& data);
         uint32_t GetId() const;
-        std::pair<Session*, uint16_t> MakeSession();
+        Session* CreateSession();
+        bool DestroySession(Session* session);
 
     private:
 
@@ -42,14 +45,15 @@ namespace jw
         size_t getUsedSessionCount();
         void initializeSessionIndex(const size_t maxSessionCount);
 
-        uint32_t                        _id;
-        uint16_t                        _portNumber;
-        HANDLE                          _ipcpHandle;
-        std::unique_ptr<Listener>       _listerner;
+        uint32_t                                _id;
+        uint16_t                                _portNumber;
+        HANDLE                                  _ipcpHandle;
+        std::unique_ptr<Listener>               _listerner;
         std::shared_ptr<Session>* _sessionList;
-        SessionIndexCon                 _availableSessionIndexCon;     // 사용가능한 세션 인덱스
-        size_t                          _sessionMaxCount;
-        std::shared_mutex               _sessionMutex;
+        SessionIndexCon                         _availableSessionIndexCon;     // 사용가능한 세션 인덱스
+        size_t                                  _sessionMaxCount;
+        std::shared_mutex                       _sessionMutex;
+        std::shared_ptr<SessionHandler>         _sessionHandler;
     };
 
 }

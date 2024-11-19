@@ -30,6 +30,6 @@
 #define WRITE_LOCK(mtx) std::unique_lock<std::shared_mutex> lk(mtx)
 #define READ_LOCK(mtx) std::shared_lock<std::shared_mutex> lk(mtx)
 
-static constexpr int64_t INVALID_ID = 0;
+static constexpr int64_t INVALID_VALUE = 0;
 
 #endif

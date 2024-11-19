@@ -52,11 +52,12 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Server.h" />
-    <ClInclude Include="SampleServer.h" />
+    <ClInclude Include="SessionHandler.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
     <ClCompile Include="Logger.cpp">
       <Filter>Log</Filter>
@@ -116,7 +117,6 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="SampleServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

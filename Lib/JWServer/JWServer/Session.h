@@ -13,6 +13,7 @@ namespace jw
 {
     class SessionRecvBuffer;
     class Session;
+    class SessionHandler;
 
     struct SessionContext : public AsyncContext
     {
@@ -53,12 +54,32 @@ namespace jw
         };
     };
 
+    enum class SessionState : uint16_t
+    {
+        SESSION_STATE_NONE,
+        SESSION_STATE_CREATE,
+        SESSION_STATE_CONNECTING,
+        SESSION_STATE_CONNECTED,
+        SESSION_STATE_CLOSING,
+        SESSION_STATE_CLOSED,
+    };
+
+    enum class CloseReason : uint32_t
+    {
+        CLOSE_REASON_NONE = 0,
+        CLOSE_REASON_UNKNOWN,
+        CLOSE_REASON_ACCEPT_FAIL,
+        CLOSE_REASON_RECV_FAIL,
+        CLOSE_REASON_CLIENT_DISCONNECTED,
+    };
+
     class Session : public AsyncIOObject
     {
     public:
         Session();
 
-        bool Initialize(SessionID sessionId, SOCKET socket, sockaddr_in* remoteAddr);
+        bool Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler);
+        bool SetSocketInfo(SOCKET socket, sockaddr_in* remoteAddr);
 
         int64_t GetId() const;
         int16_t GetPortId() const;
@@ -66,15 +87,24 @@ namespace jw
 
         uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_SESSION; }
         bool HandleEvent(AsyncContext* context, paramType bytes) override;
+        void HandleFailedEvent(AsyncContext* context, paramType param) override;
+
 
         bool OnAccept();
         bool Recv();
+        bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
 
         static SessionID MakeSessionID(uint32_t index, uint16_t portId);
+
+        SessionState GetState() const { return _state; }
+        bool IsConnected() const;
+        bool IsClosed() const;
 
     private:
         bool asyncRecv();
         bool onRecvEvent(AsyncContext* context, paramType bytes) {}
+
+        void setState(SessionState state);
 
         SessionID                               _id;
         SOCKET                                  _socket;
@@ -82,8 +112,9 @@ namespace jw
         std::wstring                            _ipString;
         uint16_t                                _port;
         std::unique_ptr<SessionRecvBuffer>      _recvBuffer;
-
         std::shared_mutex                       _mutex;
+        std::shared_ptr<SessionHandler>         _sessionHandler;
+        SessionState                            _state;
     };
 }
 

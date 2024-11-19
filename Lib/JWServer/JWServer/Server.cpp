@@ -15,8 +15,11 @@ namespace jw
 {
     Server::Server() :
         _name{ INVALID_SERVER_NAME },
-        _logWorker{ nullptr }
+        _logWorker{ nullptr },
+        _workerThreadCount{ 0 },
+        _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) }
     {}
+
     Server::~Server() {}
 
     bool Server::Initialize(const std::wstring& name)
@@ -43,13 +46,27 @@ namespace jw
 
         LOG_INFO(L"on start, name:{}", _name);
 
+        waitEvent();
+
+        onClosedServer();
+
         return true;
+    }
+
+    void Server::SendServerEvent(std::shared_ptr<ServerEvent>& eventObj)
+    {
+        if (!_serverEventContainer)
+        {
+            LOG_ERROR(L"can not send event because serverEventContainer is null");
+            return;
+        }
+        _serverEventContainer->Push(eventObj);
     }
 
     bool Server::startLog()
     {
         // logger와 logWorker를 container로 연결 
-        std::shared_ptr<jw::Logger::PContainer> container = std::make_shared<jw::Logger::PContainer>();
+        std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
         LOGGER().Initialize(container);
         _logWorker->SetProducerCon(container);
 
@@ -69,7 +86,7 @@ namespace jw
             flags.append(std::format(L"{},", Logger::LogTypeToString(flag)));
         }
 
-        auto consoleStream = std::make_shared<jw::LogConsoleStream>();
+        auto consoleStream = std::make_shared<LogConsoleStream>();
         consoleStream->OnLogTypeFlags(logFlags);
         registLogStream(consoleStream);
         LOG_INFO(L"regist consoleStream, onflags:{}", flags.c_str());
@@ -87,7 +104,7 @@ namespace jw
             flags.append(std::format(L"{},", Logger::LogTypeToString(flag)));
         }
 
-        auto fileStream = std::make_shared<jw::LogFileStream>(fileStreamPath, fileStreamName);
+        auto fileStream = std::make_shared<LogFileStream>(fileStreamPath, fileStreamName);
         fileStream->OnLogTypeFlags(logFlags);
         registLogStream(fileStream);
         LOG_INFO(L"regist fileStream, path:{}, name:{}, onflags:{}", fileStreamPath, fileStreamName, flags.c_str());
@@ -107,7 +124,7 @@ namespace jw
     {
         std::shared_ptr<Port> port = std::make_shared<Port>();
         port->Initialize(portInfo);
-        NETWORK().RegistPort(portInfo.id, port);
+        NETWORK().RegistPort(portInfo._id, port);
     }
 
     bool Server::setArgument(int argc, char* argv[])
@@ -123,15 +140,39 @@ namespace jw
 
         onStartNetwork();
 
-        if (Network::DEFAULT_WORKER_THREAD_COUNT == _workerThreadCount)
-        {
-            _workerThreadCount = NetworkHelper::GetProcessorCount() * 2;
-        }
-
         NETWORK().Start(_workerThreadCount);
 
         LOG_INFO(L"initialize Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
 
         return true;
+    }
+
+    void Server::waitEvent()
+    {
+        while (true)
+        {
+            if (_serverEventContainer->IsStop())
+            {
+                LOG_INFO(L"StopSignal send to Server, name:{}", _name);
+                break;
+            }
+
+            std::list<std::shared_ptr<ServerEvent>> objects;
+            _serverEventContainer->Wait(objects);
+            if (!objects.empty())
+            {
+                handleEvent(objects);
+            }
+
+            LOG_DEBUG(L"Server is running, name:{}", _name);
+        }
+    }
+
+    void Server::handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs)
+    {
+        for (const auto& eventObj : eventObjs)
+        {
+            onHandleEvent(eventObj);
+        }
     }
 }

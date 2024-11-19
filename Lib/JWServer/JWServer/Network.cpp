@@ -11,7 +11,9 @@ namespace jw
 {
 
     Network::Network() :
+        _iocpHandle{ nullptr },
         _ioWorker{ nullptr },
+        _workerThreadCount{ 0 },
         _NullPort{ nullptr }
     {}
 
@@ -47,11 +49,16 @@ namespace jw
         return true;
     }
 
-    bool Network::Start(const uint16_t workerThreadCount)
+    bool Network::Start(uint16_t& workerThreadCount)
     {
         if (nullptr == _ioWorker)
         {
             return false;
+        }
+
+        if (Network::DEFAULT_WORKER_THREAD_COUNT == workerThreadCount)
+        {
+            workerThreadCount = NetworkHelper::GetProcessorCount() * 2;
         }
 
         _workerThreadCount = workerThreadCount;
@@ -106,15 +113,34 @@ namespace jw
         return true;
     }
 
-    std::pair<Session*, uint16_t> Network::MakeSession(const PortId_t portId)
+    Session* Network::CreateSession(const PortId_t portId)
     {
         if (auto& port = getPort(portId);
             nullptr != port)
         {
-            return port->MakeSession();
+            return port->CreateSession();
         }
 
-        return { nullptr, 0 };
+        LOG_ERROR(L"not find port, portId:{}", portId);
+        return nullptr;
+    }
+
+    bool Network::DestroySession(const PortId_t portId, Session* session)
+    {
+        if (nullptr == session)
+        {
+            LOG_ERROR(L"session is nullptr");
+            return false;
+        }
+
+        if (auto& port = getPort(portId);
+            nullptr != port)
+        {
+            return port->DestroySession(session);
+        }
+
+        LOG_ERROR(L"not find port, portId:{}", portId);
+        return false;
     }
 
     bool Network::initializeWinSock()
