@@ -45,11 +45,16 @@ namespace jw
         // 전달 받은 object를 처리하는 로직을 등록합니다. 
         virtual void handle(const std::list<obj>& objs) = 0;
 
+        void joinWaitThread();
+
     private:
+        inline bool isStop() { return 0 != _stopTimeTick; }
+
         std::string                         _name;
         std::shared_ptr<PCContainer>	    _pProducerCon;
         std::vector<std::thread>	        _threads;
         size_t                              _threadCount{ 1 };
+        std::atomic<time_t>                 _stopTimeTick{ 0 };
     };
 
     template<typename object>
@@ -85,10 +90,21 @@ namespace jw
     {
         while (true)
         {
-            if (_pProducerCon->IsStop())
+            if (isStop())
             {
-                std::cerr << "Producer<" << typeid(obj).name() << "> " << _name.c_str() << " is stop" << std::endl;
-                break;
+                // 이전에 등록된 모든 queueObject가 다 처리 되었다면 종료, 최대 대기 시간도 필요 할 듯
+                if (0 == _pProducerCon->Size())
+                {
+                    std::cerr << "Producer<" << typeid(obj).name() << "> " << _name.c_str() << " is stop" << std::endl;
+                    break;
+                }
+            }
+            else
+            {
+                if (_pProducerCon->IsStop())
+                {
+                    _stopTimeTick = ::time(nullptr);
+                }
             }
 
             std::list<obj> queueObjects;
@@ -98,7 +114,15 @@ namespace jw
         }
     }
 
+    template<typename object>
+    void Consumer<object>::joinWaitThread()
+    {
+        for (auto& t : _threads)
+            t.join();
+    }
 }
+
+
 
 #define CONSUMER(OBJ) Consumer<OBJ>
 

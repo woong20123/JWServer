@@ -15,9 +15,25 @@ namespace jw
     class LogWorker;
     class LogStream;
 
+    enum ServerEventID
+    {
+        SERVER_EVENT_ID_NONE,
+        SERVER_EVENT_ID_NOTIFY,
+        SERVER_EVENT_ID_MAX,
+    };
+
     struct ServerEvent
     {
+        ServerEvent(uint16_t id) : _id{ id }
+        {}
+
         uint16_t _id;
+    };
+
+    struct NotifyServerEvent : public ServerEvent
+    {
+        NotifyServerEvent() : ServerEvent(SERVER_EVENT_ID_NOTIFY)
+        {}
     };
 
     class Server
@@ -37,6 +53,10 @@ namespace jw
         bool Initialize(const std::wstring& name);
         bool Start(int argc, char* argv[]);
         void SendServerEvent(std::shared_ptr<ServerEvent>& eventObj);
+        void Stop();
+
+        std::wstring_view GetName() { return _name; }
+
     protected:
 
         // 서버 구동시 사용자가 설정할 Log 작업을 등록 합니다. 
@@ -68,6 +88,7 @@ namespace jw
         bool startNetwork();
         void waitEvent();
         void handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs);
+        void closeServer();
 
         std::wstring                            _name;
         std::unique_ptr<LogWorker>              _logWorker;

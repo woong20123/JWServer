@@ -10,6 +10,7 @@
 #include "LogFileStream.h"
 #include "Port.h"
 #include <list>
+#include <chrono>
 
 namespace jw
 {
@@ -48,7 +49,7 @@ namespace jw
 
         waitEvent();
 
-        onClosedServer();
+        closeServer();
 
         return true;
     }
@@ -61,6 +62,13 @@ namespace jw
             return;
         }
         _serverEventContainer->Push(eventObj);
+    }
+
+    void Server::Stop()
+    {
+        _serverEventContainer->SetStopSignal();
+        std::shared_ptr<ServerEvent> evt = std::make_shared<NotifyServerEvent>();
+        SendServerEvent(evt);
     }
 
     bool Server::startLog()
@@ -174,5 +182,13 @@ namespace jw
         {
             onHandleEvent(eventObj);
         }
+    }
+
+    void Server::closeServer()
+    {
+        NETWORK().Stop();
+        LOGGER().Stop();
+
+        onClosedServer();
     }
 }

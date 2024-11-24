@@ -19,11 +19,13 @@ namespace jw
     {
     public:
         using obj = object;
+        using durationType = uint32_t;
 
         ProducerContainer(uint32_t durationMilliseconds);
         virtual ~ProducerContainer();
 
         void							Wait(std::list<object>& objList);
+        void                            Wait(std::list<object>& objList, durationType durationMilliseconds);
         void							Push(const object& obj);
         void							Flush();
         void							SetStopSignal();
@@ -34,12 +36,12 @@ namespace jw
         std::shared_mutex					_shared_mutex;
         std::list<obj>				        _list;
         std::atomic<bool>					_isStop;
-        uint32_t                            _durationMilliseconds;
+        uint32_t                            _defaultDurationMilliseconds;
     };
 
     template<typename object>
-    ProducerContainer<object>::ProducerContainer(uint32_t durationMilliseconds) :
-        _durationMilliseconds{ durationMilliseconds },
+    ProducerContainer<object>::ProducerContainer(uint32_t defualtDurationMilliseconds) :
+        _defaultDurationMilliseconds{ defualtDurationMilliseconds },
         _isStop{ false }
     {}
     template<typename object>
@@ -49,9 +51,15 @@ namespace jw
     template<typename object>
     void ProducerContainer<object>::Wait(std::list<object>& objList)
     {
+        Wait(objList, _defaultDurationMilliseconds);
+    }
+
+    template<typename object>
+    void ProducerContainer<object>::Wait(std::list<object>& objList, durationType durationMilliseconds)
+    {
         using namespace std::chrono_literals;
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);
-        std::chrono::duration < int64_t, std::milli> duration{ _durationMilliseconds };
+        std::chrono::duration < int64_t, std::milli> duration{ durationMilliseconds };
         _cv.wait_for(lk, duration, [this] {return !_list.empty(); });
 
         if (_list.empty()) return;
@@ -71,6 +79,7 @@ namespace jw
     {
         _cv.notify_one();
     }
+
     template<typename object>
     void ProducerContainer<object>::SetStopSignal()
     {

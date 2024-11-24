@@ -15,12 +15,15 @@ namespace jw
         virtual ~IOWorker();
         void Initialize(HANDLE iocpHandle);
         void RunThreads(uint16_t workerThreadCount);
+        void Stop();
     protected:
-        virtual void prepare() {};
+        virtual void onStart() {};
+        virtual void onClose() {}
         void execute();
     private:
         std::vector<std::thread>    _threads;
         HANDLE                      _iocpHandle;
+        std::atomic<bool>           _isStop;
     };
 }
 #endif

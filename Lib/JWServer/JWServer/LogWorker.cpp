@@ -9,6 +9,8 @@ namespace jw
 {
     void LogWorker::prepare()
     {
+        joinWaitThread();
+
         for (const auto& stream : _logStreams)
             stream->Initialize();
     }

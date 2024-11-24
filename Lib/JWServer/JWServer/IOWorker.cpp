@@ -4,11 +4,16 @@
 
 namespace jw
 {
-    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }
+    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _isStop{ false }
     {}
 
     IOWorker::~IOWorker()
-    {}
+    {
+        _iocpHandle = INVALID_HANDLE_VALUE;
+
+        for (auto& t : _threads)
+            t.join();
+    }
 
     void IOWorker::Initialize(HANDLE iocpHandle)
     {
@@ -25,9 +30,17 @@ namespace jw
             _threads.emplace_back(&IOWorker::execute, this);
     }
 
+    void IOWorker::Stop()
+    {
+        if (!_isStop)
+        {
+            _isStop = true;
+        }
+    }
+
     void IOWorker::execute()
     {
-        prepare();
+        onStart();
 
         BOOL result{ FALSE };
         unsigned long numOfBytes{ 0 };
@@ -39,11 +52,17 @@ namespace jw
         {
             result = ::GetQueuedCompletionStatus(_iocpHandle, &numOfBytes, reinterpret_cast<ULONG_PTR*>(&object), reinterpret_cast<OVERLAPPED**>(&context), MAX_WAIT);
 
+            if (_isStop)
+            {
+                LOG_ERROR(L"IOWorker stopped, tid:{}", std::this_thread::get_id());
+                break;
+            }
+
             if (result)
             {
                 if (!object->HandleEvent(context, numOfBytes))
                 {
-                    LOG_FETAL(L"HandleEvent fail, eventId:{}", object->GetAsyncObjectId());
+                    LOG_FETAL(L"HandleEvent fail, tid:{}, eventId:{}", std::this_thread::get_id(), object->GetAsyncObjectId());
                     object->HandleFailedEvent(context, numOfBytes);
                 }
             }

@@ -62,6 +62,6 @@ namespace jw
 
     void SampleServer::onClosedServer()
     {
-        LOG_INFO(L"closed server");
+        LOG_INFO(L"closed server, name:{}", GetName().data());
     }
 }

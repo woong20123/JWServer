@@ -26,6 +26,7 @@ namespace jw
         bool Initialize();
 
         bool Start(uint16_t& workerThreadCount);
+        void Stop();
 
         LPFN_ACCEPTEX                   GetAcceptExFunc() const;
         LPFN_GETACCEPTEXSOCKADDRS       GetAcceptExSockAddrFunc() const;
@@ -34,7 +35,7 @@ namespace jw
         HANDLE                          GetIOCPHandle() const;
 
         bool                            RegistPort(const PortId_t portId, std::shared_ptr<Port>& port);
-        Session*                        CreateSession(const PortId_t portId);
+        Session* CreateSession(const PortId_t portId);
         bool                            DestroySession(const PortId_t portId, Session* session);
 
 

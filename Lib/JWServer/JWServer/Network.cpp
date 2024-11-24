@@ -69,6 +69,11 @@ namespace jw
         return true;
     }
 
+    void Network::Stop()
+    {
+        _ioWorker->Stop();
+    }
+
     LPFN_ACCEPTEX Network::GetAcceptExFunc() const
     {
         return _acceptExFunc;
