@@ -22,6 +22,26 @@ namespace jw
         SERVER_EVENT_ID_MAX,
     };
 
+    enum class ServerState : uint16_t
+    {
+        SERVER_STATE_NONE = 0,
+        SERVER_STATE_INIT,
+        SERVER_STATE_STARTING,
+        SERVER_STATE_ON_SERVER,
+        SERVER_STATE_CLOSING,
+        SERVER_STATE_CLOSED,
+        SERVER_STATE_MAX
+    };
+
+    constexpr const wchar_t* ServerStateStr[(size_t)ServerState::SERVER_STATE_MAX] = {
+        L"NONE",
+        L"INIT",
+        L"STATING",
+        L"ON SERVER",
+        L"CLOSING",
+        L"CLOSED",
+    };
+
     struct ServerEvent
     {
         ServerEvent(uint16_t id) : _id{ id }
@@ -53,9 +73,15 @@ namespace jw
         bool Initialize(const std::wstring& name);
         bool Start(int argc, char* argv[]);
         void SendServerEvent(std::shared_ptr<ServerEvent>& eventObj);
+
+        // 종료 시그널을 보냅니다.
         void Stop();
 
+        ServerState GetState() { return _state; }
+
         std::wstring_view GetName() { return _name; }
+
+        static const wchar_t* ServerStateToStr(ServerState state);
 
     protected:
 
@@ -82,6 +108,8 @@ namespace jw
         void setNetworkWorkerThread(uint16_t);
         void reigstPort(const PortInfo& portInfo);
 
+        void setState(ServerState state);
+
     private:
         bool startLog();
         bool setArgument(int argc, char* argv[]);
@@ -94,6 +122,7 @@ namespace jw
         std::unique_ptr<LogWorker>              _logWorker;
         uint16_t                                _workerThreadCount;
         std::unique_ptr<ServerEventProducerCon> _serverEventContainer;
+        std::atomic<ServerState>                _state;
     };
 }
 

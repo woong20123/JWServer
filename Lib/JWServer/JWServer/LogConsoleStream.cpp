@@ -7,6 +7,7 @@ namespace jw
     LogConsoleStream::LogConsoleStream(size_t bufferSize) : _logBuffer{ nullptr }, _bufferPos{ 0 }, _bufferSize{ bufferSize }
     {
         _logBuffer = new LogBuffer::BufferType[bufferSize];
+        ::memset(_logBuffer, 0x00, sizeof(LogBuffer::BufferType) * bufferSize);
     }
 
     LogConsoleStream::~LogConsoleStream()

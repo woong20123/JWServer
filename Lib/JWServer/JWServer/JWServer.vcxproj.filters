@@ -55,6 +55,9 @@
     <ClInclude Include="SessionHandler.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="PacketBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -117,6 +120,9 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="PacketBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

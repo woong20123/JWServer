@@ -29,6 +29,7 @@ namespace jw
         _id = sessionId;
         _sessionHandler = sessionHandler;
         _recvBuffer = std::make_unique<SessionRecvBuffer>();
+        _sendBuffer = std::make_unique<SessionSendBuffer>();
 
         setState(SessionState::SESSION_STATE_CREATE);
 
@@ -134,6 +135,17 @@ namespace jw
         return true;
     }
 
+    bool Session::Send(const void* byteStream, const size_t byteCount)
+    {
+        if (!asyncSend(byteStream, byteCount))
+        {
+            Close(CloseReason::CLOSE_REASON_SEND_FAIL);
+            return false;
+        }
+
+        return true;
+    }
+
     bool Session::Close(CloseReason reason)
     {
         uint32_t iReason = static_cast<uint32_t>(reason);
@@ -168,6 +180,11 @@ namespace jw
         return _state == SessionState::SESSION_STATE_CLOSED;
     }
 
+    const wchar_t* Session::GetStateToStr(SessionState state)
+    {
+        return SessionStateStr[static_cast<size_t>(state)];
+    }
+
     bool Session::asyncRecv()
     {
         auto recvContext = _recvBuffer->GetContext();
@@ -178,7 +195,8 @@ namespace jw
 
         unsigned long recvedSize{ 0 }, recvedFlag{ 0 };
 
-        if (SOCKET_ERROR == ::WSARecv(_socket, &recvContext->_wsaBuffer, 1, &recvedSize, &recvedFlag, recvContext, NULL))
+        if (SOCKET_ERROR == ::WSARecv(_socket, &recvContext->_wsaBuffer, 1,
+            &recvedSize, &recvedFlag, recvContext, NULL))
         {
             const auto errorCode{ ::WSAGetLastError() };
             if (WSA_IO_PENDING != errorCode)
@@ -191,12 +209,36 @@ namespace jw
         return true;
     }
 
+    bool Session::asyncSend(const void* byteStream, const size_t byteCount)
+    {
+        if (nullptr == byteStream || 0 == byteCount)
+            return false;
+
+        if (!_sendBuffer->Add(byteStream, byteCount))
+            return false;
+
+        auto sendContext = _sendBuffer->GetContext();
+        unsigned long sendBytes{ 0 }, sentFlag{ 0 };
+        if (SOCKET_ERROR == ::WSASend(_socket, &sendContext->_sendBuffer->_wsaBuffer, 1,
+            &sendBytes, sentFlag, sendContext, NULL))
+        {
+            const auto errorCode{ ::WSAGetLastError() };
+            if (WSA_IO_PENDING != errorCode)
+            {
+                LOG_FETAL(L"WSASend() fail, err:{}", errorCode);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     void Session::setState(SessionState state)
     {
-        const auto oldState = static_cast<uint16_t>(_state);
-        const auto newState = static_cast<uint16_t>(state);
+        const auto oldState = _state;
+        const auto newState = state;
         _state = state;
-        LOG_DEBUG(L"Session set state, id:{}, oldState:{}, newState:{}", GetId(), oldState, newState);
+        LOG_DEBUG(L"Session set state, id:{}, oldState:{}, newState:{}", GetId(), Session::GetStateToStr(oldState), Session::GetStateToStr(newState));
     }
 
     SessionID Session::MakeSessionID(uint32_t index, uint16_t portId)

@@ -12,6 +12,8 @@ class Session
 namespace jw
 {
     class SessionRecvBuffer;
+    class SessionSendBuffer;
+    struct SendBufferList;
     class Session;
     class SessionHandler;
 
@@ -26,15 +28,16 @@ namespace jw
     struct AsyncRecvContext : public SessionContext
     {
 
-        AsyncRecvContext() : SessionContext(ASYNC_CONTEXT_ID_RECV)
+        AsyncRecvContext() : SessionContext(ASYNC_CONTEXT_ID_RECV), _wsaBuffer{ 0, nullptr }
         {}
         WSABUF      _wsaBuffer;
     };
 
     struct AsyncSendContext : public SessionContext
     {
-        AsyncSendContext() : SessionContext(ASYNC_CONTEXT_ID_SEND)
+        AsyncSendContext() : SessionContext(ASYNC_CONTEXT_ID_SEND), _sendBuffer{ nullptr }
         {}
+        SendBufferList* _sendBuffer;
     };
 
     struct AsyncConnectContext : public SessionContext
@@ -62,6 +65,17 @@ namespace jw
         SESSION_STATE_CONNECTED,
         SESSION_STATE_CLOSING,
         SESSION_STATE_CLOSED,
+        SESSION_STATE_MAX,
+    };
+
+    constexpr const wchar_t* SessionStateStr[static_cast<size_t>(SessionState::SESSION_STATE_MAX)] =
+    {
+        L"NONE",
+        L"CREATE",
+        L"CONNECTING",
+        L"CONNECTED",
+        L"CLOSING",
+        L"CLOSED",
     };
 
     enum class CloseReason : uint32_t
@@ -70,6 +84,7 @@ namespace jw
         CLOSE_REASON_UNKNOWN,
         CLOSE_REASON_ACCEPT_FAIL,
         CLOSE_REASON_RECV_FAIL,
+        CLOSE_REASON_SEND_FAIL,
         CLOSE_REASON_CLIENT_DISCONNECTED,
     };
 
@@ -92,6 +107,7 @@ namespace jw
 
         bool OnAccept();
         bool Recv();
+        bool Send(const void* byteStream, const size_t byteCount);
         bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
 
         static SessionID MakeSessionID(uint32_t index, uint16_t portId);
@@ -100,8 +116,11 @@ namespace jw
         bool IsConnected() const;
         bool IsClosed() const;
 
+        static const wchar_t* GetStateToStr(SessionState state);
+
     private:
         bool asyncRecv();
+        bool asyncSend(const void* byteStream, const size_t byteCount);
         bool onRecvEvent(AsyncContext* context, paramType bytes) {}
 
         void setState(SessionState state);
@@ -112,6 +131,7 @@ namespace jw
         std::wstring                            _ipString;
         uint16_t                                _port;
         std::unique_ptr<SessionRecvBuffer>      _recvBuffer;
+        std::unique_ptr<SessionSendBuffer>      _sendBuffer;
         std::shared_mutex                       _mutex;
         std::shared_ptr<SessionHandler>         _sessionHandler;
         SessionState                            _state;

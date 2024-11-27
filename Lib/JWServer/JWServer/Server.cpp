@@ -18,7 +18,9 @@ namespace jw
         _name{ INVALID_SERVER_NAME },
         _logWorker{ nullptr },
         _workerThreadCount{ 0 },
-        _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) }
+        _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
+        _state{ ServerState::SERVER_STATE_NONE }
+
     {}
 
     Server::~Server() {}
@@ -27,6 +29,8 @@ namespace jw
     {
         _name = name;
         _logWorker = std::make_unique<LogWorker>();
+
+        setState(ServerState::SERVER_STATE_INIT);
 
         return true;
     }
@@ -39,6 +43,8 @@ namespace jw
             return false;
         }
 
+        setState(ServerState::SERVER_STATE_STARTING);
+
         startLog();
 
         setArgument(argc, argv);
@@ -46,6 +52,8 @@ namespace jw
         startNetwork();
 
         LOG_INFO(L"on start, name:{}", _name);
+
+        setState(ServerState::SERVER_STATE_ON_SERVER);
 
         waitEvent();
 
@@ -66,9 +74,20 @@ namespace jw
 
     void Server::Stop()
     {
+        if (_state == ServerState::SERVER_STATE_CLOSING ||
+            _state == ServerState::SERVER_STATE_CLOSED)
+            return;
+
         _serverEventContainer->SetStopSignal();
         std::shared_ptr<ServerEvent> evt = std::make_shared<NotifyServerEvent>();
         SendServerEvent(evt);
+
+        setState(ServerState::SERVER_STATE_CLOSING);
+    }
+
+    const wchar_t* Server::ServerStateToStr(ServerState state)
+    {
+        return ServerStateStr[static_cast<size_t>(state)];
     }
 
     bool Server::startLog()
@@ -135,6 +154,18 @@ namespace jw
         NETWORK().RegistPort(portInfo._id, port);
     }
 
+    void Server::setState(ServerState state)
+    {
+        if (_state == state)
+        {
+            LOG_ERROR(L"equal state, state:{}", Server::ServerStateToStr(state));
+            return;
+        }
+
+        LOG_INFO(L"sucesss, beforeState:{}, afeterState:{}", Server::ServerStateToStr(_state), Server::ServerStateToStr(state));
+        _state = state;
+    }
+
     bool Server::setArgument(int argc, char* argv[])
     {
         ARGUMENT().Initialize(argc, argv);
@@ -174,6 +205,9 @@ namespace jw
 
             LOG_DEBUG(L"Server is running, name:{}", _name);
         }
+
+        LOG_INFO(L"Server is closed, name:{}", _name);
+        setState(ServerState::SERVER_STATE_CLOSED);
     }
 
     void Server::handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs)

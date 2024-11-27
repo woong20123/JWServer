@@ -42,10 +42,10 @@ namespace jw
             _snwprintf_s(fileName, MAX_PATH, L"%s%s", name, ext);
         }
 
-        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%s,%d,(%s),",
+        return _snwprintf_s(_prefix, PRIFIX_COUNT, L"%04d/%02d/%02d-%02d:%02d:%02d.%03lld,%s,%d,%s,(%s),",
             tmLogTime.tm_year + 1900, tmLogTime.tm_mon + 1, tmLogTime.tm_mday,
             tmLogTime.tm_hour, tmLogTime.tm_min, tmLogTime.tm_sec,
-            millis.count(), fileName, _info.func, _info.line, Logger::LogTypeToString(_info.type));
+            millis.count(), fileName, _info.line, _info.func, Logger::LogTypeToString(_info.type));
     }
 
     int LogBuffer::WriteMsg(const LogBuffer::BufferType* msg)
