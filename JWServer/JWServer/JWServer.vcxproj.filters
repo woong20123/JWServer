@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Arguments.h" />
+    <ClInclude Include="ArgumentsHandler.h" />
+    <ClInclude Include="Logger.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogBuffer.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Consumer.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="LogWorker.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogConsoleStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogFileStream.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="LogBufferPool.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkHelper.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IOWorker.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Port.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="SessionHandler.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Arguments.cpp" />
+    <ClCompile Include="ArgumentsHandler.cpp" />
+    <ClCompile Include="Logger.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogBuffer.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="ProducerContainer.hpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="LogWorker.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogConsoleStream.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogFileStream.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeDefinition.h">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="LogBufferPool.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectPool.hpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="StopWatch.h">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="LogStream.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkHelper.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="AsyncIOObject.h">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IOWorker.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Port.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="PacketBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Log">
+      <UniqueIdentifier>{8c42339b-eedd-4522-91f7-640ed387cf81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{65eeeb7d-b5e3-43de-a9d1-9277c04ce257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{84320413-131f-46a1-b702-cc0aafc98bb6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

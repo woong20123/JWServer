@@ -1,0 +1,1 @@
+protoc.exe --cpp_out=..\..\..\JWServer\SampleServer\proto\ --proto_path=..\..\..\JWServer\SampleServer\proto\ Test.proto
