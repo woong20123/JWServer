@@ -37,7 +37,7 @@ namespace jw
     {
         AsyncSendContext() : SessionContext(ASYNC_CONTEXT_ID_SEND), _sendBuffer{ nullptr }
         {}
-        SendBufferList* _sendBuffer;
+        std::shared_ptr<SendBufferList> _sendBuffer;
     };
 
     struct AsyncConnectContext : public SessionContext
@@ -121,6 +121,7 @@ namespace jw
     private:
         bool asyncRecv();
         bool asyncSend(const void* byteStream, const size_t byteCount);
+        bool asyncSend(AsyncSendContext* sendContext);
         bool onRecvEvent(AsyncContext* context, paramType bytes) {}
 
         void setState(SessionState state);

@@ -44,15 +44,6 @@ namespace jw
         _allocateBufferListSendingIdx{ 0 },
         _context{ std::make_unique<AsyncSendContext>() }
     {
-        for (int i = 0; i < BUFFER_LIST_SIZE; ++i)
-        {
-            _bufferList[i]._index = static_cast<uint16_t>(i);
-            _bufferList[i]._sendSize = 0;
-            _bufferList[i]._wsaBuffer.buf = nullptr;
-            _bufferList[i]._wsaBuffer.len = 0;
-            ::memset(_bufferList[i]._buffer, 0, sizeof(_bufferList[i]._buffer));
-        }
-
     }
 
     SessionSendBuffer::~SessionSendBuffer()
@@ -60,36 +51,59 @@ namespace jw
 
     }
 
-    bool SessionSendBuffer::Add(const void* byteStream, const size_t byteCount)
+    std::pair<bool, bool> SessionSendBuffer::Add(const void* byteStream, const size_t byteCount)
     {
-        const auto nextAllocateIndex = ++_allocateBufferListSendingIdx % BUFFER_LIST_SIZE;
-
-        if (_curSendingBufferList && nextAllocateIndex == _curSendingBufferList->_index)
-        {
-            LOG_ERROR(L"overflow send byteStream Count, byteCount:{}", byteCount);
-            return false;
-        }
+        bool isAdd{ false }, isAsyncSend{ false };
 
         if (SendBufferList::BUFFER_MAX_SIZE < byteCount)
         {
             LOG_FETAL(L"overflow send byteStream Count, byteCount:{}", byteCount);
-            return false;
+            return { isAdd, isAsyncSend };
         }
 
-        auto& allocateBuffer = _bufferList[_allocateBufferListSendingIdx];
+        auto allocateBuffer = std::make_shared<SendBufferList>();
+        ::memcpy(allocateBuffer->_buffer, byteStream, byteCount);
+        allocateBuffer->_wsaBuffer.buf = (char*)byteStream;
+        allocateBuffer->_wsaBuffer.len = (unsigned long)byteCount;
+        allocateBuffer->_sentSize = 0;
 
-        ::memcpy(allocateBuffer._buffer, byteStream, byteCount);
-        allocateBuffer._wsaBuffer.buf = (char*)byteStream;
-        allocateBuffer._wsaBuffer.len = (unsigned long)byteCount;
+        {
+            WRITE_LOCK(_bufferListMutex);
+            _bufferListQueue.push(allocateBuffer);
+            isAdd = true;
 
-        _allocateBufferListSendingIdx = static_cast<int16_t>(nextAllocateIndex);
+            if (_curSendingBufferList || 1 < _bufferListQueue.size())
+                return { isAdd, isAsyncSend };
 
-        if (_curSendingBufferList)
-            return false;
+            _context->_sendBuffer = _curSendingBufferList = allocateBuffer;
+        }
+        isAsyncSend = true;
 
-        _context->_sendBuffer = _curSendingBufferList = &allocateBuffer;
+        return { isAdd, isAsyncSend };
+    }
 
-        return true;
+    std::pair<size_t, bool> SessionSendBuffer::UpdateSentSizeAndSetNextSendBuffer(uint32_t sentSize)
+    {
+        size_t resultSendSize{ 0 };
+        if (sentSize == 0)
+            return { resultSendSize, false };
+
+        WRITE_LOCK(_bufferListMutex);
+        _curSendingBufferList->_sentSize += sentSize;
+        resultSendSize = _curSendingBufferList->_sentSize;
+
+        if (_context->_sendBuffer->_wsaBuffer.len == sentSize)
+        {
+            _context->_sendBuffer = _curSendingBufferList = nullptr;
+            _bufferListQueue.pop();
+            if (!_bufferListQueue.empty())
+            {
+                _context->_sendBuffer = _curSendingBufferList = _bufferListQueue.front();
+                return { resultSendSize, true };
+            }
+        }
+        
+        return { resultSendSize, false };
     }
 
     AsyncSendContext* SessionSendBuffer::GetContext() const

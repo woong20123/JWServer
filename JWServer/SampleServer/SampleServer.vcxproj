@@ -158,12 +158,12 @@
   <ItemGroup>
     <ClCompile Include="GameSessionHandler.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="proto\Test.pb.cc" />
+    <ClCompile Include="proto\code\Test.pb.cc" />
     <ClCompile Include="SampleServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSessionHandler.h" />
-    <ClInclude Include="proto\Test.pb.h" />
+    <ClInclude Include="proto\code\Test.pb.h" />
     <ClInclude Include="SampleServer.h" />
   </ItemGroup>
   <ItemGroup>

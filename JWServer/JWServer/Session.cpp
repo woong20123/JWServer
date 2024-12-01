@@ -67,6 +67,7 @@ namespace jw
         switch (asyncContext->_id)
         {
         case ASYNC_CONTEXT_ID_RECV:
+        {
             if (0 == bytes) {
                 LOG_ERROR(L"recv zero, socket has closed, id:{}", GetId());
                 Close(CloseReason::CLOSE_REASON_CLIENT_DISCONNECTED);
@@ -79,6 +80,10 @@ namespace jw
                 return false;
             }
 
+            for (int i = 0; i < 1090; ++i) {
+                Send("Hello", sizeof("Hello"));
+            }
+
             // 패킷 핸들
             LOG_DEBUG(L"on async recved, id:{}, bytes:{}", GetId(), bytes);
             if (!Recv())
@@ -86,8 +91,29 @@ namespace jw
                 LOG_ERROR(L"next async recv error, id:{}, error:{}", GetId(), WSAGetLastError());
                 return false;
             }
+        }
             break;
         case ASYNC_CONTEXT_ID_SEND:
+        {
+            if (0 == bytes) {
+                LOG_ERROR(L"recv zero, socket has closed, id:{}", GetId());
+                Close(CloseReason::CLOSE_REASON_CLIENT_DISCONNECTED);
+                return false;
+            }
+
+            auto [sentSize, isSetNextSendBuffer] = _sendBuffer->UpdateSentSizeAndSetNextSendBuffer(bytes);
+            if (0 == sentSize)
+            {
+                LOG_ERROR(L"UpdateSentSize fail, id:{}", GetId());
+                return false;
+            }
+
+            // 연속된 sendbuffer가 있다면 asyncSend를 호출 합니다.
+            if (isSetNextSendBuffer)
+            {
+                asyncSend(_sendBuffer->GetContext());
+            }
+        }
             break;
         case ASYNC_CONTEXT_ID_CONNECT:
             break;
@@ -214,10 +240,21 @@ namespace jw
         if (nullptr == byteStream || 0 == byteCount)
             return false;
 
-        if (!_sendBuffer->Add(byteStream, byteCount))
+        auto [isAdded, isAsyncSend] = _sendBuffer->Add(byteStream, byteCount);
+        if (!isAdded)
             return false;
 
-        auto sendContext = _sendBuffer->GetContext();
+        if(isAsyncSend)
+        { 
+            auto sendContext = _sendBuffer->GetContext();
+            asyncSend(sendContext);
+        }
+
+        return true;
+    }
+
+    bool Session::asyncSend(AsyncSendContext * sendContext)
+    {
         unsigned long sendBytes{ 0 }, sentFlag{ 0 };
         if (SOCKET_ERROR == ::WSASend(_socket, &sendContext->_sendBuffer->_wsaBuffer, 1,
             &sendBytes, sentFlag, sendContext, NULL))
