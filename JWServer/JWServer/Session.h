@@ -16,6 +16,7 @@ namespace jw
     struct SendBufferList;
     class Session;
     class SessionHandler;
+    class PacketBufferHandler;
 
     struct SessionContext : public AsyncContext
     {
@@ -93,7 +94,7 @@ namespace jw
     public:
         Session();
 
-        bool Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler);
+        bool Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler, std::shared_ptr<PacketBufferHandler>& packetBufferHandelr);
         bool SetSocketInfo(SOCKET socket, sockaddr_in* remoteAddr);
 
         int64_t GetId() const;
@@ -109,6 +110,7 @@ namespace jw
         bool Recv();
         bool Send(const void* byteStream, const size_t byteCount);
         bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
+        void Dispose();
 
         static SessionID MakeSessionID(uint32_t index, uint16_t portId);
 
@@ -124,6 +126,9 @@ namespace jw
         bool asyncSend(AsyncSendContext* sendContext);
         bool onRecvEvent(AsyncContext* context, paramType bytes) {}
 
+        bool updateRecvedSize(paramType bytes);
+        bool handlePacket();
+
         void setState(SessionState state);
 
         SessionID                               _id;
@@ -136,6 +141,7 @@ namespace jw
         std::shared_mutex                       _mutex;
         std::shared_ptr<SessionHandler>         _sessionHandler;
         SessionState                            _state;
+        std::shared_ptr<PacketBufferHandler>    _packetBufferHandler;
     };
 }
 

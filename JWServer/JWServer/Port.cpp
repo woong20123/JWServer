@@ -97,7 +97,7 @@ namespace jw
         }
 
         SessionID sessionId = Session::MakeSessionID(sessionIndex, _id);
-        if (!session->Initialize(sessionId, _sessionHandler))
+        if (!session->Initialize(sessionId, _sessionHandler, _packetBufferHander))
         {
             LOG_FETAL(L"session Initialize Fail, id:{}, port:{}, sessionIndex:{}, sessionMaxCount:{}", _id, _portNumber, sessionIndex, _sessionMaxCount);
             return nullptr;

@@ -5,20 +5,23 @@
 #include "NetworkHelper.h"
 #include "Logger.h"
 #include "TypeDefinition.h"
+#include "PacketBufferHandler.h"
 
 namespace jw
 {
     Session::Session() :
         _id{ INVALID_VALUE },
+        _ip{ 0 },
         _port{ INVALID_VALUE },
         _socket{ INVALID_SOCKET },
         _recvBuffer{ nullptr },
         _sessionHandler{ nullptr },
-        _state{ SessionState::SESSION_STATE_NONE }
+        _state{ SessionState::SESSION_STATE_NONE },
+        _packetBufferHandler{ nullptr }
     {
     }
 
-    bool Session::Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler)
+    bool Session::Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler, std::shared_ptr<PacketBufferHandler>& packetBufferHandelr)
     {
         if (INVALID_VALUE == sessionId.id || !sessionHandler)
         {
@@ -30,6 +33,7 @@ namespace jw
         _sessionHandler = sessionHandler;
         _recvBuffer = std::make_unique<SessionRecvBuffer>();
         _sendBuffer = std::make_unique<SessionSendBuffer>();
+        _packetBufferHandler = std::move(packetBufferHandelr);
 
         setState(SessionState::SESSION_STATE_CREATE);
 
@@ -74,15 +78,20 @@ namespace jw
                 return false;
             }
 
-            if (0 == _recvBuffer->UpdateRecvedSize(bytes))
+            if (!updateRecvedSize(bytes))
             {
                 LOG_ERROR(L"UpdateRecvedSize fail, id:{}", GetId());
                 return false;
             }
 
-            for (int i = 0; i < 1090; ++i) {
-                Send("Hello", sizeof("Hello"));
+            if (!handlePacket())
+            {
+                LOG_ERROR(L"handlePacket fail, id:{}", GetId());
+                return false;
             }
+
+            // 패킷 핸들러 전까지 테스트를 위해 
+            Send("Hello", sizeof("Hello"));
 
             // 패킷 핸들
             LOG_DEBUG(L"on async recved, id:{}, bytes:{}", GetId(), bytes);
@@ -92,7 +101,7 @@ namespace jw
                 return false;
             }
         }
-            break;
+        break;
         case ASYNC_CONTEXT_ID_SEND:
         {
             if (0 == bytes) {
@@ -114,7 +123,7 @@ namespace jw
                 asyncSend(_sendBuffer->GetContext());
             }
         }
-            break;
+        break;
         case ASYNC_CONTEXT_ID_CONNECT:
             break;
         default:
@@ -128,6 +137,9 @@ namespace jw
     {
         if (!IsClosed())
             Close(CloseReason::CLOSE_REASON_UNKNOWN);
+
+        // 세션을 반납합니다. 
+        Dispose();
     }
 
     bool Session::OnAccept()
@@ -187,14 +199,21 @@ namespace jw
 
         _sessionHandler->OnClosed(this);
 
-        /*if (!NETWORK().DestroySession(GetPortId(), this))
-        {
-            LOG_ERROR(L"DestorySession Fail, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
-            return false;
-        }*/
-
+        // 이곳까지 왔다면 session은 반납 상태입니다. 
         LOG_INFO(L"Session is Close, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
         return true;
+    }
+
+    void Session::Dispose()
+    {
+        const auto id = GetId();
+        const auto ipString = _ipString;
+        const auto port = _port;
+
+        if (!NETWORK().DestroySession(GetPortId(), this))
+        {
+            LOG_ERROR(L"DestorySession Fail, id:{}, ip:{}, port:{}", id, ipString.c_str(), port);
+        }
     }
 
     bool Session::IsConnected() const
@@ -244,8 +263,8 @@ namespace jw
         if (!isAdded)
             return false;
 
-        if(isAsyncSend)
-        { 
+        if (isAsyncSend)
+        {
             auto sendContext = _sendBuffer->GetContext();
             asyncSend(sendContext);
         }
@@ -253,7 +272,7 @@ namespace jw
         return true;
     }
 
-    bool Session::asyncSend(AsyncSendContext * sendContext)
+    bool Session::asyncSend(AsyncSendContext* sendContext)
     {
         unsigned long sendBytes{ 0 }, sentFlag{ 0 };
         if (SOCKET_ERROR == ::WSASend(_socket, &sendContext->_sendBuffer->_wsaBuffer, 1,
@@ -263,6 +282,48 @@ namespace jw
             if (WSA_IO_PENDING != errorCode)
             {
                 LOG_FETAL(L"WSASend() fail, err:{}", errorCode);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool Session::updateRecvedSize(paramType bytes)
+    {
+        if (0 == _recvBuffer->UpdateRecvedSize(bytes))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool Session::handlePacket()
+    {
+        uint32_t handledSize{ 0 };
+        uint32_t bufferSize{ _recvBuffer->GetRecvedSize() };
+
+        const auto packetHeaderSize = _packetBufferHandler->PacketHaederSize();
+
+        while (packetHeaderSize <= bufferSize)
+        {
+            ToPacketInfo packetInfo = _packetBufferHandler->EnableToPacket(_recvBuffer->GetBuffer() + handledSize, bufferSize);
+
+            if (packetInfo._isError)
+                return false;
+
+            if (!packetInfo._packetPointer)
+                break;
+
+            // 이곳에서 패킷을 생성해서 패킷 처리를 수행 합니다. 
+
+        }
+
+        if (0 < handledSize)
+        {
+            if (!_recvBuffer->EraseHandledData(handledSize))
+            {
+                LOG_FETAL(L"Fail to erase the amount handled from the buffer, id:{} handledSize:{}", GetId(), handledSize);
                 return false;
             }
         }

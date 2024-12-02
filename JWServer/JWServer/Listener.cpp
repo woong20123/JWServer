@@ -181,7 +181,7 @@ namespace jw
 
 		if (!session || !session->SetSocketInfo(context._socket, remoteAddr))
 		{
-			LOG_ERROR(L"can not make session, sessionId:{}, portNumber:{}, remoteAddress:{}, remotePort:{}", session->GetId(), _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
+			LOG_ERROR(L"can not make session, portNumber:{}, remoteAddress:{}, remotePort:{}", _portNumber, remoteAddr->sin_addr.S_un.S_addr, ::ntohs(remoteAddr->sin_port));
 			return false;
 		}
 

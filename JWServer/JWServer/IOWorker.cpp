@@ -62,8 +62,10 @@ namespace jw
             {
                 if (!object->HandleEvent(context, numOfBytes))
                 {
-                    LOG_FETAL(L"HandleEvent fail, tid:{}, eventId:{}", std::this_thread::get_id(), object->GetAsyncObjectId());
-                    object->HandleFailedEvent(context, numOfBytes);
+                    if (object) {
+                        LOG_FETAL(L"HandleEvent fail, tid:{}, eventId:{}", std::this_thread::get_id(), object->GetAsyncObjectId());
+                        object->HandleFailedEvent(context, numOfBytes);
+                    }
                 }
             }
             else

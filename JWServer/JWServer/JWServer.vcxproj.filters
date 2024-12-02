@@ -58,6 +58,7 @@
     <ClInclude Include="PacketBuffer.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="PacketBufferHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="PacketBuffer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="PacketBufferHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

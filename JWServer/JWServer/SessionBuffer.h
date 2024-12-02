@@ -22,11 +22,14 @@ namespace jw
         SessionRecvBuffer();
         ~SessionRecvBuffer();
 
+        bufferType* GetBuffer();
         bufferType* GetFreeBuffer();
         uint32_t        GetFreeBufferSize() const;
 
-        uint32_t        UpdateRecvedSize(uint32_t recvedSize);
+        uint32_t        UpdateRecvedSize(const uint32_t recvedSize);
+        bool            EraseHandledData(const uint32_t recvedSize);
         AsyncRecvContext* GetContext() const;
+        uint32_t        GetRecvedSize() const { return _recvedSize; };
     private:
 
         std::unique_ptr<AsyncRecvContext> _context;

@@ -14,6 +14,7 @@ namespace jw
     class Listener;
     class Session;
     class SessionHandler;
+    class PacketBufferHandler;
 
     struct PortInfo
     {
@@ -22,6 +23,7 @@ namespace jw
         HANDLE _iocpHandle{ nullptr };
         size_t _sesionMaxCount{ 0 };
         std::shared_ptr<SessionHandler> _sessionHandler;
+        std::shared_ptr<PacketBufferHandler> _packetBufferHandler;
     };
 
     class Port
@@ -54,6 +56,7 @@ namespace jw
         size_t                                  _sessionMaxCount;
         std::shared_mutex                       _sessionMutex;
         std::shared_ptr<SessionHandler>         _sessionHandler;
+        std::shared_ptr<PacketBufferHandler>    _packetBufferHander;
     };
 
 }

@@ -14,6 +14,11 @@ namespace jw
     SessionRecvBuffer::~SessionRecvBuffer()
     {}
 
+    SessionRecvBuffer::bufferType* SessionRecvBuffer::GetBuffer()
+    {
+        return _buffer;
+    }
+
     SessionRecvBuffer::bufferType* SessionRecvBuffer::GetFreeBuffer()
     {
         return _buffer + _recvedSize;
@@ -24,13 +29,23 @@ namespace jw
         return BUFFER_MAX_SIZE - _recvedSize;
     }
 
-    uint32_t SessionRecvBuffer::UpdateRecvedSize(uint32_t recvedSize)
+    uint32_t SessionRecvBuffer::UpdateRecvedSize(const uint32_t recvedSize)
     {
         if (0 == recvedSize || BUFFER_MAX_SIZE < recvedSize + _recvedSize)
             return 0;
 
         _recvedSize += recvedSize;
         return _recvedSize;
+    }
+
+    bool SessionRecvBuffer::EraseHandledData(const uint32_t handledSize)
+    {
+        if (_recvedSize < handledSize)
+            return false;
+        const auto remainSize = _recvedSize - handledSize;
+        ::memmove(_buffer, _buffer + handledSize, remainSize);
+        _recvedSize = remainSize;
+        return true;
     }
 
     AsyncRecvContext* SessionRecvBuffer::GetContext() const
@@ -102,7 +117,7 @@ namespace jw
                 return { resultSendSize, true };
             }
         }
-        
+
         return { resultSendSize, false };
     }
 
