@@ -2,6 +2,7 @@
 #include "Session.h"
 #include "SessionBuffer.h"
 #include "Logger.h"
+#include "Packet.h"
 
 namespace jw
 {
@@ -28,5 +29,11 @@ namespace jw
     void GameSessionHandler::OnClosed(const Session* session) const
     {
         LOG_INFO(L"On Closed Session, id:{}", session->GetId());
+    }
+
+    void GameSessionHandler::OnPacket(const Session* session, const Packet* packet) const
+    {
+        LOG_INFO(L"On Packet Session, id:{}", session->GetId());
+        int32_t cmd = *reinterpret_cast<int32_t*>(packet->GetBody());
     }
 }

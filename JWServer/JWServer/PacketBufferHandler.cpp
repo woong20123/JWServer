@@ -1,4 +1,5 @@
 ﻿#include "PacketBufferHandler.h"
+#include "Packet.h"
 #include "Logger.h"
 
 namespace jw
@@ -8,9 +9,9 @@ namespace jw
         return Packet::HEADER_SIZE;
     }
 
-    ToPacketInfo TrustedPacketBufferHandler::EnableToPacket(const char* buffer, PacketBufferHandler::packetSize bufferSize)
+    PacketBufferInfo TrustedPacketBufferHandler::EnableToPacket(const char* buffer, PacketBufferHandler::packetSize bufferSize)
     {
-        ToPacketInfo result{ false, 0, nullptr };
+        PacketBufferInfo result;
 
         if (bufferSize < Packet::HEADER_SIZE)
             return result;
@@ -22,14 +23,14 @@ namespace jw
         if (packetSize < Packet::HEADER_SIZE || Packet::MAX_SIZE < packetSize)
         {
             LOG_FETAL(L"Invalid Packet Size, packetSize:{}", packetSize);
-            result._isError = true;
+            //result._isError = true;
             return result;
         }
 
         if (bufferSize < packetSize)
             return result;
 
-        result._packetPointer = header;
+        result._packetBuffer = header;
         return result;
     }
 }

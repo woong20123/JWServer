@@ -128,6 +128,7 @@ namespace jw
 
         bool updateRecvedSize(paramType bytes);
         bool handlePacket();
+        bool updateSentSize(paramType bytes);
 
         void setState(SessionState state);
 

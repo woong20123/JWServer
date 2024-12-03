@@ -12,6 +12,7 @@ namespace jw
         bool OnAccepted(const Session* session) const override;
         bool OnConnected(const Session* session) const override;
         void OnClosed(const Session* session) const override;
+        void OnPacket(const Session* session, const Packet* packet) const override;
     };
 }
 #endif // !__JW_GAME_SESSION_HANDLER_H__ 

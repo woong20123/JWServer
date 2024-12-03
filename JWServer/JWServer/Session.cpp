@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "TypeDefinition.h"
 #include "PacketBufferHandler.h"
+#include "Packet.h"
 
 namespace jw
 {
@@ -110,18 +111,7 @@ namespace jw
                 return false;
             }
 
-            auto [sentSize, isSetNextSendBuffer] = _sendBuffer->UpdateSentSizeAndSetNextSendBuffer(bytes);
-            if (0 == sentSize)
-            {
-                LOG_ERROR(L"UpdateSentSize fail, id:{}", GetId());
-                return false;
-            }
-
-            // 연속된 sendbuffer가 있다면 asyncSend를 호출 합니다.
-            if (isSetNextSendBuffer)
-            {
-                asyncSend(_sendBuffer->GetContext());
-            }
+            updateSentSize(bytes);
         }
         break;
         case ASYNC_CONTEXT_ID_CONNECT:
@@ -300,6 +290,7 @@ namespace jw
 
     bool Session::handlePacket()
     {
+        Packet packet;
         uint32_t handledSize{ 0 };
         uint32_t bufferSize{ _recvBuffer->GetRecvedSize() };
 
@@ -307,16 +298,17 @@ namespace jw
 
         while (packetHeaderSize <= bufferSize)
         {
-            ToPacketInfo packetInfo = _packetBufferHandler->EnableToPacket(_recvBuffer->GetBuffer() + handledSize, bufferSize);
+            PacketBufferInfo packetInfo = _packetBufferHandler->EnableToPacket(_recvBuffer->GetBuffer() + handledSize, bufferSize);
 
             if (packetInfo._isError)
                 return false;
 
-            if (!packetInfo._packetPointer)
+            if (!packetInfo._packetBuffer)
                 break;
 
-            // 이곳에서 패킷을 생성해서 패킷 처리를 수행 합니다. 
+            packet.SetBuffer(packetInfo._packetBuffer);
 
+            _sessionHandler->OnPacket(this, &packet);
         }
 
         if (0 < handledSize)
@@ -328,6 +320,23 @@ namespace jw
             }
         }
 
+        return true;
+    }
+
+    bool Session::updateSentSize(paramType bytes)
+    {
+        auto [sentSize, isSetNextSendBuffer] = _sendBuffer->UpdateSentSizeAndSetNextSendBuffer(bytes);
+        if (0 == sentSize)
+        {
+            LOG_ERROR(L"UpdateSentSize fail, id:{}", GetId());
+            return false;
+        }
+
+        // 연속된 sendbuffer가 있다면 asyncSend를 호출 합니다.
+        if (isSetNextSendBuffer)
+        {
+            asyncSend(_sendBuffer->GetContext());
+        }
         return true;
     }
 

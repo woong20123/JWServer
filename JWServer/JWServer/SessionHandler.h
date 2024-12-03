@@ -4,6 +4,7 @@
 namespace jw
 {
     class Session;
+    class Packet;
     class SessionHandler
     {
     public:
@@ -14,6 +15,7 @@ namespace jw
         virtual bool OnAccepted(const Session* session) const = 0;
         virtual bool OnConnected(const Session* session) const = 0;
         virtual void OnClosed(const Session* session) const = 0;
+        virtual void OnPacket(const Session* session, const Packet* packet) const = 0;
     };
 }
 #endif // !__JW_SESSION_HANDLER_H__

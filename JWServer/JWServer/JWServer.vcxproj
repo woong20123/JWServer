@@ -159,6 +159,7 @@ bootstrap.bat</Command>
     <ClInclude Include="LogWorker.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="NetworkHelper.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketBuffer.h" />
     <ClInclude Include="PacketBufferHandler.h" />
     <ClInclude Include="Port.h" />
@@ -184,6 +185,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="NetworkHelper.cpp" />
     <ClCompile Include="ObjectPool.hpp" />
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketBuffer.cpp" />
     <ClCompile Include="PacketBufferHandler.cpp" />
     <ClCompile Include="Port.cpp" />

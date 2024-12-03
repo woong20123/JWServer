@@ -5,22 +5,11 @@
 
 namespace jw
 {
-    class	Packet
+    struct PacketBufferInfo
     {
-    public:
-        using packetSize = uint16_t;
-        struct Header {
-            packetSize _size;
-        };
-        static constexpr packetSize	MAX_SIZE = 4000;
-        static constexpr packetSize	HEADER_SIZE = sizeof(Header);
-    };
-
-    struct ToPacketInfo
-    {
-        bool _isError;
-        uint32_t _packetSize;
-        void* _packetPointer;
+        bool _isError{ false };
+        uint32_t _packetSize{ 0 };
+        void* _packetBuffer{ nullptr };
     };
 
     class PacketBufferHandler
@@ -29,7 +18,7 @@ namespace jw
         using packetSize = uint16_t;
 
         virtual packetSize PacketHaederSize() = 0;
-        virtual ToPacketInfo EnableToPacket(const char* buffer, packetSize bufferSize) = 0;
+        virtual PacketBufferInfo EnableToPacket(const char* buffer, packetSize bufferSize) = 0;
     };
 
 
@@ -37,7 +26,7 @@ namespace jw
     {
     public:
         packetSize PacketHaederSize() override;
-        ToPacketInfo EnableToPacket(const char* buffer, packetSize bufferSize) override;
+        PacketBufferInfo EnableToPacket(const char* buffer, packetSize bufferSize) override;
     };
 }
 
