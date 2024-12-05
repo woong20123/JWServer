@@ -308,7 +308,7 @@ namespace jw
 
             packet.SetBuffer(packetInfo._packetBuffer);
 
-            _sessionHandler->OnPacket(this, &packet);
+            _sessionHandler->OnPacket(this, packet);
         }
 
         if (0 < handledSize)

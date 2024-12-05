@@ -162,6 +162,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketBuffer.h" />
     <ClInclude Include="PacketBufferHandler.h" />
+    <ClInclude Include="PacketHandler.h" />
     <ClInclude Include="Port.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />

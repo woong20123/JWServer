@@ -64,6 +64,9 @@
     <ClInclude Include="Packet.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="PacketHandler.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />

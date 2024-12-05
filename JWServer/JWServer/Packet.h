@@ -11,6 +11,7 @@ namespace jw
         Packet();
 
         using packetSize = uint16_t;
+        using cmdType = uint32_t;
         struct Header {
             packetSize  _size{ 0 };
         };
@@ -23,6 +24,7 @@ namespace jw
         void SetBuffer(void* buffer);
         Header* GetHeader() const;
         void* GetBody() const;
+        cmdType GetCmd() const;
     private:
         packetSize getSize();
         packetSize getFreeSize();

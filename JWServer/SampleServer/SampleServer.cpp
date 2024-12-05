@@ -3,6 +3,7 @@
 #include "Port.h"
 #include "Network.h"
 #include "GameSessionHandler.h"
+#include "GamePacketHandler.h"
 
 namespace jw
 {
@@ -39,17 +40,8 @@ namespace jw
         clientPort._iocpHandle = NETWORK().GetIOCPHandle();
         clientPort._sesionMaxCount = 5000;
         clientPort._sessionHandler = std::make_shared<GameSessionHandler>();
+        clientPort._sessionHandler->Initialize(std::make_shared<GamePacketHandler>());
         reigstPort(clientPort);
-
-        // 내부서버와 연동하는 포트
-        PortInfo internalPort;
-        internalPort._id = INTERNAL_PORT_ID;
-        internalPort._portNumber = 23211;
-        internalPort._iocpHandle = NETWORK().GetIOCPHandle();
-        internalPort._sesionMaxCount = 1000;
-        internalPort._sessionHandler = std::make_shared<GameSessionHandler>();
-        std::shared_ptr<SessionHandler> sessionHandler = std::make_shared<GameSessionHandler>();
-        reigstPort(internalPort);
 
         return true;
     }

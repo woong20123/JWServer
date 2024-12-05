@@ -8,14 +8,14 @@ int main(int argc, char* argv[])
 {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	jw::ping pingMessage;
+	/*jw::ping pingMessage;
 	pingMessage.set_version(1123);
 	char* buffer = new char[pingMessage.ByteSizeLong()];
 
 	pingMessage.SerializeToArray(buffer, pingMessage.ByteSizeLong());
 
 	jw::ping pingMessage2;
-	pingMessage2.ParsePartialFromArray(buffer, pingMessage.ByteSizeLong());
+	pingMessage2.ParsePartialFromArray(buffer, pingMessage.ByteSizeLong());*/
 
 
 	SAMPLE_SERVER().Initialize(L"SampleServer");

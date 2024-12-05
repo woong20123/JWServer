@@ -22,6 +22,9 @@
     <ClCompile Include="proto\code\Test.pb.cc">
       <Filter>packet</Filter>
     </ClCompile>
+    <ClCompile Include="GamePacketHandler.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />
@@ -30,6 +33,9 @@
     </ClInclude>
     <ClInclude Include="proto\code\Test.pb.h">
       <Filter>packet</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePacketHandler.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

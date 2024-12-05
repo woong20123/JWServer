@@ -34,6 +34,11 @@ namespace jw
         return (_header + 1);
     }
 
+    Packet::cmdType Packet::GetCmd() const
+    {
+        return *reinterpret_cast<cmdType*>(GetBody());
+    }
+
     Packet::packetSize Packet::getSize()
     {
         return _header ? _header->_size : 0;
