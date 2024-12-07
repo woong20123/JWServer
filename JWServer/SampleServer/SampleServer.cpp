@@ -4,6 +4,7 @@
 #include "Network.h"
 #include "GameSessionHandler.h"
 #include "GamePacketHandler.h"
+#include "GamePacketHandleFuncList.h"
 
 namespace jw
 {
@@ -33,14 +34,20 @@ namespace jw
         // 워커 스레드 설정
         setNetworkWorkerThread(Network::DEFAULT_WORKER_THREAD_COUNT);
 
-        // 클라이언트와 연동하는 포트
+        // GameSessionHandler 및 PacketHandler 설정 
+        std::shared_ptr<SessionHandler> gameSessionHandler = std::make_shared<GameSessionHandler>();;
+        std::shared_ptr<PacketHandler> gamePacketHandler = std::make_shared<GamePacketHandler>();
+        GAME_PACKET_HANDLE_FUNC_LIST().GetInstance().Initialize(gamePacketHandler);
+        gameSessionHandler->Initialize(gamePacketHandler);
+
+        // 클라이언트와 연동하는 포트 정보 입력
         PortInfo clientPort;
         clientPort._id = CLIENT_PORT_ID;
         clientPort._portNumber = 13211;
         clientPort._iocpHandle = NETWORK().GetIOCPHandle();
         clientPort._sesionMaxCount = 5000;
-        clientPort._sessionHandler = std::make_shared<GameSessionHandler>();
-        clientPort._sessionHandler->Initialize(std::make_shared<GamePacketHandler>());
+        clientPort._sessionHandler = gameSessionHandler;
+
         reigstPort(clientPort);
 
         return true;

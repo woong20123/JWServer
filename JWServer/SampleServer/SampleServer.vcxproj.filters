@@ -19,11 +19,14 @@
     <ClCompile Include="GameSessionHandler.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="proto\code\Test.pb.cc">
-      <Filter>packet</Filter>
-    </ClCompile>
     <ClCompile Include="GamePacketHandler.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePacketHandleFuncList.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Packet\GamePacket\GamaPacket.pb.cc">
+      <Filter>packet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -31,15 +34,18 @@
     <ClInclude Include="GameSessionHandler.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="proto\code\Test.pb.h">
-      <Filter>packet</Filter>
-    </ClInclude>
     <ClInclude Include="GamePacketHandler.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="GamePacketHandleFuncList.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Packet\GamePacket\GamaPacket.pb.h">
+      <Filter>packet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="proto\Test.proto">
+    <None Include="..\Packet\GamaPacket.proto">
       <Filter>proto</Filter>
     </None>
   </ItemGroup>

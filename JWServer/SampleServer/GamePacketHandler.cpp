@@ -4,7 +4,7 @@
 
 namespace jw
 {
-    bool GamePacketHandler::RegistHandler(const cmdType cmd, const HandlerType handler)
+    bool GamePacketHandler::RegistHandler(const cmdType cmd, HandlerType handler)
     {
         const auto [iter, isSuccess] = _packetHandlersMap.insert({ cmd, handler });
 
@@ -18,7 +18,7 @@ namespace jw
 
     bool GamePacketHandler::HandlePacket(const Session* session, const Packet& packet)
     {
-        const cmdType cmd = packet.GetCmd();
+        const cmdType cmd = *reinterpret_cast<cmdType*>(packet.GetBody());
 
         if (!_packetHandlersMap.contains(cmd))
         {

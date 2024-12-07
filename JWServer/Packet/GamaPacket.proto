@@ -1,0 +1,77 @@
+syntax = "proto3";
+package jw;
+
+enum GamePacketInfo
+{
+	//option allow_alias = true;
+	GAME_PACKET_INFO_UNSPECIFIED = 0;
+	GAME_PACKET_INFO_VERSION = 1;
+}
+
+enum GamePacketCmd
+{
+	GAME_PACKET_CMD_UNSPECIFIED = 0;
+	GAME_PACKET_CMD_PING_REQ = 1;
+	GAME_PACKET_CMD_PING_OK = 2;
+	GAME_PACKET_CMD_HAND_SHAKING_REQ = 3;
+	GAME_PACKET_CMD_HAND_SHAKING_OK = 4;
+	GAME_PACKET_CMD_HAND_SHAKING_FAIL = 5;
+	GAME_PACKET_CMD_CREATE_ROOM_REQ = 6;
+	GAME_PACKET_CMD_CREATE_ROOM_OK = 7;
+	GAME_PACKET_CMD_CREATE_ROOM_FAIL = 8;
+	GAME_PACKET_CMD_ROOM_LIST_REQ = 9;
+	GAME_PACKET_CMD_ROOM_LIST_OK = 10;
+	GAME_PACKET_CMD_ROOM_LIST_FAIL = 11;
+}
+
+enum ErrorCode
+{
+	ERROR_CODE_UNSPECIFIED = 0;
+	ERROR_CODE_SUCCESS = 1;
+}
+
+message RoomListInfo {
+	int64 roomId = 1;
+	string name = 2;
+}
+
+message GameHandShakingReq
+{
+	int32 packetVersion = 1;
+}
+
+message GameHandShakingFail
+{
+	ErrorCode errCode = 1;
+}
+
+message GameCreateRoomReq
+{
+	string name = 1;
+}
+
+message GameCreateRoomOk
+{
+	RoomListInfo roomInfo = 1;
+}
+
+message GameCreateRoomFail
+{
+	ErrorCode errCode = 1;
+}
+
+message GameRoomListReq
+{
+	int32 startSeq = 1;
+	int32 endSeq = 2;
+}
+
+message GameRoomListOk
+{
+	repeated RoomListInfo roomInfo = 1;
+}
+
+message GameRoomListFail
+{
+	repeated RoomListInfo roomInfo = 1;
+}

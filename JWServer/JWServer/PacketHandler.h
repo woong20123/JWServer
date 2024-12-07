@@ -17,7 +17,7 @@ namespace jw
         PacketHandler() {};
         virtual ~PacketHandler() {};
 
-        virtual bool RegistHandler(const cmdType cmd, const HandlerType handler) = 0;
+        virtual bool RegistHandler(const cmdType cmd, HandlerType handler) = 0;
         virtual bool HandlePacket(const Session* session, const  Packet& packet) = 0;
     };
 }

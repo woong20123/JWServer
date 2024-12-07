@@ -156,20 +156,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Packet\GamePacket\GamaPacket.pb.cc" />
+    <ClCompile Include="GamePacketHandleFuncList.cpp" />
     <ClCompile Include="GamePacketHandler.cpp" />
     <ClCompile Include="GameSessionHandler.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="proto\code\Test.pb.cc" />
     <ClCompile Include="SampleServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Packet\GamePacket\GamaPacket.pb.h" />
+    <ClInclude Include="GamePacketHandleFuncList.h" />
     <ClInclude Include="GamePacketHandler.h" />
     <ClInclude Include="GameSessionHandler.h" />
-    <ClInclude Include="proto\code\Test.pb.h" />
     <ClInclude Include="SampleServer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="proto\Test.proto" />
+    <None Include="..\Packet\GamaPacket.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

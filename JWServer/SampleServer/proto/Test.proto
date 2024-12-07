@@ -1,7 +1,0 @@
-syntax = "proto3";
-package jw;
-
-message ping
-{
-	uint32 version = 1;
-}

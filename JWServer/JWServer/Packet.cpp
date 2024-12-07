@@ -29,14 +29,9 @@ namespace jw
     {
         return _header;
     }
-    void* Packet::GetBody() const
+    char* Packet::GetBody() const
     {
-        return (_header + 1);
-    }
-
-    Packet::cmdType Packet::GetCmd() const
-    {
-        return *reinterpret_cast<cmdType*>(GetBody());
+        return reinterpret_cast<char*>(_header + 1);
     }
 
     Packet::packetSize Packet::getSize()
