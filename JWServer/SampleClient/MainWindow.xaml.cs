@@ -16,9 +16,16 @@ namespace SampleClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        LoginInfo LoginInfo { get; set; }
+        List<TextBox> viewTextBoxsList = new List<TextBox>();
+
+        public MainWindow(LoginInfo loginInfo)
         {
             InitializeComponent();
+            this.LoginInfo = loginInfo;
+
+            Chat chat = new Chat(loginInfo);
+            rightFrame.Navigate(chat);
         }
     }
 }
