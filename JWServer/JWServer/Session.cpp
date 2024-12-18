@@ -91,9 +91,6 @@ namespace jw
                 return false;
             }
 
-            // 패킷 핸들러 전까지 테스트를 위해 
-            Send("Hello", sizeof("Hello"));
-
             // 패킷 핸들
             LOG_DEBUG(L"on async recved, id:{}, bytes:{}", GetId(), bytes);
             if (!Recv())
@@ -309,6 +306,8 @@ namespace jw
             packet.SetBuffer(packetInfo._packetBuffer);
 
             _sessionHandler->OnPacket(this, packet);
+            handledSize += packetInfo._packetSize;
+            bufferSize -= packetInfo._packetSize;
         }
 
         if (0 < handledSize)

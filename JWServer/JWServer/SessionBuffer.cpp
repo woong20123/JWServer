@@ -43,7 +43,7 @@ namespace jw
         if (_recvedSize < handledSize)
             return false;
         const auto remainSize = _recvedSize - handledSize;
-        ::memmove(_buffer, _buffer + handledSize, remainSize);
+        ::memmove(_buffer, _buffer + handledSize, handledSize);
         _recvedSize = remainSize;
         return true;
     }

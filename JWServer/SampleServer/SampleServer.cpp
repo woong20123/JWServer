@@ -5,6 +5,7 @@
 #include "GameSessionHandler.h"
 #include "GamePacketHandler.h"
 #include "GamePacketHandleFuncList.h"
+#include "PacketBufferHandler.h"
 
 namespace jw
 {
@@ -47,6 +48,7 @@ namespace jw
         clientPort._iocpHandle = NETWORK().GetIOCPHandle();
         clientPort._sesionMaxCount = 5000;
         clientPort._sessionHandler = gameSessionHandler;
+        clientPort._packetBufferHandler = std::make_shared<TrustedPacketBufferHandler>();
 
         reigstPort(clientPort);
 

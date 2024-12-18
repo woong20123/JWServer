@@ -4,27 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SampleClient"
+        xmlns:vm="clr-namespace:SampleClient"
         mc:Ignorable="d"
         Title="LoginWindow" Height="450" Width="600">
+    <Window.Resources>
+        <Style x:Key="baseTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
+        <Style x:Key="baseButton" TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Background" Value="#FFC5C4C4"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:LoginWindowViewModel />
+    </Window.DataContext>
+
     <Grid Background="#FFDADAD9">
         <Grid.RowDefinitions>
             <RowDefinition Height="149*"/>
             <RowDefinition Height="285*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="LoginButton" Content="로그인" HorizontalAlignment="Center" Margin="0,127,0,0" Grid.Row="1" VerticalAlignment="Top" Width="160" Height="35" FontWeight="Bold" Background="#FFC5C4C4" FontSize="15" Click="LoginButton_Click"/>
-        <Button x:Name="ExitButton" Content="Exit" HorizontalAlignment="Center" Margin="0,175,0,0" Grid.Row="1" VerticalAlignment="Top" Width="160" Height="35" FontWeight="Bold" Background="#FFC5C4C4" FontSize="15" Click="ExitButton_Click"/>
-        <TextBox x:Name="addressInputText" HorizontalAlignment="Left" Margin="245,85,0,0" Grid.Row="1" TextWrapping="Wrap" Text="127.0.0.1:13211" VerticalAlignment="Top" Width="190" RenderTransformOrigin="0.5,0.5" FontSize="15" Background="#FFC5C4C4">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-0.131"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label x:Name="AddressLabel" Content="접속정보" HorizontalAlignment="Left" Margin="169,81,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="15" FontWeight="Bold"/>
-        <Label x:Name="ApplicationNameLabel" Content="Sample Client" HorizontalAlignment="Center" Margin="0,29,0,0" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" Width="300" Height="53" Background="Transparent" HorizontalContentAlignment="Center" Foreground="#FF696868" />
-
+        <Button x:Name="LoginButton" Style="{StaticResource baseButton}" Command="{Binding LoginCommand}" Content="로그인" Margin="0,127,0,0" Grid.Row="1" VerticalAlignment="Top" Width="160" Height="35"/>
+        <Button x:Name="ExitButton" Style="{StaticResource baseButton}" Command="{Binding ExitCommand}" Content="Exit" Margin="0,175,0,0" Grid.Row="1" VerticalAlignment="Top" Width="160" Height="35" />
+        <TextBox x:Name="addressInputText" HorizontalAlignment="Left" Margin="245,85,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding AddressInfo}" VerticalAlignment="Top" Width="190" RenderTransformOrigin="0.5,0.5" FontSize="15" Background="#FFC5C4C4" />
+        <TextBlock x:Name="AddressLabel" Text="접속정보" Style="{StaticResource baseTextBlock}" HorizontalAlignment="Left" Margin="169,86,0,0" Grid.Row="1" />
+        <TextBlock x:Name="ApplicationNameLabel" Text="Sample Client" HorizontalAlignment="Center" Margin="0,29,0,0" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" Width="300" Height="53" Background="Transparent" Foreground="#FF696868" />
+        <TextBlock x:Name="nameTextBlock" Text="이     름" Style="{StaticResource baseTextBlock}" HorizontalAlignment="Left" Margin="169,59,0,0" Grid.Row="1" />
+        <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Margin="245,59,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" Width="190" RenderTransformOrigin="0.5,0.5" FontSize="15" Background="#FFC5C4C4"/>
     </Grid>
 </Window>

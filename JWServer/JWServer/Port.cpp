@@ -15,8 +15,8 @@ namespace jw
         _ipcpHandle{ INVALID_HANDLE_VALUE },
         _sessionList{ nullptr },
         _sessionMaxCount{ INVALID_VALUE },
-        _sessionHandler{ nullptr }
-
+        _sessionHandler{ nullptr },
+        _packetBufferHander{ nullptr }
     {
     }
 
@@ -32,7 +32,7 @@ namespace jw
     bool Port::Initialize(const PortInfo& info)
     {
         if (info._id < INVALID_VALUE || info._portNumber <= INVALID_VALUE || info._iocpHandle == INVALID_HANDLE_VALUE || info._sesionMaxCount <= INVALID_VALUE
-            || !info._sessionHandler)
+            || !info._sessionHandler || !info._packetBufferHandler)
         {
 
             LOG_FETAL(L"Initialize Fail invalid parameter, id:{}, portNumber:{}, ipcpHandle:{}, sesionMaxCount:{}, sessionHandler:{}",
@@ -48,6 +48,8 @@ namespace jw
         }
 
         _sessionHandler = info._sessionHandler;
+
+        _packetBufferHander = info._packetBufferHandler;
 
         initializeSessionIndex(info._sesionMaxCount);
         _id = info._id;
