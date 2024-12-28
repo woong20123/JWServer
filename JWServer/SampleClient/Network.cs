@@ -1,4 +1,5 @@
-﻿using Jw;
+﻿using Google.Protobuf;
+using Jw;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,11 +35,10 @@ namespace SampleClient
             }
         }
 
-        private Session session;
+        private Session session = new Session();
 
         public void Initialize()
         {
-            session = new Session();
             session.Initialize();
         }
 
@@ -102,31 +102,38 @@ namespace SampleClient
             return sizeof(ushort) + sizeof(uint);
         }
 
-        public void SendPingReq()
+        public byte[] makeSendBuffer(uint cmd, int reqSize, byte[] reqBytes)
         {
-            ushort size = GetDefaultPacketSize();
-            uint cmd = (uint)GamePacketCmd.PingReq;
+            ushort defaultSize = GetDefaultPacketSize();
+            ushort size = (ushort)(defaultSize + reqSize);
             byte[] sendBuffer = new byte[size];
-
             int bufferIndex = 0;
             Array.Copy(BitConverter.GetBytes(size), 0, sendBuffer, bufferIndex, sizeof(ushort)); bufferIndex += sizeof(ushort);
             Array.Copy(BitConverter.GetBytes(cmd), 0, sendBuffer, bufferIndex, sizeof(uint)); bufferIndex += sizeof(uint);
+            if (0 < reqSize)
+                Array.Copy(reqBytes, 0, sendBuffer, bufferIndex, reqSize); bufferIndex += reqSize;
 
-            Network.Instance.Send(sendBuffer);
+            return sendBuffer;
         }
 
         async public Task AsyncSendPingReq()
         {
-            ushort size = GetDefaultPacketSize();
-            uint cmd = (uint)GamePacketCmd.PingReq;
-            byte[] sendBuffer = new byte[size];
-
-            int bufferIndex = 0;
-            Array.Copy(BitConverter.GetBytes(size), 0, sendBuffer, bufferIndex, sizeof(ushort)); bufferIndex += sizeof(ushort);
-            Array.Copy(BitConverter.GetBytes(cmd), 0, sendBuffer, bufferIndex, sizeof(uint)); bufferIndex += sizeof(uint);
-
+            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.PingReq, 0, []);
             await Network.Instance.AsyncSend(sendBuffer);
         }
 
+        async public Task AsyncSendChatReq(string name, string msg)
+        {
+            GameChatReq chatReq = new GameChatReq
+            {
+                Name = name,
+                Msg = msg
+            };
+
+            byte[] reqBytes = chatReq.ToByteArray();
+            int reqBytesLength = reqBytes.Length;
+            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.ChatReq, reqBytesLength, reqBytes);
+            await Network.Instance.AsyncSend(sendBuffer);
+        }
     }
 }

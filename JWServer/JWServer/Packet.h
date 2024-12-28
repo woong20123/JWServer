@@ -23,9 +23,10 @@ namespace jw
         void SetBuffer(void* buffer);
         Header* GetHeader() const;
         char* GetBody() const;
+        packetSize GetBodySize() const;
     private:
-        packetSize getSize();
-        packetSize getFreeSize();
+        packetSize getSize() const;
+        packetSize getFreeSize() const;
         Header* _header;
     };
 }

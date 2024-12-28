@@ -34,12 +34,18 @@ namespace jw
         return reinterpret_cast<char*>(_header + 1);
     }
 
-    Packet::packetSize Packet::getSize()
+    Packet::packetSize Packet::GetBodySize() const
+    {
+        if (getSize() == 0) return 0;
+        return getSize() - HEADER_SIZE;
+    }
+
+    Packet::packetSize Packet::getSize() const
     {
         return _header ? _header->_size : 0;
     }
 
-    Packet::packetSize Packet::getFreeSize()
+    Packet::packetSize Packet::getFreeSize() const
     {
         return _header ? MAX_SIZE - _header->_size : 0;
     }

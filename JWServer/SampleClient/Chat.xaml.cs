@@ -31,16 +31,16 @@ namespace SampleClient
         {
             if (Key.Enter == e.Key)
             {
-                sendText();
+                _ = sendText();
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            sendText();
+            _ = sendText();
         }
 
-        void sendText()
+        async Task sendText()
         {
             string? inputString = inputTextBox.Text;
 
@@ -49,6 +49,8 @@ namespace SampleClient
 
             inputTextBox.Text = String.Empty;
             viewTextBox.Text += String.Format($"{LoginInfo.UserName} : {inputString} {Environment.NewLine}");
+
+            await Network.Instance.AsyncSendChatReq(LoginInfo.UserName, inputString);
         }
     }
 }

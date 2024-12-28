@@ -22,6 +22,8 @@ enum GamePacketCmd
 	GAME_PACKET_CMD_ROOM_LIST_REQ = 9;
 	GAME_PACKET_CMD_ROOM_LIST_OK = 10;
 	GAME_PACKET_CMD_ROOM_LIST_FAIL = 11;
+	GAME_PACKET_CMD_CHAT_REQ = 12;
+	GAME_PACKET_CMD_CHAT_OK = 13;
 }
 
 enum ErrorCode
@@ -74,4 +76,16 @@ message GameRoomListOk
 message GameRoomListFail
 {
 	repeated RoomListInfo roomInfo = 1;
+}
+
+message GameChatReq
+{
+	string name = 1;
+	string msg = 2;
+}
+
+message GameChatOk
+{
+	string name = 1;
+	string msg = 2;
 }

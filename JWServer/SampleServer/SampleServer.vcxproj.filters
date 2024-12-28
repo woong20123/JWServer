@@ -25,7 +25,7 @@
     <ClCompile Include="GamePacketHandleFuncList.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\Packet\GamePacket\GamaPacket.pb.cc">
+    <ClCompile Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.cc">
       <Filter>packet</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,7 +40,7 @@
     <ClInclude Include="GamePacketHandleFuncList.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\Packet\GamePacket\GamaPacket.pb.h">
+    <ClInclude Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.h">
       <Filter>packet</Filter>
     </ClInclude>
   </ItemGroup>

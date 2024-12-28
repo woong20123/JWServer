@@ -16,11 +16,10 @@ namespace SampleClient
 
     class Session : IDisposable
     {
-        public event EventHandler<EventArgs> OnInitialize;
-        public event EventHandler<EventArgs> OnConnected;
-        public event EventHandler<EventArgs> OnClosed;
-        public event EventHandler<SessionRecvEventArg> OnRecved;
-        public event EventHandler<EventArgs> OnSent;
+        public event EventHandler<EventArgs>? OnInitialize;
+        public event EventHandler<EventArgs>? OnConnected;
+        public event EventHandler<SessionRecvEventArg>? OnRecved;
+        public event EventHandler<EventArgs>? OnSent;
 
         public readonly object NetworkStreamLock = new object();
 
@@ -56,8 +55,7 @@ namespace SampleClient
 
         public void Initialize()
         {
-            if (OnInitialize != null)
-                OnInitialize(this, new EventArgs());
+            OnInitialize?.Invoke(this, new EventArgs());
         }
 
         public void Dispose()
@@ -95,15 +93,13 @@ namespace SampleClient
 
         async public Task AsyncConnect(string ip, int port)
         {
-            await client.ConnectAsync(ip, port).ConfigureAwait(false);
-
-            if (OnConnected != null)
-                OnConnected(this, new EventArgs());
+            await client.ConnectAsync(ip, port);
+            OnConnected?.Invoke(this, new EventArgs());
         }
 
         async public Task AsyncSend(byte[] sendBuffer)
         {
-            await NetworkStream.WriteAsync(sendBuffer, 0, sendBuffer.Length).ConfigureAwait(false);
+            await NetworkStream.WriteAsync(sendBuffer, 0, sendBuffer.Length);
 
             if (OnSent != null)
                 OnSent(this, new EventArgs());
@@ -135,7 +131,7 @@ namespace SampleClient
                     {
                         SessionRecvEventArg arg = new SessionRecvEventArg();
                         arg.Data = ms.ToArray();
-                        OnRecved(this, arg);
+                        OnRecved?.Invoke(this, arg);
                     }
                 }
             }

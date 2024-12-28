@@ -181,6 +181,66 @@ struct GameCreateRoomFailDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameCreateRoomFailDefaultTypeInternal _GameCreateRoomFail_default_instance_;
 
+inline constexpr GameChatReq::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        msg_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR GameChatReq::GameChatReq(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct GameChatReqDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GameChatReqDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GameChatReqDefaultTypeInternal() {}
+  union {
+    GameChatReq _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameChatReqDefaultTypeInternal _GameChatReq_default_instance_;
+
+inline constexpr GameChatOk::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        msg_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR GameChatOk::GameChatOk(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct GameChatOkDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GameChatOkDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GameChatOkDefaultTypeInternal() {}
+  union {
+    GameChatOk _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameChatOkDefaultTypeInternal _GameChatOk_default_instance_;
+
 inline constexpr GameRoomListOk::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : roominfo_{},
@@ -346,6 +406,26 @@ const ::uint32_t
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::jw::GameRoomListFail, _impl_.roominfo_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatReq, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatReq, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatReq, _impl_.msg_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatOk, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatOk, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::jw::GameChatOk, _impl_.msg_),
 };
 
 static const ::_pbi::MigrationSchema
@@ -359,6 +439,8 @@ static const ::_pbi::MigrationSchema
         {56, -1, -1, sizeof(::jw::GameRoomListReq)},
         {66, -1, -1, sizeof(::jw::GameRoomListOk)},
         {75, -1, -1, sizeof(::jw::GameRoomListFail)},
+        {84, -1, -1, sizeof(::jw::GameChatReq)},
+        {94, -1, -1, sizeof(::jw::GameChatOk)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::jw::_RoomListInfo_default_instance_._instance,
@@ -370,6 +452,8 @@ static const ::_pb::Message* const file_default_instances[] = {
     &::jw::_GameRoomListReq_default_instance_._instance,
     &::jw::_GameRoomListOk_default_instance_._instance,
     &::jw::_GameRoomListFail_default_instance_._instance,
+    &::jw::_GameChatReq_default_instance_._instance,
+    &::jw::_GameChatOk_default_instance_._instance,
 };
 const char descriptor_table_protodef_GamaPacket_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
@@ -384,34 +468,38 @@ const char descriptor_table_protodef_GamaPacket_2eproto[] ABSL_ATTRIBUTE_SECTION
     "eRoomListReq\022\020\n\010startSeq\030\001 \001(\005\022\016\n\006endSeq"
     "\030\002 \001(\005\"4\n\016GameRoomListOk\022\"\n\010roomInfo\030\001 \003"
     "(\0132\020.jw.RoomListInfo\"6\n\020GameRoomListFail"
-    "\022\"\n\010roomInfo\030\001 \003(\0132\020.jw.RoomListInfo*P\n\016"
-    "GamePacketInfo\022 \n\034GAME_PACKET_INFO_UNSPE"
-    "CIFIED\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020\001*\265"
-    "\003\n\rGamePacketCmd\022\037\n\033GAME_PACKET_CMD_UNSP"
-    "ECIFIED\020\000\022\034\n\030GAME_PACKET_CMD_PING_REQ\020\001\022"
-    "\033\n\027GAME_PACKET_CMD_PING_OK\020\002\022$\n GAME_PAC"
-    "KET_CMD_HAND_SHAKING_REQ\020\003\022#\n\037GAME_PACKE"
-    "T_CMD_HAND_SHAKING_OK\020\004\022%\n!GAME_PACKET_C"
-    "MD_HAND_SHAKING_FAIL\020\005\022#\n\037GAME_PACKET_CM"
-    "D_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CMD_C"
-    "REATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CREAT"
-    "E_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM_LI"
-    "ST_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST_OK"
-    "\020\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020\013*\?"
-    "\n\tErrorCode\022\032\n\026ERROR_CODE_UNSPECIFIED\020\000\022"
-    "\026\n\022ERROR_CODE_SUCCESS\020\001b\006proto3"
+    "\022\"\n\010roomInfo\030\001 \003(\0132\020.jw.RoomListInfo\"(\n\013"
+    "GameChatReq\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\"\'"
+    "\n\nGameChatOk\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t*"
+    "P\n\016GamePacketInfo\022 \n\034GAME_PACKET_INFO_UN"
+    "SPECIFIED\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020"
+    "\001*\360\003\n\rGamePacketCmd\022\037\n\033GAME_PACKET_CMD_U"
+    "NSPECIFIED\020\000\022\034\n\030GAME_PACKET_CMD_PING_REQ"
+    "\020\001\022\033\n\027GAME_PACKET_CMD_PING_OK\020\002\022$\n GAME_"
+    "PACKET_CMD_HAND_SHAKING_REQ\020\003\022#\n\037GAME_PA"
+    "CKET_CMD_HAND_SHAKING_OK\020\004\022%\n!GAME_PACKE"
+    "T_CMD_HAND_SHAKING_FAIL\020\005\022#\n\037GAME_PACKET"
+    "_CMD_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CM"
+    "D_CREATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CR"
+    "EATE_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM"
+    "_LIST_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST"
+    "_OK\020\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020"
+    "\013\022\034\n\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_"
+    "PACKET_CMD_CHAT_OK\020\r*\?\n\tErrorCode\022\032\n\026ERR"
+    "OR_CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCC"
+    "ESS\020\001b\006proto3"
 };
 static ::absl::once_flag descriptor_table_GamaPacket_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_GamaPacket_2eproto = {
     false,
     false,
-    1071,
+    1213,
     descriptor_table_protodef_GamaPacket_2eproto,
     "GamaPacket.proto",
     &descriptor_table_GamaPacket_2eproto_once,
     nullptr,
     0,
-    9,
+    11,
     schemas,
     file_default_instances,
     TableStruct_GamaPacket_2eproto::offsets,
@@ -433,9 +521,9 @@ const ::google::protobuf::EnumDescriptor* GamePacketCmd_descriptor() {
   return file_level_enum_descriptors_GamaPacket_2eproto[1];
 }
 PROTOBUF_CONSTINIT const uint32_t GamePacketCmd_internal_data_[] = {
-    786432u, 0u, };
+    917504u, 0u, };
 bool GamePacketCmd_IsValid(int value) {
-  return 0 <= value && value <= 11;
+  return 0 <= value && value <= 13;
 }
 const ::google::protobuf::EnumDescriptor* ErrorCode_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_GamaPacket_2eproto);
@@ -2433,6 +2521,510 @@ void GameRoomListFail::InternalSwap(GameRoomListFail* PROTOBUF_RESTRICT other) {
 }
 
 ::google::protobuf::Metadata GameRoomListFail::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class GameChatReq::_Internal {
+ public:
+};
+
+GameChatReq::GameChatReq(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:jw.GameChatReq)
+}
+inline PROTOBUF_NDEBUG_INLINE GameChatReq::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::jw::GameChatReq& from_msg)
+      : name_(arena, from.name_),
+        msg_(arena, from.msg_),
+        _cached_size_{0} {}
+
+GameChatReq::GameChatReq(
+    ::google::protobuf::Arena* arena,
+    const GameChatReq& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  GameChatReq* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:jw.GameChatReq)
+}
+inline PROTOBUF_NDEBUG_INLINE GameChatReq::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : name_(arena),
+        msg_(arena),
+        _cached_size_{0} {}
+
+inline void GameChatReq::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+GameChatReq::~GameChatReq() {
+  // @@protoc_insertion_point(destructor:jw.GameChatReq)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void GameChatReq::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.name_.Destroy();
+  _impl_.msg_.Destroy();
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    GameChatReq::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_GameChatReq_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &GameChatReq::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<GameChatReq>(),
+            ::google::protobuf::Message::GetNewImpl<GameChatReq>(),
+            ::google::protobuf::Message::GetClearImpl<GameChatReq>(), &GameChatReq::ByteSizeLong,
+                &GameChatReq::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(GameChatReq, _impl_._cached_size_),
+            false,
+        },
+        &GameChatReq::kDescriptorMethods,
+        &descriptor_table_GamaPacket_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* GameChatReq::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 0, 30, 2> GameChatReq::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::jw::GameChatReq>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // string msg = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(GameChatReq, _impl_.msg_)}},
+    // string name = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(GameChatReq, _impl_.name_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string name = 1;
+    {PROTOBUF_FIELD_OFFSET(GameChatReq, _impl_.name_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string msg = 2;
+    {PROTOBUF_FIELD_OFFSET(GameChatReq, _impl_.msg_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+  }},
+  // no aux_entries
+  {{
+    "\16\4\3\0\0\0\0\0"
+    "jw.GameChatReq"
+    "name"
+    "msg"
+  }},
+};
+
+PROTOBUF_NOINLINE void GameChatReq::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GameChatReq)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.name_.ClearToEmpty();
+  _impl_.msg_.ClearToEmpty();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* GameChatReq::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const GameChatReq& this_ = static_cast<const GameChatReq&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* GameChatReq::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const GameChatReq& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GameChatReq)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string name = 1;
+          if (!this_._internal_name().empty()) {
+            const std::string& _s = this_._internal_name();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameChatReq.name");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // string msg = 2;
+          if (!this_._internal_msg().empty()) {
+            const std::string& _s = this_._internal_msg();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameChatReq.msg");
+            target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GameChatReq)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t GameChatReq::ByteSizeLong(const MessageLite& base) {
+          const GameChatReq& this_ = static_cast<const GameChatReq&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t GameChatReq::ByteSizeLong() const {
+          const GameChatReq& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:jw.GameChatReq)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string name = 1;
+            if (!this_._internal_name().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_name());
+            }
+            // string msg = 2;
+            if (!this_._internal_msg().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_msg());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void GameChatReq::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GameChatReq*>(&to_msg);
+  auto& from = static_cast<const GameChatReq&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameChatReq)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (!from._internal_msg().empty()) {
+    _this->_internal_set_msg(from._internal_msg());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void GameChatReq::CopyFrom(const GameChatReq& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameChatReq)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void GameChatReq::InternalSwap(GameChatReq* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.msg_, &other->_impl_.msg_, arena);
+}
+
+::google::protobuf::Metadata GameChatReq::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class GameChatOk::_Internal {
+ public:
+};
+
+GameChatOk::GameChatOk(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:jw.GameChatOk)
+}
+inline PROTOBUF_NDEBUG_INLINE GameChatOk::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::jw::GameChatOk& from_msg)
+      : name_(arena, from.name_),
+        msg_(arena, from.msg_),
+        _cached_size_{0} {}
+
+GameChatOk::GameChatOk(
+    ::google::protobuf::Arena* arena,
+    const GameChatOk& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  GameChatOk* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:jw.GameChatOk)
+}
+inline PROTOBUF_NDEBUG_INLINE GameChatOk::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : name_(arena),
+        msg_(arena),
+        _cached_size_{0} {}
+
+inline void GameChatOk::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+GameChatOk::~GameChatOk() {
+  // @@protoc_insertion_point(destructor:jw.GameChatOk)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void GameChatOk::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.name_.Destroy();
+  _impl_.msg_.Destroy();
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    GameChatOk::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_GameChatOk_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &GameChatOk::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<GameChatOk>(),
+            ::google::protobuf::Message::GetNewImpl<GameChatOk>(),
+            ::google::protobuf::Message::GetClearImpl<GameChatOk>(), &GameChatOk::ByteSizeLong,
+                &GameChatOk::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(GameChatOk, _impl_._cached_size_),
+            false,
+        },
+        &GameChatOk::kDescriptorMethods,
+        &descriptor_table_GamaPacket_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* GameChatOk::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 0, 29, 2> GameChatOk::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::jw::GameChatOk>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // string msg = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(GameChatOk, _impl_.msg_)}},
+    // string name = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(GameChatOk, _impl_.name_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string name = 1;
+    {PROTOBUF_FIELD_OFFSET(GameChatOk, _impl_.name_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string msg = 2;
+    {PROTOBUF_FIELD_OFFSET(GameChatOk, _impl_.msg_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+  }},
+  // no aux_entries
+  {{
+    "\15\4\3\0\0\0\0\0"
+    "jw.GameChatOk"
+    "name"
+    "msg"
+  }},
+};
+
+PROTOBUF_NOINLINE void GameChatOk::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GameChatOk)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.name_.ClearToEmpty();
+  _impl_.msg_.ClearToEmpty();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* GameChatOk::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const GameChatOk& this_ = static_cast<const GameChatOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* GameChatOk::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const GameChatOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GameChatOk)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string name = 1;
+          if (!this_._internal_name().empty()) {
+            const std::string& _s = this_._internal_name();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameChatOk.name");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // string msg = 2;
+          if (!this_._internal_msg().empty()) {
+            const std::string& _s = this_._internal_msg();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameChatOk.msg");
+            target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GameChatOk)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t GameChatOk::ByteSizeLong(const MessageLite& base) {
+          const GameChatOk& this_ = static_cast<const GameChatOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t GameChatOk::ByteSizeLong() const {
+          const GameChatOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:jw.GameChatOk)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string name = 1;
+            if (!this_._internal_name().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_name());
+            }
+            // string msg = 2;
+            if (!this_._internal_msg().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_msg());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void GameChatOk::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GameChatOk*>(&to_msg);
+  auto& from = static_cast<const GameChatOk&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameChatOk)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (!from._internal_msg().empty()) {
+    _this->_internal_set_msg(from._internal_msg());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void GameChatOk::CopyFrom(const GameChatOk& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameChatOk)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void GameChatOk::InternalSwap(GameChatOk* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.msg_, &other->_impl_.msg_, arena);
+}
+
+::google::protobuf::Metadata GameChatOk::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // @@protoc_insertion_point(namespace_scope)

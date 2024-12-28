@@ -156,7 +156,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Packet\GamePacket\GamaPacket.pb.cc" />
+    <ClCompile Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.cc" />
     <ClCompile Include="GamePacketHandleFuncList.cpp" />
     <ClCompile Include="GamePacketHandler.cpp" />
     <ClCompile Include="GameSessionHandler.cpp" />
@@ -164,7 +164,7 @@
     <ClCompile Include="SampleServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Packet\GamePacket\GamaPacket.pb.h" />
+    <ClInclude Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.h" />
     <ClInclude Include="GamePacketHandleFuncList.h" />
     <ClInclude Include="GamePacketHandler.h" />
     <ClInclude Include="GameSessionHandler.h" />

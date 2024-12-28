@@ -169,6 +169,7 @@ bootstrap.bat</Command>
     <ClInclude Include="SessionBuffer.h" />
     <ClInclude Include="SessionHandler.h" />
     <ClInclude Include="Singleton.hpp" />
+    <ClInclude Include="StringConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -195,6 +196,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionBuffer.cpp" />
     <ClCompile Include="StopWatch.h" />
+    <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="TypeDefinition.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

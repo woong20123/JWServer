@@ -17,6 +17,7 @@ namespace jw
         bool HandleGameHandShakingReq(const Session* session, const Packet& packet);
         bool HandleGameCreateRoomReq(const Session* session, const Packet& packet);
         bool HandleGameRoomListReq(const Session* session, const Packet& packet);
+        bool HandleGameChatReq(const Session* session, const Packet& packet);
     protected:
         GamePacketHandleFuncList() = default;
         ~GamePacketHandleFuncList() = default;
