@@ -1,0 +1,28 @@
+﻿#include "PacketBufferPool.h"
+#include "PacketBuffer.h"
+
+namespace jw
+{
+    PacketBufferPool::PacketBufferPool()
+    {}
+
+    PacketBuffer* PacketBufferPool::Acquire()
+    {
+        PacketBuffer* ret{ _objectPool.Acquire() };
+        ++_useCount;
+        return ret;
+    }
+
+    void PacketBufferPool::Release(PacketBuffer* obj)
+    {
+        if (!obj) return;
+        _objectPool.Release(obj);
+        --_useCount;
+    }
+
+    uint64_t PacketBufferPool::GetUseCount()
+    {
+        uint64_t useCount = _useCount;
+        return useCount;
+    }
+}

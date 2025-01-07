@@ -47,7 +47,7 @@ namespace jw
 			// allicateCount를 2배씩 증가시켜 최대 MAX_ALLOCATE_COUNT까지 증가 시킵니다.
 			if (_allocateCount < MAX_ALLOCATE_COUNT)
 			{
-				_allocateCount = std::min(_allocateCount * 2, MAX_ALLOCATE_COUNT);
+				_allocateCount = min(_allocateCount * 2, MAX_ALLOCATE_COUNT);
 			}
 		}
 

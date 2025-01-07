@@ -78,7 +78,7 @@ namespace jw
 
         auto allocateBuffer = std::make_shared<SendBufferList>();
         ::memcpy(allocateBuffer->_buffer, byteStream, byteCount);
-        allocateBuffer->_wsaBuffer.buf = (char*)byteStream;
+        allocateBuffer->_wsaBuffer.buf = (char*)allocateBuffer->_buffer;
         allocateBuffer->_wsaBuffer.len = (unsigned long)byteCount;
         allocateBuffer->_sentSize = 0;
 

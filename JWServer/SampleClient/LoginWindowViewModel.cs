@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SampleClient
 {
@@ -33,7 +34,7 @@ namespace SampleClient
             set => SetProperty(ref addressInfo, value);
         }
 
-        async private void Login()
+        private void Login()
         {
             string ip = String.Empty;
             int port = 0;
@@ -48,17 +49,20 @@ namespace SampleClient
             ip = addressInfos[0];
             port = int.Parse(addressInfos[1]);
 
-            await Network.Instance.SessionConnect(ip, port,
+            Network.Network.Instance.SessionConnect(ip, port,
                 () =>
                 {
-                    MainWindow mainWindow = new MainWindow(new LoginInfo("woong", ip, port));
-                    mainWindow.Show();
-
-                    this.OnRequestWindowClose!(this, new EventArgs());
-                    Task.Run(() =>
+                    Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
                     {
-                        MessageBox.Show("서버 연결에 성공하였습니다.", "Information");
-                    });
+                        MainWindow mainWindow = new MainWindow(new LoginInfo("woong", ip, port));
+                        mainWindow.Show();
+
+                        this.OnRequestWindowClose!(this, new EventArgs());
+                        Task.Run(() =>
+                        {
+                            MessageBox.Show("서버 연결에 성공하였습니다.", "Information");
+                        });
+                    }));
                 });
         }
 

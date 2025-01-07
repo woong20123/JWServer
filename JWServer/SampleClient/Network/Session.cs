@@ -1,17 +1,47 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
-namespace SampleClient
+namespace SampleClient.Network
 {
 
-    struct SessionRecvEventArg
+    class SessionRecvEventArg
     {
-        public byte[] Data;
+        public SessionRecvEventArg(byte[] data, int dataSize)
+        {
+            Data = data;
+            DataSize = dataSize;
+            UseSize = 0;
+        }
+        public readonly byte[] Data;
+        public readonly int DataSize;
+        public int UseSize { get; set; }
+    }
+
+    class SessionConnectArg
+    {
+        public SessionConnectArg(string ip, int port)
+        {
+            IP = ip;
+            Port = port;
+        }
+        public readonly string IP;
+        public readonly int Port;
+    }
+
+    class SessionSendArg
+    {
+        public SessionSendArg(byte[] data)
+        {
+            Data = data;
+        }
+        public readonly byte[] Data;
     }
 
     class Session : IDisposable
@@ -25,6 +55,9 @@ namespace SampleClient
 
         private TcpClient client = new TcpClient();
         private NetworkStream? ns = null;
+        private Thread? workerThread = null;
+        private ConcurrentQueue<EventArgs> _eventArgQueue = new ConcurrentQueue<EventArgs>();
+        private byte[] _recvBuffer = new byte[8192];
 
         private bool _disposed = false;
 
@@ -56,12 +89,19 @@ namespace SampleClient
         public void Initialize()
         {
             OnInitialize?.Invoke(this, new EventArgs());
+            workerThread = new Thread(worker);
+            workerThread.Start();
         }
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void worker()
+        {
+
         }
 
         protected virtual void Dispose(bool disposing)
@@ -91,47 +131,52 @@ namespace SampleClient
             return true;
         }
 
-        async public Task AsyncConnect(string ip, int port)
+        async public Task AsyncConnect(SessionConnectArg arg)
         {
-            await client.ConnectAsync(ip, port);
-            OnConnected?.Invoke(this, new EventArgs());
+            await client.ConnectAsync(arg.IP, arg.Port).ConfigureAwait(false);
+
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                OnConnected?.Invoke(this, new EventArgs());
+            }));
         }
 
         async public Task AsyncSend(byte[] sendBuffer)
         {
-            await NetworkStream.WriteAsync(sendBuffer, 0, sendBuffer.Length);
+            await NetworkStream.WriteAsync(sendBuffer, 0, sendBuffer.Length).ConfigureAwait(false);
 
             if (OnSent != null)
-                OnSent(this, new EventArgs());
-        }
-
-        public void Send(byte[] sendBuffer)
-        {
-            NetworkStream.Write(sendBuffer, 0, sendBuffer.Length);
-
-            if (OnSent != null)
-                OnSent(this, new EventArgs());
+                OnSent?.Invoke(this, new EventArgs());
         }
 
 
         async public Task AsyncRecv()
         {
             NetworkStream ns = NetworkStream;
-            using MemoryStream ms = new MemoryStream();
-            byte[] buffer = new byte[4096];
+            int recvSize = 0;
 
             while (client.Connected)
             {
-                int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
-                ms.Write(buffer, 0, bytesRead);
+                int remainRecvBufferSize = _recvBuffer.Length - recvSize;
+                int bytesRead = await ns.ReadAsync(_recvBuffer, recvSize, remainRecvBufferSize).ConfigureAwait(false);
+                recvSize += bytesRead;
                 if (!ns.DataAvailable)
                 {
-                    ms.Seek(0, SeekOrigin.Begin);
                     if (OnRecved != null)
                     {
-                        SessionRecvEventArg arg = new SessionRecvEventArg();
-                        arg.Data = ms.ToArray();
+                        SessionRecvEventArg arg = new SessionRecvEventArg(_recvBuffer, recvSize);
                         OnRecved?.Invoke(this, arg);
+
+                        if (recvSize < arg.UseSize)
+                            new Exception($"recvSize is low then zero {recvSize}");
+
+                        // 사용한 버퍼 초기화 
+                        Array.Clear(_recvBuffer, 0, arg.UseSize);
+                        // 남아 있는 버퍼 복사
+                        int remainRecvSize = recvSize - arg.UseSize;
+                        if (remainRecvSize > 0)
+                            Array.Copy(_recvBuffer.Skip(arg.UseSize).ToArray(), _recvBuffer, remainRecvSize);
+                        recvSize -= arg.UseSize;
                     }
                 }
             }

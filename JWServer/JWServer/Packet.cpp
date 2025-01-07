@@ -1,4 +1,5 @@
 ﻿#include "Packet.h"
+#include "PacketBuffer.h"
 #include "TypeDefinition.h"
 
 namespace jw
@@ -6,13 +7,21 @@ namespace jw
     Packet::Packet() : _header{ nullptr }
     { }
 
-    void Packet::Add(const void* data, Packet::packetSize size)
+    bool Packet::Add(const void* data, Packet::packetSize size)
     {
+        if (!_header)
+            return false;
+
         if (size < 0 || getFreeSize() < size)
         {
             MAKE_CRASH;
-            return;
+            return false;
         }
+
+        void* curPos = ((char*)_header + _header->_size);
+        ::memcpy(curPos, data, size);
+        _header->_size += size;
+        return true;
     }
 
     bool Packet::IsSet()  const
@@ -23,6 +32,14 @@ namespace jw
     void Packet::SetBuffer(void* buffer)
     {
         _header = reinterpret_cast<Header*>(buffer);
+    }
+
+    void Packet::SetPacketBuffer(std::shared_ptr<PacketBuffer>& buffer)
+    {
+        _packetBuffer = buffer;
+        _header = reinterpret_cast<Header*>(_packetBuffer->GetBuffer());
+        _header->_size = sizeof(Header);
+
     }
 
     Packet::Header* Packet::GetHeader()  const
@@ -38,6 +55,12 @@ namespace jw
     {
         if (getSize() == 0) return 0;
         return getSize() - HEADER_SIZE;
+    }
+
+    Packet::packetSize Packet::GetTotalSize() const
+    {
+        if (getSize() == 0) return 0;
+        return getSize();
     }
 
     Packet::packetSize Packet::getSize() const

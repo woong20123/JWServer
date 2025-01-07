@@ -17,6 +17,7 @@ namespace jw
     class Session;
     class SessionHandler;
     class PacketBufferHandler;
+    class Packet;
 
     struct SessionContext : public AsyncContext
     {
@@ -108,6 +109,7 @@ namespace jw
 
         bool OnAccept();
         bool Recv();
+        bool Send(Packet& packet);
         bool Send(const void* byteStream, const size_t byteCount);
         bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
         void Dispose();

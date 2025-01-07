@@ -1,6 +1,8 @@
 #include "GamePacketHandleFuncList.h"
 #include "PacketHandler.h"
 #include "StringConverter.h"
+#include "PacketBuffer.h"
+#include "PacketBufferPool.h"
 #include "../Packet/GamePacket/Cpp/GamaPacket.pb.h"
 #include <codecvt>
 #include "StopWatch.h"
@@ -83,6 +85,25 @@ namespace jw
     {
         PARSER_PROTO_PACKET_DATA(GameChatReq, req, packet);
         LOG_DEBUG(L"on chat req packet, sessionId:{}, name:{}, msg:{}", session->GetId(), StringConverter::StrA2WUseUTF8(req.name())->c_str(), StringConverter::StrA2WUseUTF8(req.msg())->c_str());
+
+        GameChatOk response;
+        response.set_name(req.name());
+        response.set_msg(req.msg());
+        ;
+        Packet sendPacket;
+        std::shared_ptr<PacketBuffer> packetBuffer{ PACKET_BUFFER_POOL().Acquire(), [](PacketBuffer* obj) { PACKET_BUFFER_POOL().Release(obj); } };
+        sendPacket.SetPacketBuffer(packetBuffer);
+
+
+        PacketHandler::cmdType cmd = GAME_PACKET_CMD_CHAT_OK;
+        char responseBody[256] = { 0, };
+        const auto responseSize = response.ByteSizeLong();
+        response.SerializeToArray(responseBody, (int)responseSize);
+
+        sendPacket.Add(&cmd, sizeof(PacketHandler::cmdType));
+        sendPacket.Add(responseBody, (int)responseSize);
+
+        const_cast<Session*>(session)->Send(sendPacket);
         return true;
     }
 }

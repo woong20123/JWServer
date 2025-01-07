@@ -12,6 +12,9 @@ namespace jw
         ~PacketBuffer();
         static constexpr const size_t BUFFER_SIZE = 4000;
         using BufferType = char;
+
+        void* GetBuffer();
+
     private:
         uint16_t        _setBufferSize;
         BufferType      _buffer[BUFFER_SIZE];

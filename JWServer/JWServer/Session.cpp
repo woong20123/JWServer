@@ -160,6 +160,11 @@ namespace jw
         return true;
     }
 
+    bool Session::Send(Packet& packet)
+    {
+        return Send(packet.GetHeader(), packet.GetTotalSize());
+    }
+
     bool Session::Send(const void* byteStream, const size_t byteCount)
     {
         if (!asyncSend(byteStream, byteCount))

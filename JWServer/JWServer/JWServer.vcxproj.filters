@@ -70,6 +70,7 @@
     <ClInclude Include="StringConverter.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="PacketBufferPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="StringConverter.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="PacketBufferPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">

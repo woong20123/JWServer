@@ -8,7 +8,7 @@ namespace jw
 
 	LogBuffer* LogBufferPool::Acquire()
 	{
-		
+
 		LogBuffer* ret{ _objectPool.Acquire() };
 		++_useCount;
 		return ret;
@@ -19,7 +19,12 @@ namespace jw
 		if (!obj) return;
 		_objectPool.Release(obj);
 		--_useCount;
-		//std::wcout << L"_useCount : " << _useCount << std::endl;
+	}
+
+	uint64_t LogBufferPool::GetUseCount()
+	{
+		uint64_t useCount = _useCount;
+		return useCount;
 	}
 
 }

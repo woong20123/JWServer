@@ -12,10 +12,11 @@ namespace jw
 	{
 	public:
 		static constexpr size_t BASE_ALLOCATE_COUNT = 16;
-		static constexpr size_t MAX_ALLOCATE_COUNT = 512;
+		static constexpr size_t MAX_ALLOCATE_COUNT = 32768;
 
 		LogBuffer* Acquire();
 		void Release(LogBuffer* obj);
+		uint64_t GetUseCount();
 	protected:
 		LogBufferPool();
 	private:
