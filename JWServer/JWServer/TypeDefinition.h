@@ -32,6 +32,9 @@
 
 #define MAKE_CRASH { void * p = nullptr; *((int*)p) = 10; }
 
+#define JW_MIN(r, l) r < l ? r : l;
+#define JW_MAX(r, l) r > l ? r : l;
+
 static constexpr int64_t INVALID_VALUE = 0;
 
 #endif

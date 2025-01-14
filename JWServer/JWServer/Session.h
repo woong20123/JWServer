@@ -7,6 +7,7 @@ class Session
 #ifndef __JW_SESSION_H__
 #define __JW_SESSION_H__
 #include "AsyncIOObject.h"
+#include "SessionBuffer.h"
 #include <shared_mutex>
 
 namespace jw
@@ -122,6 +123,9 @@ namespace jw
 
         static const wchar_t* GetStateToStr(SessionState state);
 
+        void SetChannelKey(const int64_t channelKey);
+        int64_t GetChannelKey() const;
+
     private:
         bool asyncRecv();
         bool asyncSend(const void* byteStream, const size_t byteCount);
@@ -145,6 +149,7 @@ namespace jw
         std::shared_ptr<SessionHandler>         _sessionHandler;
         SessionState                            _state;
         std::shared_ptr<PacketBufferHandler>    _packetBufferHandler;
+        uint64_t                                _channelKey;
     };
 }
 

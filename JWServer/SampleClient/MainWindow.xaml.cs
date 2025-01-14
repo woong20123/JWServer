@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using SampleClient.Network;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,16 +17,20 @@ namespace SampleClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        LoginInfo LoginInfo { get; set; }
         List<TextBox> viewTextBoxsList = new List<TextBox>();
 
-        public MainWindow(LoginInfo loginInfo)
+        public MainWindow()
         {
             InitializeComponent();
-            this.LoginInfo = loginInfo;
+            Chat chat = new Chat();
 
-            Chat chat = new Chat(loginInfo);
             rightFrame.Navigate(chat);
+            rightFrame.RegisterName("chatPage", chat);
+        }
+
+        public Chat? GetChatPage()
+        {
+            return rightFrame.FindName("chatPage") as Chat;
         }
     }
 }

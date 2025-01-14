@@ -37,6 +37,7 @@ namespace jw
         bool                            RegistPort(const PortId_t portId, std::shared_ptr<Port>& port);
         Session* CreateSession(const PortId_t portId);
         bool                            DestroySession(const PortId_t portId, Session* session);
+        std::shared_ptr<Session>        GetSession(const PortId_t portId, const int32_t sessionIndex);
 
 
     protected:

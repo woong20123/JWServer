@@ -1,5 +1,4 @@
 ﻿#include "Session.h"
-#include "SessionBuffer.h"
 #include "SessionHandler.h"
 #include "Network.h"
 #include "NetworkHelper.h"
@@ -18,7 +17,8 @@ namespace jw
         _recvBuffer{ nullptr },
         _sessionHandler{ nullptr },
         _state{ SessionState::SESSION_STATE_NONE },
-        _packetBufferHandler{ nullptr }
+        _packetBufferHandler{ nullptr },
+        _channelKey{ INVALID_VALUE }
     {
     }
 
@@ -220,6 +220,16 @@ namespace jw
     const wchar_t* Session::GetStateToStr(SessionState state)
     {
         return SessionStateStr[static_cast<size_t>(state)];
+    }
+
+    void Session::SetChannelKey(const int64_t channelKey)
+    {
+        _channelKey = channelKey;
+    }
+
+    int64_t Session::GetChannelKey() const
+    {
+        return _channelKey;
     }
 
     bool Session::asyncRecv()

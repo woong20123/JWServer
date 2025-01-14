@@ -12,13 +12,13 @@ namespace jw
     {
     public:
         using cmdType = uint32_t;
-        using HandlerType = std::function<bool(const Session*, const Packet&)>;
+        using HandlerType = std::function<bool(Session*, const Packet&)>;
 
         PacketHandler() {};
         virtual ~PacketHandler() {};
 
         virtual bool RegistHandler(const cmdType cmd, HandlerType handler) = 0;
-        virtual bool HandlePacket(const Session* session, const  Packet& packet) = 0;
+        virtual bool HandlePacket(Session* session, const  Packet& packet) = 0;
     };
 }
 

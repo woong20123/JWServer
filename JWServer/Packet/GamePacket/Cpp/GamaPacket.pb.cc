@@ -79,13 +79,13 @@ struct GameRoomListReqDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameRoomListReqDefaultTypeInternal _GameRoomListReq_default_instance_;
 
-inline constexpr GameHandShakingReq::Impl_::Impl_(
+inline constexpr GamePingReq::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
-      : packetversion_{0},
+      : num_{::int64_t{0}},
         _cached_size_{0} {}
 
 template <typename>
-PROTOBUF_CONSTEXPR GameHandShakingReq::GameHandShakingReq(::_pbi::ConstantInitialized)
+PROTOBUF_CONSTEXPR GamePingReq::GamePingReq(::_pbi::ConstantInitialized)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : ::google::protobuf::Message(_class_data_.base()),
 #else   // PROTOBUF_CUSTOM_VTABLE
@@ -93,24 +93,106 @@ PROTOBUF_CONSTEXPR GameHandShakingReq::GameHandShakingReq(::_pbi::ConstantInitia
 #endif  // PROTOBUF_CUSTOM_VTABLE
       _impl_(::_pbi::ConstantInitialized()) {
 }
-struct GameHandShakingReqDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR GameHandShakingReqDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~GameHandShakingReqDefaultTypeInternal() {}
+struct GamePingReqDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GamePingReqDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GamePingReqDefaultTypeInternal() {}
   union {
-    GameHandShakingReq _instance;
+    GamePingReq _instance;
   };
 };
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameHandShakingReqDefaultTypeInternal _GameHandShakingReq_default_instance_;
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GamePingReqDefaultTypeInternal _GamePingReq_default_instance_;
 
-inline constexpr GameHandShakingFail::Impl_::Impl_(
+inline constexpr GamePingOk::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : num_{::int64_t{0}},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR GamePingOk::GamePingOk(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct GamePingOkDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GamePingOkDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GamePingOkDefaultTypeInternal() {}
+  union {
+    GamePingOk _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GamePingOkDefaultTypeInternal _GamePingOk_default_instance_;
+
+inline constexpr GameLoginReq::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        authkey_{::int64_t{0}},
+        packetversion_{0},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR GameLoginReq::GameLoginReq(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct GameLoginReqDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GameLoginReqDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GameLoginReqDefaultTypeInternal() {}
+  union {
+    GameLoginReq _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameLoginReqDefaultTypeInternal _GameLoginReq_default_instance_;
+
+inline constexpr GameLoginOk::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        userid_{::int64_t{0}},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR GameLoginOk::GameLoginOk(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct GameLoginOkDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GameLoginOkDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GameLoginOkDefaultTypeInternal() {}
+  union {
+    GameLoginOk _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameLoginOkDefaultTypeInternal _GameLoginOk_default_instance_;
+
+inline constexpr GameLoginFail::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : errcode_{static_cast< ::jw::ErrorCode >(0)},
         _cached_size_{0} {}
 
 template <typename>
-PROTOBUF_CONSTEXPR GameHandShakingFail::GameHandShakingFail(::_pbi::ConstantInitialized)
+PROTOBUF_CONSTEXPR GameLoginFail::GameLoginFail(::_pbi::ConstantInitialized)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : ::google::protobuf::Message(_class_data_.base()),
 #else   // PROTOBUF_CUSTOM_VTABLE
@@ -118,16 +200,16 @@ PROTOBUF_CONSTEXPR GameHandShakingFail::GameHandShakingFail(::_pbi::ConstantInit
 #endif  // PROTOBUF_CUSTOM_VTABLE
       _impl_(::_pbi::ConstantInitialized()) {
 }
-struct GameHandShakingFailDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR GameHandShakingFailDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~GameHandShakingFailDefaultTypeInternal() {}
+struct GameLoginFailDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GameLoginFailDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GameLoginFailDefaultTypeInternal() {}
   union {
-    GameHandShakingFail _instance;
+    GameLoginFail _instance;
   };
 };
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameHandShakingFailDefaultTypeInternal _GameHandShakingFail_default_instance_;
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GameLoginFailDefaultTypeInternal _GameLoginFail_default_instance_;
 
 inline constexpr GameCreateRoomReq::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
@@ -269,6 +351,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 inline constexpr GameRoomListFail::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : roominfo_{},
+        errcode_{static_cast< ::jw::ErrorCode >(0)},
         _cached_size_{0} {}
 
 template <typename>
@@ -333,23 +416,53 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.roomid_),
         PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.name_),
         ~0u,  // no _has_bits_
-        PROTOBUF_FIELD_OFFSET(::jw::GameHandShakingReq, _internal_metadata_),
+        PROTOBUF_FIELD_OFFSET(::jw::GamePingReq, _internal_metadata_),
         ~0u,  // no _extensions_
         ~0u,  // no _oneof_case_
         ~0u,  // no _weak_field_map_
         ~0u,  // no _inlined_string_donated_
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
-        PROTOBUF_FIELD_OFFSET(::jw::GameHandShakingReq, _impl_.packetversion_),
+        PROTOBUF_FIELD_OFFSET(::jw::GamePingReq, _impl_.num_),
         ~0u,  // no _has_bits_
-        PROTOBUF_FIELD_OFFSET(::jw::GameHandShakingFail, _internal_metadata_),
+        PROTOBUF_FIELD_OFFSET(::jw::GamePingOk, _internal_metadata_),
         ~0u,  // no _extensions_
         ~0u,  // no _oneof_case_
         ~0u,  // no _weak_field_map_
         ~0u,  // no _inlined_string_donated_
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
-        PROTOBUF_FIELD_OFFSET(::jw::GameHandShakingFail, _impl_.errcode_),
+        PROTOBUF_FIELD_OFFSET(::jw::GamePingOk, _impl_.num_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginReq, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginReq, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginReq, _impl_.packetversion_),
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginReq, _impl_.authkey_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginOk, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginOk, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginOk, _impl_.userid_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginFail, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameLoginFail, _impl_.errcode_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::jw::GameCreateRoomReq, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -405,6 +518,7 @@ const ::uint32_t
         ~0u,  // no _inlined_string_donated_
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::jw::GameRoomListFail, _impl_.errcode_),
         PROTOBUF_FIELD_OFFSET(::jw::GameRoomListFail, _impl_.roominfo_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::jw::GameChatReq, _internal_metadata_),
@@ -431,21 +545,27 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::jw::RoomListInfo)},
-        {10, -1, -1, sizeof(::jw::GameHandShakingReq)},
-        {19, -1, -1, sizeof(::jw::GameHandShakingFail)},
-        {28, -1, -1, sizeof(::jw::GameCreateRoomReq)},
-        {37, 46, -1, sizeof(::jw::GameCreateRoomOk)},
-        {47, -1, -1, sizeof(::jw::GameCreateRoomFail)},
-        {56, -1, -1, sizeof(::jw::GameRoomListReq)},
-        {66, -1, -1, sizeof(::jw::GameRoomListOk)},
-        {75, -1, -1, sizeof(::jw::GameRoomListFail)},
-        {84, -1, -1, sizeof(::jw::GameChatReq)},
-        {94, -1, -1, sizeof(::jw::GameChatOk)},
+        {10, -1, -1, sizeof(::jw::GamePingReq)},
+        {19, -1, -1, sizeof(::jw::GamePingOk)},
+        {28, -1, -1, sizeof(::jw::GameLoginReq)},
+        {39, -1, -1, sizeof(::jw::GameLoginOk)},
+        {49, -1, -1, sizeof(::jw::GameLoginFail)},
+        {58, -1, -1, sizeof(::jw::GameCreateRoomReq)},
+        {67, 76, -1, sizeof(::jw::GameCreateRoomOk)},
+        {77, -1, -1, sizeof(::jw::GameCreateRoomFail)},
+        {86, -1, -1, sizeof(::jw::GameRoomListReq)},
+        {96, -1, -1, sizeof(::jw::GameRoomListOk)},
+        {105, -1, -1, sizeof(::jw::GameRoomListFail)},
+        {115, -1, -1, sizeof(::jw::GameChatReq)},
+        {125, -1, -1, sizeof(::jw::GameChatOk)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::jw::_RoomListInfo_default_instance_._instance,
-    &::jw::_GameHandShakingReq_default_instance_._instance,
-    &::jw::_GameHandShakingFail_default_instance_._instance,
+    &::jw::_GamePingReq_default_instance_._instance,
+    &::jw::_GamePingOk_default_instance_._instance,
+    &::jw::_GameLoginReq_default_instance_._instance,
+    &::jw::_GameLoginOk_default_instance_._instance,
+    &::jw::_GameLoginFail_default_instance_._instance,
     &::jw::_GameCreateRoomReq_default_instance_._instance,
     &::jw::_GameCreateRoomOk_default_instance_._instance,
     &::jw::_GameCreateRoomFail_default_instance_._instance,
@@ -458,48 +578,55 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_GamaPacket_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
     "\n\020GamaPacket.proto\022\002jw\",\n\014RoomListInfo\022\016"
-    "\n\006roomId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\"+\n\022GameHand"
-    "ShakingReq\022\025\n\rpacketVersion\030\001 \001(\005\"5\n\023Gam"
-    "eHandShakingFail\022\036\n\007errCode\030\001 \001(\0162\r.jw.E"
-    "rrorCode\"!\n\021GameCreateRoomReq\022\014\n\004name\030\001 "
-    "\001(\t\"6\n\020GameCreateRoomOk\022\"\n\010roomInfo\030\001 \001("
-    "\0132\020.jw.RoomListInfo\"4\n\022GameCreateRoomFai"
-    "l\022\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\"3\n\017Gam"
-    "eRoomListReq\022\020\n\010startSeq\030\001 \001(\005\022\016\n\006endSeq"
-    "\030\002 \001(\005\"4\n\016GameRoomListOk\022\"\n\010roomInfo\030\001 \003"
-    "(\0132\020.jw.RoomListInfo\"6\n\020GameRoomListFail"
-    "\022\"\n\010roomInfo\030\001 \003(\0132\020.jw.RoomListInfo\"(\n\013"
-    "GameChatReq\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\"\'"
-    "\n\nGameChatOk\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t*"
-    "P\n\016GamePacketInfo\022 \n\034GAME_PACKET_INFO_UN"
-    "SPECIFIED\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020"
-    "\001*\360\003\n\rGamePacketCmd\022\037\n\033GAME_PACKET_CMD_U"
-    "NSPECIFIED\020\000\022\034\n\030GAME_PACKET_CMD_PING_REQ"
-    "\020\001\022\033\n\027GAME_PACKET_CMD_PING_OK\020\002\022$\n GAME_"
-    "PACKET_CMD_HAND_SHAKING_REQ\020\003\022#\n\037GAME_PA"
-    "CKET_CMD_HAND_SHAKING_OK\020\004\022%\n!GAME_PACKE"
-    "T_CMD_HAND_SHAKING_FAIL\020\005\022#\n\037GAME_PACKET"
-    "_CMD_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CM"
-    "D_CREATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CR"
-    "EATE_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM"
-    "_LIST_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST"
-    "_OK\020\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020"
-    "\013\022\034\n\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_"
-    "PACKET_CMD_CHAT_OK\020\r*\?\n\tErrorCode\022\032\n\026ERR"
-    "OR_CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCC"
-    "ESS\020\001b\006proto3"
+    "\n\006roomId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\"\032\n\013GamePing"
+    "Req\022\013\n\003num\030\001 \001(\003\"\031\n\nGamePingOk\022\013\n\003num\030\001 "
+    "\001(\003\"D\n\014GameLoginReq\022\014\n\004name\030\001 \001(\t\022\025\n\rpac"
+    "ketVersion\030\002 \001(\005\022\017\n\007authKey\030\003 \001(\003\"+\n\013Gam"
+    "eLoginOk\022\014\n\004name\030\001 \001(\t\022\016\n\006userId\030\002 \001(\003\"/"
+    "\n\rGameLoginFail\022\036\n\007errCode\030\001 \001(\0162\r.jw.Er"
+    "rorCode\"!\n\021GameCreateRoomReq\022\014\n\004name\030\001 \001"
+    "(\t\"6\n\020GameCreateRoomOk\022\"\n\010roomInfo\030\001 \001(\013"
+    "2\020.jw.RoomListInfo\"4\n\022GameCreateRoomFail"
+    "\022\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\"3\n\017Game"
+    "RoomListReq\022\020\n\010startSeq\030\001 \001(\005\022\016\n\006endSeq\030"
+    "\002 \001(\005\"4\n\016GameRoomListOk\022\"\n\010roomInfo\030\001 \003("
+    "\0132\020.jw.RoomListInfo\"V\n\020GameRoomListFail\022"
+    "\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\022\"\n\010roomI"
+    "nfo\030\002 \003(\0132\020.jw.RoomListInfo\"(\n\013GameChatR"
+    "eq\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\"\'\n\nGameCha"
+    "tOk\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t*j\n\016GamePa"
+    "cketInfo\022 \n\034GAME_PACKET_INFO_UNSPECIFIED"
+    "\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020\002\022\030\n\024GAME"
+    "_PACKET_AUTH_KEY\020r*\333\003\n\rGamePacketCmd\022\037\n\033"
+    "GAME_PACKET_CMD_UNSPECIFIED\020\000\022\034\n\030GAME_PA"
+    "CKET_CMD_PING_REQ\020\001\022\033\n\027GAME_PACKET_CMD_P"
+    "ING_OK\020\002\022\035\n\031GAME_PACKET_CMD_LOGIN_REQ\020\003\022"
+    "\034\n\030GAME_PACKET_CMD_LOGIN_OK\020\004\022\036\n\032GAME_PA"
+    "CKET_CMD_LOGIN_FAIL\020\005\022#\n\037GAME_PACKET_CMD"
+    "_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CMD_CR"
+    "EATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CREATE"
+    "_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM_LIS"
+    "T_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST_OK\020"
+    "\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020\013\022\034\n"
+    "\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_PACK"
+    "ET_CMD_CHAT_OK\020\r*\271\001\n\tErrorCode\022\032\n\026ERROR_"
+    "CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCCESS"
+    "\020\001\022(\n$ERROR_CODE_LOGIN_FAIL_DUPLICATE_NA"
+    "ME\020\002\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_NA"
+    "ME\020\003\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_AU"
+    "TH\020\004b\006proto3"
 };
 static ::absl::once_flag descriptor_table_GamaPacket_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_GamaPacket_2eproto = {
     false,
     false,
-    1213,
+    1492,
     descriptor_table_protodef_GamaPacket_2eproto,
     "GamaPacket.proto",
     &descriptor_table_GamaPacket_2eproto_once,
     nullptr,
     0,
-    11,
+    14,
     schemas,
     file_default_instances,
     TableStruct_GamaPacket_2eproto::offsets,
@@ -512,9 +639,9 @@ const ::google::protobuf::EnumDescriptor* GamePacketInfo_descriptor() {
   return file_level_enum_descriptors_GamaPacket_2eproto[0];
 }
 PROTOBUF_CONSTINIT const uint32_t GamePacketInfo_internal_data_[] = {
-    131072u, 0u, };
+    65536u, 65568u, 2u, 114u, };
 bool GamePacketInfo_IsValid(int value) {
-  return 0 <= value && value <= 1;
+  return ::_pbi::ValidateEnum(value, GamePacketInfo_internal_data_);
 }
 const ::google::protobuf::EnumDescriptor* GamePacketCmd_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_GamaPacket_2eproto);
@@ -530,9 +657,9 @@ const ::google::protobuf::EnumDescriptor* ErrorCode_descriptor() {
   return file_level_enum_descriptors_GamaPacket_2eproto[2];
 }
 PROTOBUF_CONSTINIT const uint32_t ErrorCode_internal_data_[] = {
-    131072u, 0u, };
+    327680u, 0u, };
 bool ErrorCode_IsValid(int value) {
-  return 0 <= value && value <= 1;
+  return 0 <= value && value <= 4;
 }
 // ===================================================================
 
@@ -785,39 +912,39 @@ void RoomListInfo::InternalSwap(RoomListInfo* PROTOBUF_RESTRICT other) {
 }
 // ===================================================================
 
-class GameHandShakingReq::_Internal {
+class GamePingReq::_Internal {
  public:
 };
 
-GameHandShakingReq::GameHandShakingReq(::google::protobuf::Arena* arena)
+GamePingReq::GamePingReq(::google::protobuf::Arena* arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : ::google::protobuf::Message(arena, _class_data_.base()) {
 #else   // PROTOBUF_CUSTOM_VTABLE
     : ::google::protobuf::Message(arena) {
 #endif  // PROTOBUF_CUSTOM_VTABLE
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:jw.GameHandShakingReq)
+  // @@protoc_insertion_point(arena_constructor:jw.GamePingReq)
 }
-GameHandShakingReq::GameHandShakingReq(
-    ::google::protobuf::Arena* arena, const GameHandShakingReq& from)
-    : GameHandShakingReq(arena) {
+GamePingReq::GamePingReq(
+    ::google::protobuf::Arena* arena, const GamePingReq& from)
+    : GamePingReq(arena) {
   MergeFrom(from);
 }
-inline PROTOBUF_NDEBUG_INLINE GameHandShakingReq::Impl_::Impl_(
+inline PROTOBUF_NDEBUG_INLINE GamePingReq::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
       : _cached_size_{0} {}
 
-inline void GameHandShakingReq::SharedCtor(::_pb::Arena* arena) {
+inline void GamePingReq::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  _impl_.packetversion_ = {};
+  _impl_.num_ = {};
 }
-GameHandShakingReq::~GameHandShakingReq() {
-  // @@protoc_insertion_point(destructor:jw.GameHandShakingReq)
+GamePingReq::~GamePingReq() {
+  // @@protoc_insertion_point(destructor:jw.GamePingReq)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
-inline void GameHandShakingReq::SharedDtor() {
+inline void GamePingReq::SharedDtor() {
   ABSL_DCHECK(GetArena() == nullptr);
   _impl_.~Impl_();
 }
@@ -825,33 +952,33 @@ inline void GameHandShakingReq::SharedDtor() {
 PROTOBUF_CONSTINIT
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
 const ::google::protobuf::MessageLite::ClassDataFull
-    GameHandShakingReq::_class_data_ = {
+    GamePingReq::_class_data_ = {
         ::google::protobuf::Message::ClassData{
-            &_GameHandShakingReq_default_instance_._instance,
+            &_GamePingReq_default_instance_._instance,
             &_table_.header,
             nullptr,  // OnDemandRegisterArenaDtor
             nullptr,  // IsInitialized
-            &GameHandShakingReq::MergeImpl,
+            &GamePingReq::MergeImpl,
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-            ::google::protobuf::Message::GetDeleteImpl<GameHandShakingReq>(),
-            ::google::protobuf::Message::GetNewImpl<GameHandShakingReq>(),
-            ::google::protobuf::Message::GetClearImpl<GameHandShakingReq>(), &GameHandShakingReq::ByteSizeLong,
-                &GameHandShakingReq::_InternalSerialize,
+            ::google::protobuf::Message::GetDeleteImpl<GamePingReq>(),
+            ::google::protobuf::Message::GetNewImpl<GamePingReq>(),
+            ::google::protobuf::Message::GetClearImpl<GamePingReq>(), &GamePingReq::ByteSizeLong,
+                &GamePingReq::_InternalSerialize,
 #endif  // PROTOBUF_CUSTOM_VTABLE
-            PROTOBUF_FIELD_OFFSET(GameHandShakingReq, _impl_._cached_size_),
+            PROTOBUF_FIELD_OFFSET(GamePingReq, _impl_._cached_size_),
             false,
         },
-        &GameHandShakingReq::kDescriptorMethods,
+        &GamePingReq::kDescriptorMethods,
         &descriptor_table_GamaPacket_2eproto,
         nullptr,  // tracker
 };
-const ::google::protobuf::MessageLite::ClassData* GameHandShakingReq::GetClassData() const {
+const ::google::protobuf::MessageLite::ClassData* GamePingReq::GetClassData() const {
   ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
   ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameHandShakingReq::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GamePingReq::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -866,55 +993,55 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameHandShakingReq::_table_ = {
     nullptr,  // post_loop_handler
     ::_pbi::TcParser::GenericFallback,  // fallback
     #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
-    ::_pbi::TcParser::GetTable<::jw::GameHandShakingReq>(),  // to_prefetch
+    ::_pbi::TcParser::GetTable<::jw::GamePingReq>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // int32 packetVersion = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameHandShakingReq, _impl_.packetversion_), 63>(),
-     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GameHandShakingReq, _impl_.packetversion_)}},
+    // int64 num = 1;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(GamePingReq, _impl_.num_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GamePingReq, _impl_.num_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // int32 packetVersion = 1;
-    {PROTOBUF_FIELD_OFFSET(GameHandShakingReq, _impl_.packetversion_), 0, 0,
-    (0 | ::_fl::kFcSingular | ::_fl::kInt32)},
+    // int64 num = 1;
+    {PROTOBUF_FIELD_OFFSET(GamePingReq, _impl_.num_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
   }},
   // no aux_entries
   {{
   }},
 };
 
-PROTOBUF_NOINLINE void GameHandShakingReq::Clear() {
-// @@protoc_insertion_point(message_clear_start:jw.GameHandShakingReq)
+PROTOBUF_NOINLINE void GamePingReq::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GamePingReq)
   ::google::protobuf::internal::TSanWrite(&_impl_);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.packetversion_ = 0;
+  _impl_.num_ = ::int64_t{0};
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-        ::uint8_t* GameHandShakingReq::_InternalSerialize(
+        ::uint8_t* GamePingReq::_InternalSerialize(
             const MessageLite& base, ::uint8_t* target,
             ::google::protobuf::io::EpsCopyOutputStream* stream) {
-          const GameHandShakingReq& this_ = static_cast<const GameHandShakingReq&>(base);
+          const GamePingReq& this_ = static_cast<const GamePingReq&>(base);
 #else   // PROTOBUF_CUSTOM_VTABLE
-        ::uint8_t* GameHandShakingReq::_InternalSerialize(
+        ::uint8_t* GamePingReq::_InternalSerialize(
             ::uint8_t* target,
             ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-          const GameHandShakingReq& this_ = *this;
+          const GamePingReq& this_ = *this;
 #endif  // PROTOBUF_CUSTOM_VTABLE
-          // @@protoc_insertion_point(serialize_to_array_start:jw.GameHandShakingReq)
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GamePingReq)
           ::uint32_t cached_has_bits = 0;
           (void)cached_has_bits;
 
-          // int32 packetVersion = 1;
-          if (this_._internal_packetversion() != 0) {
+          // int64 num = 1;
+          if (this_._internal_num() != 0) {
             target = ::google::protobuf::internal::WireFormatLite::
-                WriteInt32ToArrayWithField<1>(
-                    stream, this_._internal_packetversion(), target);
+                WriteInt64ToArrayWithField<1>(
+                    stream, this_._internal_num(), target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -922,18 +1049,18 @@ PROTOBUF_NOINLINE void GameHandShakingReq::Clear() {
                 ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
                     this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
           }
-          // @@protoc_insertion_point(serialize_to_array_end:jw.GameHandShakingReq)
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GamePingReq)
           return target;
         }
 
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-        ::size_t GameHandShakingReq::ByteSizeLong(const MessageLite& base) {
-          const GameHandShakingReq& this_ = static_cast<const GameHandShakingReq&>(base);
+        ::size_t GamePingReq::ByteSizeLong(const MessageLite& base) {
+          const GamePingReq& this_ = static_cast<const GamePingReq&>(base);
 #else   // PROTOBUF_CUSTOM_VTABLE
-        ::size_t GameHandShakingReq::ByteSizeLong() const {
-          const GameHandShakingReq& this_ = *this;
+        ::size_t GamePingReq::ByteSizeLong() const {
+          const GamePingReq& this_ = *this;
 #endif  // PROTOBUF_CUSTOM_VTABLE
-          // @@protoc_insertion_point(message_byte_size_start:jw.GameHandShakingReq)
+          // @@protoc_insertion_point(message_byte_size_start:jw.GamePingReq)
           ::size_t total_size = 0;
 
           ::uint32_t cached_has_bits = 0;
@@ -941,7 +1068,481 @@ PROTOBUF_NOINLINE void GameHandShakingReq::Clear() {
           (void)cached_has_bits;
 
            {
-            // int32 packetVersion = 1;
+            // int64 num = 1;
+            if (this_._internal_num() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+                  this_._internal_num());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void GamePingReq::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GamePingReq*>(&to_msg);
+  auto& from = static_cast<const GamePingReq&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GamePingReq)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_num() != 0) {
+    _this->_impl_.num_ = from._impl_.num_;
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void GamePingReq::CopyFrom(const GamePingReq& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GamePingReq)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void GamePingReq::InternalSwap(GamePingReq* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+        swap(_impl_.num_, other->_impl_.num_);
+}
+
+::google::protobuf::Metadata GamePingReq::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class GamePingOk::_Internal {
+ public:
+};
+
+GamePingOk::GamePingOk(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:jw.GamePingOk)
+}
+GamePingOk::GamePingOk(
+    ::google::protobuf::Arena* arena, const GamePingOk& from)
+    : GamePingOk(arena) {
+  MergeFrom(from);
+}
+inline PROTOBUF_NDEBUG_INLINE GamePingOk::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : _cached_size_{0} {}
+
+inline void GamePingOk::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.num_ = {};
+}
+GamePingOk::~GamePingOk() {
+  // @@protoc_insertion_point(destructor:jw.GamePingOk)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void GamePingOk::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    GamePingOk::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_GamePingOk_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &GamePingOk::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<GamePingOk>(),
+            ::google::protobuf::Message::GetNewImpl<GamePingOk>(),
+            ::google::protobuf::Message::GetClearImpl<GamePingOk>(), &GamePingOk::ByteSizeLong,
+                &GamePingOk::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(GamePingOk, _impl_._cached_size_),
+            false,
+        },
+        &GamePingOk::kDescriptorMethods,
+        &descriptor_table_GamaPacket_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* GamePingOk::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GamePingOk::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::jw::GamePingOk>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // int64 num = 1;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(GamePingOk, _impl_.num_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GamePingOk, _impl_.num_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // int64 num = 1;
+    {PROTOBUF_FIELD_OFFSET(GamePingOk, _impl_.num_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+  }},
+  // no aux_entries
+  {{
+  }},
+};
+
+PROTOBUF_NOINLINE void GamePingOk::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GamePingOk)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.num_ = ::int64_t{0};
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* GamePingOk::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const GamePingOk& this_ = static_cast<const GamePingOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* GamePingOk::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const GamePingOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GamePingOk)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // int64 num = 1;
+          if (this_._internal_num() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt64ToArrayWithField<1>(
+                    stream, this_._internal_num(), target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GamePingOk)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t GamePingOk::ByteSizeLong(const MessageLite& base) {
+          const GamePingOk& this_ = static_cast<const GamePingOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t GamePingOk::ByteSizeLong() const {
+          const GamePingOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:jw.GamePingOk)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+           {
+            // int64 num = 1;
+            if (this_._internal_num() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+                  this_._internal_num());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void GamePingOk::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GamePingOk*>(&to_msg);
+  auto& from = static_cast<const GamePingOk&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GamePingOk)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_num() != 0) {
+    _this->_impl_.num_ = from._impl_.num_;
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void GamePingOk::CopyFrom(const GamePingOk& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GamePingOk)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void GamePingOk::InternalSwap(GamePingOk* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+        swap(_impl_.num_, other->_impl_.num_);
+}
+
+::google::protobuf::Metadata GamePingOk::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class GameLoginReq::_Internal {
+ public:
+};
+
+GameLoginReq::GameLoginReq(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:jw.GameLoginReq)
+}
+inline PROTOBUF_NDEBUG_INLINE GameLoginReq::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::jw::GameLoginReq& from_msg)
+      : name_(arena, from.name_),
+        _cached_size_{0} {}
+
+GameLoginReq::GameLoginReq(
+    ::google::protobuf::Arena* arena,
+    const GameLoginReq& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  GameLoginReq* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  ::memcpy(reinterpret_cast<char *>(&_impl_) +
+               offsetof(Impl_, authkey_),
+           reinterpret_cast<const char *>(&from._impl_) +
+               offsetof(Impl_, authkey_),
+           offsetof(Impl_, packetversion_) -
+               offsetof(Impl_, authkey_) +
+               sizeof(Impl_::packetversion_));
+
+  // @@protoc_insertion_point(copy_constructor:jw.GameLoginReq)
+}
+inline PROTOBUF_NDEBUG_INLINE GameLoginReq::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : name_(arena),
+        _cached_size_{0} {}
+
+inline void GameLoginReq::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char *>(&_impl_) +
+               offsetof(Impl_, authkey_),
+           0,
+           offsetof(Impl_, packetversion_) -
+               offsetof(Impl_, authkey_) +
+               sizeof(Impl_::packetversion_));
+}
+GameLoginReq::~GameLoginReq() {
+  // @@protoc_insertion_point(destructor:jw.GameLoginReq)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void GameLoginReq::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.name_.Destroy();
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    GameLoginReq::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_GameLoginReq_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &GameLoginReq::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<GameLoginReq>(),
+            ::google::protobuf::Message::GetNewImpl<GameLoginReq>(),
+            ::google::protobuf::Message::GetClearImpl<GameLoginReq>(), &GameLoginReq::ByteSizeLong,
+                &GameLoginReq::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_._cached_size_),
+            false,
+        },
+        &GameLoginReq::kDescriptorMethods,
+        &descriptor_table_GamaPacket_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* GameLoginReq::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<2, 3, 0, 28, 2> GameLoginReq::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    3, 24,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967288,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    3,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::jw::GameLoginReq>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    {::_pbi::TcParser::MiniParse, {}},
+    // string name = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.name_)}},
+    // int32 packetVersion = 2;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameLoginReq, _impl_.packetversion_), 63>(),
+     {16, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.packetversion_)}},
+    // int64 authKey = 3;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(GameLoginReq, _impl_.authkey_), 63>(),
+     {24, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.authkey_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string name = 1;
+    {PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.name_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // int32 packetVersion = 2;
+    {PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.packetversion_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt32)},
+    // int64 authKey = 3;
+    {PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.authkey_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+  }},
+  // no aux_entries
+  {{
+    "\17\4\0\0\0\0\0\0"
+    "jw.GameLoginReq"
+    "name"
+  }},
+};
+
+PROTOBUF_NOINLINE void GameLoginReq::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GameLoginReq)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.name_.ClearToEmpty();
+  ::memset(&_impl_.authkey_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.packetversion_) -
+      reinterpret_cast<char*>(&_impl_.authkey_)) + sizeof(_impl_.packetversion_));
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* GameLoginReq::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const GameLoginReq& this_ = static_cast<const GameLoginReq&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* GameLoginReq::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const GameLoginReq& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GameLoginReq)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string name = 1;
+          if (!this_._internal_name().empty()) {
+            const std::string& _s = this_._internal_name();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameLoginReq.name");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // int32 packetVersion = 2;
+          if (this_._internal_packetversion() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt32ToArrayWithField<2>(
+                    stream, this_._internal_packetversion(), target);
+          }
+
+          // int64 authKey = 3;
+          if (this_._internal_authkey() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt64ToArrayWithField<3>(
+                    stream, this_._internal_authkey(), target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GameLoginReq)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t GameLoginReq::ByteSizeLong(const MessageLite& base) {
+          const GameLoginReq& this_ = static_cast<const GameLoginReq&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t GameLoginReq::ByteSizeLong() const {
+          const GameLoginReq& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:jw.GameLoginReq)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string name = 1;
+            if (!this_._internal_name().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_name());
+            }
+            // int64 authKey = 3;
+            if (this_._internal_authkey() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+                  this_._internal_authkey());
+            }
+            // int32 packetVersion = 2;
             if (this_._internal_packetversion() != 0) {
               total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
                   this_._internal_packetversion());
@@ -951,72 +1552,335 @@ PROTOBUF_NOINLINE void GameHandShakingReq::Clear() {
                                                      &this_._impl_._cached_size_);
         }
 
-void GameHandShakingReq::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
-  auto* const _this = static_cast<GameHandShakingReq*>(&to_msg);
-  auto& from = static_cast<const GameHandShakingReq&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameHandShakingReq)
+void GameLoginReq::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GameLoginReq*>(&to_msg);
+  auto& from = static_cast<const GameLoginReq&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameLoginReq)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (from._internal_authkey() != 0) {
+    _this->_impl_.authkey_ = from._impl_.authkey_;
+  }
   if (from._internal_packetversion() != 0) {
     _this->_impl_.packetversion_ = from._impl_.packetversion_;
   }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void GameHandShakingReq::CopyFrom(const GameHandShakingReq& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameHandShakingReq)
+void GameLoginReq::CopyFrom(const GameLoginReq& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameLoginReq)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 
-void GameHandShakingReq::InternalSwap(GameHandShakingReq* PROTOBUF_RESTRICT other) {
+void GameLoginReq::InternalSwap(GameLoginReq* PROTOBUF_RESTRICT other) {
   using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-        swap(_impl_.packetversion_, other->_impl_.packetversion_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.packetversion_)
+      + sizeof(GameLoginReq::_impl_.packetversion_)
+      - PROTOBUF_FIELD_OFFSET(GameLoginReq, _impl_.authkey_)>(
+          reinterpret_cast<char*>(&_impl_.authkey_),
+          reinterpret_cast<char*>(&other->_impl_.authkey_));
 }
 
-::google::protobuf::Metadata GameHandShakingReq::GetMetadata() const {
+::google::protobuf::Metadata GameLoginReq::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================
 
-class GameHandShakingFail::_Internal {
+class GameLoginOk::_Internal {
  public:
 };
 
-GameHandShakingFail::GameHandShakingFail(::google::protobuf::Arena* arena)
+GameLoginOk::GameLoginOk(::google::protobuf::Arena* arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : ::google::protobuf::Message(arena, _class_data_.base()) {
 #else   // PROTOBUF_CUSTOM_VTABLE
     : ::google::protobuf::Message(arena) {
 #endif  // PROTOBUF_CUSTOM_VTABLE
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:jw.GameHandShakingFail)
+  // @@protoc_insertion_point(arena_constructor:jw.GameLoginOk)
 }
-GameHandShakingFail::GameHandShakingFail(
-    ::google::protobuf::Arena* arena, const GameHandShakingFail& from)
-    : GameHandShakingFail(arena) {
+inline PROTOBUF_NDEBUG_INLINE GameLoginOk::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::jw::GameLoginOk& from_msg)
+      : name_(arena, from.name_),
+        _cached_size_{0} {}
+
+GameLoginOk::GameLoginOk(
+    ::google::protobuf::Arena* arena,
+    const GameLoginOk& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  GameLoginOk* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.userid_ = from._impl_.userid_;
+
+  // @@protoc_insertion_point(copy_constructor:jw.GameLoginOk)
+}
+inline PROTOBUF_NDEBUG_INLINE GameLoginOk::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : name_(arena),
+        _cached_size_{0} {}
+
+inline void GameLoginOk::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.userid_ = {};
+}
+GameLoginOk::~GameLoginOk() {
+  // @@protoc_insertion_point(destructor:jw.GameLoginOk)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void GameLoginOk::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.name_.Destroy();
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    GameLoginOk::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_GameLoginOk_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &GameLoginOk::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<GameLoginOk>(),
+            ::google::protobuf::Message::GetNewImpl<GameLoginOk>(),
+            ::google::protobuf::Message::GetClearImpl<GameLoginOk>(), &GameLoginOk::ByteSizeLong,
+                &GameLoginOk::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(GameLoginOk, _impl_._cached_size_),
+            false,
+        },
+        &GameLoginOk::kDescriptorMethods,
+        &descriptor_table_GamaPacket_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* GameLoginOk::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 0, 27, 2> GameLoginOk::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::jw::GameLoginOk>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // int64 userId = 2;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(GameLoginOk, _impl_.userid_), 63>(),
+     {16, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginOk, _impl_.userid_)}},
+    // string name = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginOk, _impl_.name_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string name = 1;
+    {PROTOBUF_FIELD_OFFSET(GameLoginOk, _impl_.name_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // int64 userId = 2;
+    {PROTOBUF_FIELD_OFFSET(GameLoginOk, _impl_.userid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+  }},
+  // no aux_entries
+  {{
+    "\16\4\0\0\0\0\0\0"
+    "jw.GameLoginOk"
+    "name"
+  }},
+};
+
+PROTOBUF_NOINLINE void GameLoginOk::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GameLoginOk)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.name_.ClearToEmpty();
+  _impl_.userid_ = ::int64_t{0};
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* GameLoginOk::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const GameLoginOk& this_ = static_cast<const GameLoginOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* GameLoginOk::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const GameLoginOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GameLoginOk)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string name = 1;
+          if (!this_._internal_name().empty()) {
+            const std::string& _s = this_._internal_name();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.GameLoginOk.name");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // int64 userId = 2;
+          if (this_._internal_userid() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt64ToArrayWithField<2>(
+                    stream, this_._internal_userid(), target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GameLoginOk)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t GameLoginOk::ByteSizeLong(const MessageLite& base) {
+          const GameLoginOk& this_ = static_cast<const GameLoginOk&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t GameLoginOk::ByteSizeLong() const {
+          const GameLoginOk& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:jw.GameLoginOk)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string name = 1;
+            if (!this_._internal_name().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_name());
+            }
+            // int64 userId = 2;
+            if (this_._internal_userid() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+                  this_._internal_userid());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void GameLoginOk::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GameLoginOk*>(&to_msg);
+  auto& from = static_cast<const GameLoginOk&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameLoginOk)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _this->_internal_set_name(from._internal_name());
+  }
+  if (from._internal_userid() != 0) {
+    _this->_impl_.userid_ = from._impl_.userid_;
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void GameLoginOk::CopyFrom(const GameLoginOk& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameLoginOk)
+  if (&from == this) return;
+  Clear();
   MergeFrom(from);
 }
-inline PROTOBUF_NDEBUG_INLINE GameHandShakingFail::Impl_::Impl_(
+
+
+void GameLoginOk::InternalSwap(GameLoginOk* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+        swap(_impl_.userid_, other->_impl_.userid_);
+}
+
+::google::protobuf::Metadata GameLoginOk::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class GameLoginFail::_Internal {
+ public:
+};
+
+GameLoginFail::GameLoginFail(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:jw.GameLoginFail)
+}
+GameLoginFail::GameLoginFail(
+    ::google::protobuf::Arena* arena, const GameLoginFail& from)
+    : GameLoginFail(arena) {
+  MergeFrom(from);
+}
+inline PROTOBUF_NDEBUG_INLINE GameLoginFail::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
       : _cached_size_{0} {}
 
-inline void GameHandShakingFail::SharedCtor(::_pb::Arena* arena) {
+inline void GameLoginFail::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
   _impl_.errcode_ = {};
 }
-GameHandShakingFail::~GameHandShakingFail() {
-  // @@protoc_insertion_point(destructor:jw.GameHandShakingFail)
+GameLoginFail::~GameLoginFail() {
+  // @@protoc_insertion_point(destructor:jw.GameLoginFail)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
-inline void GameHandShakingFail::SharedDtor() {
+inline void GameLoginFail::SharedDtor() {
   ABSL_DCHECK(GetArena() == nullptr);
   _impl_.~Impl_();
 }
@@ -1024,33 +1888,33 @@ inline void GameHandShakingFail::SharedDtor() {
 PROTOBUF_CONSTINIT
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
 const ::google::protobuf::MessageLite::ClassDataFull
-    GameHandShakingFail::_class_data_ = {
+    GameLoginFail::_class_data_ = {
         ::google::protobuf::Message::ClassData{
-            &_GameHandShakingFail_default_instance_._instance,
+            &_GameLoginFail_default_instance_._instance,
             &_table_.header,
             nullptr,  // OnDemandRegisterArenaDtor
             nullptr,  // IsInitialized
-            &GameHandShakingFail::MergeImpl,
+            &GameLoginFail::MergeImpl,
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-            ::google::protobuf::Message::GetDeleteImpl<GameHandShakingFail>(),
-            ::google::protobuf::Message::GetNewImpl<GameHandShakingFail>(),
-            ::google::protobuf::Message::GetClearImpl<GameHandShakingFail>(), &GameHandShakingFail::ByteSizeLong,
-                &GameHandShakingFail::_InternalSerialize,
+            ::google::protobuf::Message::GetDeleteImpl<GameLoginFail>(),
+            ::google::protobuf::Message::GetNewImpl<GameLoginFail>(),
+            ::google::protobuf::Message::GetClearImpl<GameLoginFail>(), &GameLoginFail::ByteSizeLong,
+                &GameLoginFail::_InternalSerialize,
 #endif  // PROTOBUF_CUSTOM_VTABLE
-            PROTOBUF_FIELD_OFFSET(GameHandShakingFail, _impl_._cached_size_),
+            PROTOBUF_FIELD_OFFSET(GameLoginFail, _impl_._cached_size_),
             false,
         },
-        &GameHandShakingFail::kDescriptorMethods,
+        &GameLoginFail::kDescriptorMethods,
         &descriptor_table_GamaPacket_2eproto,
         nullptr,  // tracker
 };
-const ::google::protobuf::MessageLite::ClassData* GameHandShakingFail::GetClassData() const {
+const ::google::protobuf::MessageLite::ClassData* GameLoginFail::GetClassData() const {
   ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
   ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameHandShakingFail::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameLoginFail::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -1065,17 +1929,17 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameHandShakingFail::_table_ = {
     nullptr,  // post_loop_handler
     ::_pbi::TcParser::GenericFallback,  // fallback
     #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
-    ::_pbi::TcParser::GetTable<::jw::GameHandShakingFail>(),  // to_prefetch
+    ::_pbi::TcParser::GetTable<::jw::GameLoginFail>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
     // .jw.ErrorCode errCode = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameHandShakingFail, _impl_.errcode_), 63>(),
-     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GameHandShakingFail, _impl_.errcode_)}},
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameLoginFail, _impl_.errcode_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GameLoginFail, _impl_.errcode_)}},
   }}, {{
     65535, 65535
   }}, {{
     // .jw.ErrorCode errCode = 1;
-    {PROTOBUF_FIELD_OFFSET(GameHandShakingFail, _impl_.errcode_), 0, 0,
+    {PROTOBUF_FIELD_OFFSET(GameLoginFail, _impl_.errcode_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
   }},
   // no aux_entries
@@ -1083,8 +1947,8 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> GameHandShakingFail::_table_ = {
   }},
 };
 
-PROTOBUF_NOINLINE void GameHandShakingFail::Clear() {
-// @@protoc_insertion_point(message_clear_start:jw.GameHandShakingFail)
+PROTOBUF_NOINLINE void GameLoginFail::Clear() {
+// @@protoc_insertion_point(message_clear_start:jw.GameLoginFail)
   ::google::protobuf::internal::TSanWrite(&_impl_);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -1095,17 +1959,17 @@ PROTOBUF_NOINLINE void GameHandShakingFail::Clear() {
 }
 
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-        ::uint8_t* GameHandShakingFail::_InternalSerialize(
+        ::uint8_t* GameLoginFail::_InternalSerialize(
             const MessageLite& base, ::uint8_t* target,
             ::google::protobuf::io::EpsCopyOutputStream* stream) {
-          const GameHandShakingFail& this_ = static_cast<const GameHandShakingFail&>(base);
+          const GameLoginFail& this_ = static_cast<const GameLoginFail&>(base);
 #else   // PROTOBUF_CUSTOM_VTABLE
-        ::uint8_t* GameHandShakingFail::_InternalSerialize(
+        ::uint8_t* GameLoginFail::_InternalSerialize(
             ::uint8_t* target,
             ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-          const GameHandShakingFail& this_ = *this;
+          const GameLoginFail& this_ = *this;
 #endif  // PROTOBUF_CUSTOM_VTABLE
-          // @@protoc_insertion_point(serialize_to_array_start:jw.GameHandShakingFail)
+          // @@protoc_insertion_point(serialize_to_array_start:jw.GameLoginFail)
           ::uint32_t cached_has_bits = 0;
           (void)cached_has_bits;
 
@@ -1121,18 +1985,18 @@ PROTOBUF_NOINLINE void GameHandShakingFail::Clear() {
                 ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
                     this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
           }
-          // @@protoc_insertion_point(serialize_to_array_end:jw.GameHandShakingFail)
+          // @@protoc_insertion_point(serialize_to_array_end:jw.GameLoginFail)
           return target;
         }
 
 #if defined(PROTOBUF_CUSTOM_VTABLE)
-        ::size_t GameHandShakingFail::ByteSizeLong(const MessageLite& base) {
-          const GameHandShakingFail& this_ = static_cast<const GameHandShakingFail&>(base);
+        ::size_t GameLoginFail::ByteSizeLong(const MessageLite& base) {
+          const GameLoginFail& this_ = static_cast<const GameLoginFail&>(base);
 #else   // PROTOBUF_CUSTOM_VTABLE
-        ::size_t GameHandShakingFail::ByteSizeLong() const {
-          const GameHandShakingFail& this_ = *this;
+        ::size_t GameLoginFail::ByteSizeLong() const {
+          const GameLoginFail& this_ = *this;
 #endif  // PROTOBUF_CUSTOM_VTABLE
-          // @@protoc_insertion_point(message_byte_size_start:jw.GameHandShakingFail)
+          // @@protoc_insertion_point(message_byte_size_start:jw.GameLoginFail)
           ::size_t total_size = 0;
 
           ::uint32_t cached_has_bits = 0;
@@ -1150,10 +2014,10 @@ PROTOBUF_NOINLINE void GameHandShakingFail::Clear() {
                                                      &this_._impl_._cached_size_);
         }
 
-void GameHandShakingFail::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
-  auto* const _this = static_cast<GameHandShakingFail*>(&to_msg);
-  auto& from = static_cast<const GameHandShakingFail&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameHandShakingFail)
+void GameLoginFail::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<GameLoginFail*>(&to_msg);
+  auto& from = static_cast<const GameLoginFail&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:jw.GameLoginFail)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1164,21 +2028,21 @@ void GameHandShakingFail::MergeImpl(::google::protobuf::MessageLite& to_msg, con
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void GameHandShakingFail::CopyFrom(const GameHandShakingFail& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameHandShakingFail)
+void GameLoginFail::CopyFrom(const GameLoginFail& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:jw.GameLoginFail)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 
-void GameHandShakingFail::InternalSwap(GameHandShakingFail* PROTOBUF_RESTRICT other) {
+void GameLoginFail::InternalSwap(GameLoginFail* PROTOBUF_RESTRICT other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_.errcode_, other->_impl_.errcode_);
 }
 
-::google::protobuf::Metadata GameHandShakingFail::GetMetadata() const {
+::google::protobuf::Metadata GameLoginFail::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================
@@ -2335,6 +3199,7 @@ GameRoomListFail::GameRoomListFail(
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.errcode_ = from._impl_.errcode_;
 
   // @@protoc_insertion_point(copy_constructor:jw.GameRoomListFail)
 }
@@ -2346,6 +3211,7 @@ inline PROTOBUF_NDEBUG_INLINE GameRoomListFail::Impl_::Impl_(
 
 inline void GameRoomListFail::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.errcode_ = {};
 }
 GameRoomListFail::~GameRoomListFail() {
   // @@protoc_insertion_point(destructor:jw.GameRoomListFail)
@@ -2386,15 +3252,15 @@ const ::google::protobuf::MessageLite::ClassData* GameRoomListFail::GetClassData
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 1, 0, 2> GameRoomListFail::_table_ = {
+const ::_pbi::TcParseTable<1, 2, 1, 0, 2> GameRoomListFail::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    1, 0,  // max_field_number, fast_idx_mask
+    2, 8,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967294,  // skipmap
+    4294967292,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    1,  // num_field_entries
+    2,  // num_field_entries
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     _class_data_.base(),
@@ -2404,13 +3270,19 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> GameRoomListFail::_table_ = {
     ::_pbi::TcParser::GetTable<::jw::GameRoomListFail>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // repeated .jw.RoomListInfo roomInfo = 1;
+    // repeated .jw.RoomListInfo roomInfo = 2;
     {::_pbi::TcParser::FastMtR1,
-     {10, 63, 0, PROTOBUF_FIELD_OFFSET(GameRoomListFail, _impl_.roominfo_)}},
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(GameRoomListFail, _impl_.roominfo_)}},
+    // .jw.ErrorCode errCode = 1;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameRoomListFail, _impl_.errcode_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(GameRoomListFail, _impl_.errcode_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // repeated .jw.RoomListInfo roomInfo = 1;
+    // .jw.ErrorCode errCode = 1;
+    {PROTOBUF_FIELD_OFFSET(GameRoomListFail, _impl_.errcode_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // repeated .jw.RoomListInfo roomInfo = 2;
     {PROTOBUF_FIELD_OFFSET(GameRoomListFail, _impl_.roominfo_), 0, 0,
     (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
   }}, {{
@@ -2427,6 +3299,7 @@ PROTOBUF_NOINLINE void GameRoomListFail::Clear() {
   (void) cached_has_bits;
 
   _impl_.roominfo_.Clear();
+  _impl_.errcode_ = 0;
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
@@ -2445,14 +3318,21 @@ PROTOBUF_NOINLINE void GameRoomListFail::Clear() {
           ::uint32_t cached_has_bits = 0;
           (void)cached_has_bits;
 
-          // repeated .jw.RoomListInfo roomInfo = 1;
+          // .jw.ErrorCode errCode = 1;
+          if (this_._internal_errcode() != 0) {
+            target = stream->EnsureSpace(target);
+            target = ::_pbi::WireFormatLite::WriteEnumToArray(
+                1, this_._internal_errcode(), target);
+          }
+
+          // repeated .jw.RoomListInfo roomInfo = 2;
           for (unsigned i = 0, n = static_cast<unsigned>(
                                    this_._internal_roominfo_size());
                i < n; i++) {
             const auto& repfield = this_._internal_roominfo().Get(i);
             target =
                 ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
-                    1, repfield, repfield.GetCachedSize(),
+                    2, repfield, repfield.GetCachedSize(),
                     target, stream);
           }
 
@@ -2481,12 +3361,19 @@ PROTOBUF_NOINLINE void GameRoomListFail::Clear() {
 
           ::_pbi::Prefetch5LinesFrom7Lines(&this_);
            {
-            // repeated .jw.RoomListInfo roomInfo = 1;
+            // repeated .jw.RoomListInfo roomInfo = 2;
              {
               total_size += 1UL * this_._internal_roominfo_size();
               for (const auto& msg : this_._internal_roominfo()) {
                 total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
               }
+            }
+          }
+           {
+            // .jw.ErrorCode errCode = 1;
+            if (this_._internal_errcode() != 0) {
+              total_size += 1 +
+                            ::_pbi::WireFormatLite::EnumSize(this_._internal_errcode());
             }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
@@ -2503,6 +3390,9 @@ void GameRoomListFail::MergeImpl(::google::protobuf::MessageLite& to_msg, const 
 
   _this->_internal_mutable_roominfo()->MergeFrom(
       from._internal_roominfo());
+  if (from._internal_errcode() != 0) {
+    _this->_impl_.errcode_ = from._impl_.errcode_;
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -2518,6 +3408,7 @@ void GameRoomListFail::InternalSwap(GameRoomListFail* PROTOBUF_RESTRICT other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.roominfo_.InternalSwap(&other->_impl_.roominfo_);
+  swap(_impl_.errcode_, other->_impl_.errcode_);
 }
 
 ::google::protobuf::Metadata GameRoomListFail::GetMetadata() const {

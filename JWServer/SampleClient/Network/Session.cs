@@ -155,30 +155,37 @@ namespace SampleClient.Network
             NetworkStream ns = NetworkStream;
             int recvSize = 0;
 
-            while (client.Connected)
+            try
             {
-                int remainRecvBufferSize = _recvBuffer.Length - recvSize;
-                int bytesRead = await ns.ReadAsync(_recvBuffer, recvSize, remainRecvBufferSize).ConfigureAwait(false);
-                recvSize += bytesRead;
-                if (!ns.DataAvailable)
+                while (client.Connected)
                 {
-                    if (OnRecved != null)
+                    int remainRecvBufferSize = _recvBuffer.Length - recvSize;
+                    int bytesRead = await ns.ReadAsync(_recvBuffer, recvSize, remainRecvBufferSize).ConfigureAwait(false);
+                    recvSize += bytesRead;
+                    if (!ns.DataAvailable)
                     {
-                        SessionRecvEventArg arg = new SessionRecvEventArg(_recvBuffer, recvSize);
-                        OnRecved?.Invoke(this, arg);
+                        if (OnRecved != null)
+                        {
+                            SessionRecvEventArg arg = new SessionRecvEventArg(_recvBuffer, recvSize);
+                            OnRecved?.Invoke(this, arg);
 
-                        if (recvSize < arg.UseSize)
-                            new Exception($"recvSize is low then zero {recvSize}");
+                            if (recvSize < arg.UseSize)
+                                new Exception($"recvSize is low then zero {recvSize}");
 
-                        // 사용한 버퍼 초기화 
-                        Array.Clear(_recvBuffer, 0, arg.UseSize);
-                        // 남아 있는 버퍼 복사
-                        int remainRecvSize = recvSize - arg.UseSize;
-                        if (remainRecvSize > 0)
-                            Array.Copy(_recvBuffer.Skip(arg.UseSize).ToArray(), _recvBuffer, remainRecvSize);
-                        recvSize -= arg.UseSize;
+                            // 사용한 버퍼 초기화 
+                            Array.Clear(_recvBuffer, 0, arg.UseSize);
+                            // 남아 있는 버퍼 복사
+                            int remainRecvSize = recvSize - arg.UseSize;
+                            if (remainRecvSize > 0)
+                                Array.Copy(_recvBuffer.Skip(arg.UseSize).ToArray(), _recvBuffer, remainRecvSize);
+                            recvSize -= arg.UseSize;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
     }

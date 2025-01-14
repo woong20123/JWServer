@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SampleClient.ViewModel;
 
 namespace SampleClient
 {
@@ -20,36 +21,31 @@ namespace SampleClient
     /// </summary>
     public partial class Chat : Page
     {
-        LoginInfo LoginInfo { get; set; }
-        public Chat(LoginInfo loginInfo)
+        ChatViewModel vm;
+        public Chat()
         {
             InitializeComponent();
-            this.LoginInfo = loginInfo;
+
+            vm = new ChatViewModel();
+            this.DataContext = vm;
+
+            viewTextBox.TextChanged += (s, e) =>
+            {
+                viewTextBox.ScrollToEnd();
+            };
         }
 
         private void inputTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (Key.Enter == e.Key)
             {
-                sendText();
+                vm.SendCommand.Execute(null);
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void ViewText(string name, string str)
         {
-            sendText();
-        }
-        void sendText()
-        {
-            string? inputString = inputTextBox.Text;
-
-            if (String.IsNullOrEmpty(inputString))
-                return;
-
-            inputTextBox.Text = String.Empty;
-            viewTextBox.Text += String.Format($"{LoginInfo.UserName} : {inputString} {Environment.NewLine}");
-
-            Network.Network.Instance.AsyncSendChatReq(LoginInfo.UserName, inputString);
+            vm.SetViewText(name, str);
         }
     }
 }

@@ -4,8 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SampleClient"
+      xmlns:vm="clr-namespace:SampleClient.ViewModel"
       mc:Ignorable="d"
       Title="Chat" Width="325" Height="420">
+
+    <Page.DataContext>
+        <vm:ChatViewModel />
+    </Page.DataContext>
 
     <Grid Background="#FFB1B1B1" Margin="0,0,0,10">
         <Grid.RowDefinitions>
@@ -17,12 +22,10 @@
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Row="0" x:Name="viewTextBox" 
-         TextWrapping="Wrap" Width="304" Height="345" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,5,0,0" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="inputTextBox" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="265" RenderTransformOrigin="0.526,-1.058" KeyDown="inputTextBox_KeyDown" Grid.Row="1" Height="35"/>
-        <Button Content="Send" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="2" Height="40" Width="40" Margin="3,3,0,0" FontWeight="Bold" Click="Button_Click"/>
-
-
+        <TextBox Grid.Row="0" x:Name="viewTextBox" Text="{Binding ViewText}" TextWrapping="Wrap" Width="304" Height="345" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,5,0,0" Grid.ColumnSpan="2"
+                 AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="inputTextBox" Text="{Binding InputString, UpdateSourceTrigger=PropertyChanged }" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="265" RenderTransformOrigin="0.526,-1.058" KeyDown="inputTextBox_KeyDown" Grid.Row="1" Height="35"/>
+        <Button x:Name="SendButton" Content="Send" Command="{Binding SendCommand}" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="2" Height="40" Width="40" Margin="3,3,0,0" FontWeight="Bold" />
 
     </Grid>
 </Page>

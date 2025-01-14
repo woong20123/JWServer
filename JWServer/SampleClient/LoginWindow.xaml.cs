@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SampleClient.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -36,17 +37,30 @@ namespace SampleClient
         public LoginWindow()
         {
             InitializeComponent();
+
+            Network.Network.Instance.Initialize();
+            Network.Network.Instance.SetDispatcher(System.Windows.Threading.Dispatcher.CurrentDispatcher);
+
             var vm = new LoginWindowViewModel();
             this.DataContext = vm;
-            vm.OnRequestWindowClose += (s, e) => this.Close();
-        }
 
+            // 로그인 창만 닫히도록 등록
+            vm.OnRequestWindowClose += (s, e) =>
+            {
+                this.Close();
+            };
+        }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            this.processKill();
+            this.Close();
+        }
+
+        private void processKill()
+        {
             Environment.Exit(0);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
-            this.Close();
         }
     }
 }

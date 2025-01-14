@@ -148,6 +148,17 @@ namespace jw
         return false;
     }
 
+    std::shared_ptr<Session> Network::GetSession(const PortId_t portId, const int32_t sessionIndex)
+    {
+        if (auto& port = getPort(portId);
+            nullptr != port)
+        {
+            return port->GetSession(sessionIndex);
+        }
+
+        return nullptr;
+    }
+
     bool Network::initializeWinSock()
     {
         WSADATA	wsaData;

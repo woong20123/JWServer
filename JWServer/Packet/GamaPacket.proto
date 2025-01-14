@@ -1,21 +1,31 @@
 syntax = "proto3";
 package jw;
 
-enum GamePacketInfo
+// GamePacket.proto 파일은 수정하지 않습니다.
+// EditGamePacket.proto 파일을 수정해야 합니다. 
+// EditGamePacket.proto에서 enum에 숫자를 자동 부여 해 GamePacket.proto를 생성합니다. 
+
+///// enum 등록
+
+/// GamePacketInfo는 고정된 enum 값을 사용합니다. 
+/// 값을 설정해주세요.
+enum GamePacketInfo 
 {
 	//option allow_alias = true;
 	GAME_PACKET_INFO_UNSPECIFIED = 0;
-	GAME_PACKET_INFO_VERSION = 1;
+	GAME_PACKET_INFO_VERSION = 2;
+
+	GAME_PACKET_AUTH_KEY = 114;
 }
 
-enum GamePacketCmd
+enum GamePacketCmd 
 {
 	GAME_PACKET_CMD_UNSPECIFIED = 0;
 	GAME_PACKET_CMD_PING_REQ = 1;
 	GAME_PACKET_CMD_PING_OK = 2;
-	GAME_PACKET_CMD_HAND_SHAKING_REQ = 3;
-	GAME_PACKET_CMD_HAND_SHAKING_OK = 4;
-	GAME_PACKET_CMD_HAND_SHAKING_FAIL = 5;
+	GAME_PACKET_CMD_LOGIN_REQ = 3;
+	GAME_PACKET_CMD_LOGIN_OK = 4;
+	GAME_PACKET_CMD_LOGIN_FAIL = 5;
 	GAME_PACKET_CMD_CREATE_ROOM_REQ = 6;
 	GAME_PACKET_CMD_CREATE_ROOM_OK = 7;
 	GAME_PACKET_CMD_CREATE_ROOM_FAIL = 8;
@@ -30,19 +40,43 @@ enum ErrorCode
 {
 	ERROR_CODE_UNSPECIFIED = 0;
 	ERROR_CODE_SUCCESS = 1;
+	ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME = 2;
+	ERROR_CODE_LOGIN_FAIL_INVALID_NAME = 3;
+	ERROR_CODE_LOGIN_FAIL_INVALID_AUTH = 4;
 }
 
+///// 재사용 message 등록
 message RoomListInfo {
 	int64 roomId = 1;
 	string name = 2;
 }
 
-message GameHandShakingReq
-{
-	int32 packetVersion = 1;
+///// 패킷 등록
+
+message GamePingReq
+{	
+	int64 num = 1;
 }
 
-message GameHandShakingFail
+message GamePingOk
+{	
+	int64 num = 1;
+}
+
+message GameLoginReq
+{
+	string name = 1;
+	int32 packetVersion = 2;
+	int64 authKey = 3;
+}
+
+message GameLoginOk
+{
+	string name = 1;
+	int64 userId = 2;
+}
+
+message GameLoginFail
 {
 	ErrorCode errCode = 1;
 }
@@ -75,7 +109,8 @@ message GameRoomListOk
 
 message GameRoomListFail
 {
-	repeated RoomListInfo roomInfo = 1;
+	ErrorCode errCode = 1;
+	repeated RoomListInfo roomInfo = 2;
 }
 
 message GameChatReq
@@ -89,3 +124,4 @@ message GameChatOk
 	string name = 1;
 	string msg = 2;
 }
+

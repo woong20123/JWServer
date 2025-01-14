@@ -141,6 +141,17 @@ namespace jw
         return true;
     }
 
+    std::shared_ptr<Session> Port::GetSession(const int32_t sessionIndex)
+    {
+        if (sessionIndex < 0 || _sessionMaxCount <= sessionIndex)
+        {
+            LOG_ERROR(L"Session Index is Invalid, id:{}, sessionIndex:{}", _id, sessionIndex);
+            return nullptr;
+        }
+
+        READ_LOCK(_sessionMutex);
+        return _sessionList[sessionIndex];
+    }
     size_t Port::getAvailableSessionCount()
     {
         READ_LOCK(_sessionMutex);

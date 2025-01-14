@@ -16,7 +16,7 @@ namespace jw
         return isSuccess;
     }
 
-    bool GamePacketHandler::HandlePacket(const Session* session, const Packet& packet)
+    bool GamePacketHandler::HandlePacket(Session* session, const Packet& packet)
     {
         const cmdType cmd = *reinterpret_cast<cmdType*>(packet.GetBody());
 

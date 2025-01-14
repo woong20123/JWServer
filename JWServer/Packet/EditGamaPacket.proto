@@ -1,0 +1,127 @@
+syntax = "proto3";
+package jw;
+
+// GamePacket.proto 파일은 수정하지 않습니다.
+// EditGamePacket.proto 파일을 수정해야 합니다. 
+// EditGamePacket.proto에서 enum에 숫자를 자동 부여 해 GamePacket.proto를 생성합니다. 
+
+///// enum 등록
+
+/// GamePacketInfo는 고정된 enum 값을 사용합니다. 
+/// 값을 설정해주세요.
+enum GamePacketInfo 
+{
+	//option allow_alias = true;
+	GAME_PACKET_INFO_UNSPECIFIED = 0;
+	GAME_PACKET_INFO_VERSION = 2;
+
+	GAME_PACKET_AUTH_KEY = 114;
+}
+
+enum GamePacketCmd 
+{
+	GAME_PACKET_CMD_UNSPECIFIED;
+	GAME_PACKET_CMD_PING_REQ;
+	GAME_PACKET_CMD_PING_OK;
+	GAME_PACKET_CMD_LOGIN_REQ;
+	GAME_PACKET_CMD_LOGIN_OK;
+	GAME_PACKET_CMD_LOGIN_FAIL;
+	GAME_PACKET_CMD_CREATE_ROOM_REQ;
+	GAME_PACKET_CMD_CREATE_ROOM_OK;
+	GAME_PACKET_CMD_CREATE_ROOM_FAIL;
+	GAME_PACKET_CMD_ROOM_LIST_REQ;
+	GAME_PACKET_CMD_ROOM_LIST_OK;
+	GAME_PACKET_CMD_ROOM_LIST_FAIL;
+	GAME_PACKET_CMD_CHAT_REQ;
+	GAME_PACKET_CMD_CHAT_OK;
+}
+
+enum ErrorCode
+{
+	ERROR_CODE_UNSPECIFIED;
+	ERROR_CODE_SUCCESS;
+	ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME;
+	ERROR_CODE_LOGIN_FAIL_INVALID_NAME;
+	ERROR_CODE_LOGIN_FAIL_INVALID_AUTH;
+}
+
+///// 재사용 message 등록
+message RoomListInfo {
+	int64 roomId = 1;
+	string name = 2;
+}
+
+///// 패킷 등록
+
+message GamePingReq
+{	
+	int64 num = 1;
+}
+
+message GamePingOk
+{	
+	int64 num = 1;
+}
+
+message GameLoginReq
+{
+	string name = 1;
+	int32 packetVersion = 2;
+	int64 authKey = 3;
+}
+
+message GameLoginOk
+{
+	string name = 1;
+	int64 userId = 2;
+}
+
+message GameLoginFail
+{
+	ErrorCode errCode = 1;
+}
+
+message GameCreateRoomReq
+{
+	string name = 1;
+}
+
+message GameCreateRoomOk
+{
+	RoomListInfo roomInfo = 1;
+}
+
+message GameCreateRoomFail
+{
+	ErrorCode errCode = 1;
+}
+
+message GameRoomListReq
+{
+	int32 startSeq = 1;
+	int32 endSeq = 2;
+}
+
+message GameRoomListOk
+{
+	repeated RoomListInfo roomInfo = 1;
+}
+
+message GameRoomListFail
+{
+	ErrorCode errCode = 1;
+	repeated RoomListInfo roomInfo = 2;
+}
+
+message GameChatReq
+{
+	string name = 1;
+	string msg = 2;
+}
+
+message GameChatOk
+{
+	string name = 1;
+	string msg = 2;
+}
+

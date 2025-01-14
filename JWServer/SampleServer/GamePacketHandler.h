@@ -9,7 +9,7 @@ namespace jw
     {
     public:
         bool RegistHandler(const cmdType cmd, const HandlerType handler) override;
-        bool HandlePacket(const Session* session, const Packet& packet) override;
+        bool HandlePacket(Session* session, const Packet& packet) override;
     private:
         std::unordered_map<cmdType, HandlerType>    _packetHandlersMap;
     };

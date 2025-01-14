@@ -30,13 +30,14 @@ namespace SampleClient.Network
                         if (instance == null)
                         {
                             instance = new Network();
-                            instance.Initialize();
                         }
                     }
                 }
                 return instance;
             }
         }
+
+        private Dispatcher? _mainDispacher = null;
 
         public EventQueue EventQuene
         {
@@ -49,18 +50,29 @@ namespace SampleClient.Network
         private Session _session;
         private EventQueue _eventQuene;
         private Thread _thread;
+        private PacketHandler _packetHandler;
+        public LoginInfo LoginInfo { get; set; }
 
         public Network()
         {
             _session = new Session();
             _eventQuene = new EventQueue("NetworkEvent");
             _thread = new Thread(run);
+            _packetHandler = new PacketHandler();
         }
 
         public void Initialize()
         {
             _session.Initialize();
             _thread.Start();
+            _packetHandler.Initialize();
+
+        }
+
+        public void SetDispatcher(Dispatcher mainDispacher)
+        {
+            _mainDispacher = mainDispacher;
+            _packetHandler.SetDispatcher(mainDispacher);
         }
 
         private void run()
@@ -100,8 +112,9 @@ namespace SampleClient.Network
                 _eventQuene.Add(AsyncEventFactory.Create(async (sessionSendArg, onSendAction, dispatcher) =>
                 {
                     await _session.AsyncSend(sendBytes);
-                    await dispatcher.BeginInvoke(DispatcherPriority.Background, () => { onSendAction?.Invoke(); });
-                }, "asyncSend", new SessionSendArg(sendBytes), onSendAction, Dispatcher.CurrentDispatcher));
+                    if (null != dispatcher)
+                        await dispatcher.BeginInvoke(DispatcherPriority.Background, () => { onSendAction?.Invoke(); });
+                }, "asyncSend", new SessionSendArg(sendBytes), onSendAction, _mainDispacher));
 
             }
             catch (Exception e)
@@ -134,16 +147,8 @@ namespace SampleClient.Network
 
                 int cmd = BitConverter.ToInt32(dataBytes, index); index += sizeof(Int32);
                 var packetBodySize = packetTotalSize - index;
-                switch (cmd)
-                {
-                    case (int)GamePacketCmd.ChatOk:
-                        {
-                            GameChatOk chatOk = new GameChatOk();
-                            chatOk.MergeFrom(dataBytes, index, packetBodySize);
-                            chatOk.CalculateSize();
-                        }
-                        break;
-                }
+
+                _packetHandler.HandlePacket(cmd, _session, dataBytes.Skip(index).ToArray(), packetBodySize);
 
                 e.UseSize += packetTotalSize;
                 dataSize -= packetTotalSize;

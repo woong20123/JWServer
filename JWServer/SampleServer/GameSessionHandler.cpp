@@ -40,6 +40,6 @@ namespace jw
     void GameSessionHandler::OnPacket(const Session* session, const Packet& packet) const
     {
         LOG_INFO(L"On Packet Session, id:{}", session->GetId());
-        _packetHandler->HandlePacket(session, packet);
+        _packetHandler->HandlePacket(const_cast<Session*>(session), packet);
     }
 }

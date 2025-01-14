@@ -65,4 +65,9 @@ namespace jw
     {
         LOG_INFO(L"closed server, name:{}", GetName().data());
     }
+
+    World* SampleServer::GetWorld()
+    {
+        return _world.get();
+    }
 }

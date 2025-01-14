@@ -28,6 +28,12 @@
     <ClCompile Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.cc">
       <Filter>packet</Filter>
     </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />
@@ -43,9 +49,14 @@
     <ClInclude Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.h">
       <Filter>packet</Filter>
     </ClInclude>
+    <ClInclude Include="User.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Packet\GamaPacket.proto">
+      <Filter>proto</Filter>
+    </None>
+    <None Include="..\Packet\EditGamaPacket.proto">
       <Filter>proto</Filter>
     </None>
   </ItemGroup>

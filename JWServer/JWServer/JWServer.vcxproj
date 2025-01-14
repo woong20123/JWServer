@@ -147,6 +147,7 @@ bootstrap.bat</Command>
   <ItemGroup>
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="ArgumentsHandler.h" />
+    <ClInclude Include="Channel.h" />
     <ClInclude Include="Consumer.hpp" />
     <ClInclude Include="IOWorker.h" />
     <ClInclude Include="Listener.h" />
@@ -164,6 +165,7 @@ bootstrap.bat</Command>
     <ClInclude Include="PacketBufferHandler.h" />
     <ClInclude Include="PacketBufferPool.h" />
     <ClInclude Include="PacketHandler.h" />
+    <ClInclude Include="PacketHelper.hpp" />
     <ClInclude Include="Port.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
@@ -176,6 +178,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
     <ClCompile Include="AsyncIOObject.h" />
+    <ClCompile Include="Channel.cpp" />
     <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="LogBuffer.cpp" />

@@ -19,6 +19,8 @@ namespace jw
         static constexpr packetSize	MAX_SIZE = 4000;
         static constexpr packetSize	HEADER_SIZE = sizeof(Header);
 
+        void Allocate();
+
         bool Add(const void* data, packetSize size);
 
         bool IsSet() const;
@@ -29,6 +31,7 @@ namespace jw
         packetSize GetBodySize() const;
         packetSize GetTotalSize() const;
     private:
+        void setPacketBuffer(std::shared_ptr<PacketBuffer>& buffer);
         packetSize getSize() const;
         packetSize getFreeSize() const;
         Header* _header;

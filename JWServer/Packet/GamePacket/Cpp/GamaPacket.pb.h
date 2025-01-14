@@ -66,12 +66,21 @@ extern GameCreateRoomOkDefaultTypeInternal _GameCreateRoomOk_default_instance_;
 class GameCreateRoomReq;
 struct GameCreateRoomReqDefaultTypeInternal;
 extern GameCreateRoomReqDefaultTypeInternal _GameCreateRoomReq_default_instance_;
-class GameHandShakingFail;
-struct GameHandShakingFailDefaultTypeInternal;
-extern GameHandShakingFailDefaultTypeInternal _GameHandShakingFail_default_instance_;
-class GameHandShakingReq;
-struct GameHandShakingReqDefaultTypeInternal;
-extern GameHandShakingReqDefaultTypeInternal _GameHandShakingReq_default_instance_;
+class GameLoginFail;
+struct GameLoginFailDefaultTypeInternal;
+extern GameLoginFailDefaultTypeInternal _GameLoginFail_default_instance_;
+class GameLoginOk;
+struct GameLoginOkDefaultTypeInternal;
+extern GameLoginOkDefaultTypeInternal _GameLoginOk_default_instance_;
+class GameLoginReq;
+struct GameLoginReqDefaultTypeInternal;
+extern GameLoginReqDefaultTypeInternal _GameLoginReq_default_instance_;
+class GamePingOk;
+struct GamePingOkDefaultTypeInternal;
+extern GamePingOkDefaultTypeInternal _GamePingOk_default_instance_;
+class GamePingReq;
+struct GamePingReqDefaultTypeInternal;
+extern GamePingReqDefaultTypeInternal _GamePingReq_default_instance_;
 class GameRoomListFail;
 struct GameRoomListFailDefaultTypeInternal;
 extern GameRoomListFailDefaultTypeInternal _GameRoomListFail_default_instance_;
@@ -93,7 +102,8 @@ namespace protobuf {
 namespace jw {
 enum GamePacketInfo : int {
   GAME_PACKET_INFO_UNSPECIFIED = 0,
-  GAME_PACKET_INFO_VERSION = 1,
+  GAME_PACKET_INFO_VERSION = 2,
+  GAME_PACKET_AUTH_KEY = 114,
   GamePacketInfo_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   GamePacketInfo_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -103,8 +113,8 @@ enum GamePacketInfo : int {
 bool GamePacketInfo_IsValid(int value);
 extern const uint32_t GamePacketInfo_internal_data_[];
 constexpr GamePacketInfo GamePacketInfo_MIN = static_cast<GamePacketInfo>(0);
-constexpr GamePacketInfo GamePacketInfo_MAX = static_cast<GamePacketInfo>(1);
-constexpr int GamePacketInfo_ARRAYSIZE = 1 + 1;
+constexpr GamePacketInfo GamePacketInfo_MAX = static_cast<GamePacketInfo>(114);
+constexpr int GamePacketInfo_ARRAYSIZE = 114 + 1;
 const ::google::protobuf::EnumDescriptor*
 GamePacketInfo_descriptor();
 template <typename T>
@@ -112,13 +122,7 @@ const std::string& GamePacketInfo_Name(T value) {
   static_assert(std::is_same<T, GamePacketInfo>::value ||
                     std::is_integral<T>::value,
                 "Incorrect type passed to GamePacketInfo_Name().");
-  return GamePacketInfo_Name(static_cast<GamePacketInfo>(value));
-}
-template <>
-inline const std::string& GamePacketInfo_Name(GamePacketInfo value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<GamePacketInfo_descriptor,
-                                                 0, 1>(
-      static_cast<int>(value));
+  return ::google::protobuf::internal::NameOfEnum(GamePacketInfo_descriptor(), value);
 }
 inline bool GamePacketInfo_Parse(absl::string_view name, GamePacketInfo* value) {
   return ::google::protobuf::internal::ParseNamedEnum<GamePacketInfo>(
@@ -128,9 +132,9 @@ enum GamePacketCmd : int {
   GAME_PACKET_CMD_UNSPECIFIED = 0,
   GAME_PACKET_CMD_PING_REQ = 1,
   GAME_PACKET_CMD_PING_OK = 2,
-  GAME_PACKET_CMD_HAND_SHAKING_REQ = 3,
-  GAME_PACKET_CMD_HAND_SHAKING_OK = 4,
-  GAME_PACKET_CMD_HAND_SHAKING_FAIL = 5,
+  GAME_PACKET_CMD_LOGIN_REQ = 3,
+  GAME_PACKET_CMD_LOGIN_OK = 4,
+  GAME_PACKET_CMD_LOGIN_FAIL = 5,
   GAME_PACKET_CMD_CREATE_ROOM_REQ = 6,
   GAME_PACKET_CMD_CREATE_ROOM_OK = 7,
   GAME_PACKET_CMD_CREATE_ROOM_FAIL = 8,
@@ -172,6 +176,9 @@ inline bool GamePacketCmd_Parse(absl::string_view name, GamePacketCmd* value) {
 enum ErrorCode : int {
   ERROR_CODE_UNSPECIFIED = 0,
   ERROR_CODE_SUCCESS = 1,
+  ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME = 2,
+  ERROR_CODE_LOGIN_FAIL_INVALID_NAME = 3,
+  ERROR_CODE_LOGIN_FAIL_INVALID_AUTH = 4,
   ErrorCode_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   ErrorCode_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -181,8 +188,8 @@ enum ErrorCode : int {
 bool ErrorCode_IsValid(int value);
 extern const uint32_t ErrorCode_internal_data_[];
 constexpr ErrorCode ErrorCode_MIN = static_cast<ErrorCode>(0);
-constexpr ErrorCode ErrorCode_MAX = static_cast<ErrorCode>(1);
-constexpr int ErrorCode_ARRAYSIZE = 1 + 1;
+constexpr ErrorCode ErrorCode_MAX = static_cast<ErrorCode>(4);
+constexpr int ErrorCode_ARRAYSIZE = 4 + 1;
 const ::google::protobuf::EnumDescriptor*
 ErrorCode_descriptor();
 template <typename T>
@@ -195,7 +202,7 @@ const std::string& ErrorCode_Name(T value) {
 template <>
 inline const std::string& ErrorCode_Name(ErrorCode value) {
   return ::google::protobuf::internal::NameOfDenseEnum<ErrorCode_descriptor,
-                                                 0, 1>(
+                                                 0, 4>(
       static_cast<int>(value));
 }
 inline bool ErrorCode_Parse(absl::string_view name, ErrorCode* value) {
@@ -469,7 +476,7 @@ class GameRoomListReq final : public ::google::protobuf::Message
     return reinterpret_cast<const GameRoomListReq*>(
         &_GameRoomListReq_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 6;
+  static constexpr int kIndexInFileMessages = 9;
   friend void swap(GameRoomListReq& a, GameRoomListReq& b) { a.Swap(&b); }
   inline void Swap(GameRoomListReq* other) {
     if (other == this) return;
@@ -614,23 +621,23 @@ class GameRoomListReq final : public ::google::protobuf::Message
 };
 // -------------------------------------------------------------------
 
-class GameHandShakingReq final : public ::google::protobuf::Message
-/* @@protoc_insertion_point(class_definition:jw.GameHandShakingReq) */ {
+class GamePingReq final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GamePingReq) */ {
  public:
-  inline GameHandShakingReq() : GameHandShakingReq(nullptr) {}
-  ~GameHandShakingReq() PROTOBUF_FINAL;
+  inline GamePingReq() : GamePingReq(nullptr) {}
+  ~GamePingReq() PROTOBUF_FINAL;
   template <typename = void>
-  explicit PROTOBUF_CONSTEXPR GameHandShakingReq(
+  explicit PROTOBUF_CONSTEXPR GamePingReq(
       ::google::protobuf::internal::ConstantInitialized);
 
-  inline GameHandShakingReq(const GameHandShakingReq& from) : GameHandShakingReq(nullptr, from) {}
-  inline GameHandShakingReq(GameHandShakingReq&& from) noexcept
-      : GameHandShakingReq(nullptr, std::move(from)) {}
-  inline GameHandShakingReq& operator=(const GameHandShakingReq& from) {
+  inline GamePingReq(const GamePingReq& from) : GamePingReq(nullptr, from) {}
+  inline GamePingReq(GamePingReq&& from) noexcept
+      : GamePingReq(nullptr, std::move(from)) {}
+  inline GamePingReq& operator=(const GamePingReq& from) {
     CopyFrom(from);
     return *this;
   }
-  inline GameHandShakingReq& operator=(GameHandShakingReq&& from) noexcept {
+  inline GamePingReq& operator=(GamePingReq&& from) noexcept {
     if (this == &from) return *this;
     if (GetArena() == from.GetArena()
 #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -662,16 +669,16 @@ class GameHandShakingReq final : public ::google::protobuf::Message
   static const ::google::protobuf::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const GameHandShakingReq& default_instance() {
+  static const GamePingReq& default_instance() {
     return *internal_default_instance();
   }
-  static inline const GameHandShakingReq* internal_default_instance() {
-    return reinterpret_cast<const GameHandShakingReq*>(
-        &_GameHandShakingReq_default_instance_);
+  static inline const GamePingReq* internal_default_instance() {
+    return reinterpret_cast<const GamePingReq*>(
+        &_GamePingReq_default_instance_);
   }
   static constexpr int kIndexInFileMessages = 1;
-  friend void swap(GameHandShakingReq& a, GameHandShakingReq& b) { a.Swap(&b); }
-  inline void Swap(GameHandShakingReq* other) {
+  friend void swap(GamePingReq& a, GamePingReq& b) { a.Swap(&b); }
+  inline void Swap(GamePingReq* other) {
     if (other == this) return;
 #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetArena() != nullptr && GetArena() == other->GetArena()) {
@@ -683,7 +690,7 @@ class GameHandShakingReq final : public ::google::protobuf::Message
       ::google::protobuf::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(GameHandShakingReq* other) {
+  void UnsafeArenaSwap(GamePingReq* other) {
     if (other == this) return;
     ABSL_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -691,13 +698,13 @@ class GameHandShakingReq final : public ::google::protobuf::Message
 
   // implements Message ----------------------------------------------
 
-  GameHandShakingReq* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
-    return ::google::protobuf::Message::DefaultConstruct<GameHandShakingReq>(arena);
+  GamePingReq* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GamePingReq>(arena);
   }
   using ::google::protobuf::Message::CopyFrom;
-  void CopyFrom(const GameHandShakingReq& from);
+  void CopyFrom(const GamePingReq& from);
   using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom(const GameHandShakingReq& from) { GameHandShakingReq::MergeImpl(*this, from); }
+  void MergeFrom(const GamePingReq& from) { GamePingReq::MergeImpl(*this, from); }
 
   private:
   static void MergeImpl(
@@ -734,16 +741,16 @@ class GameHandShakingReq final : public ::google::protobuf::Message
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void InternalSwap(GameHandShakingReq* other);
+  void InternalSwap(GamePingReq* other);
  private:
   friend class ::google::protobuf::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() { return "jw.GameHandShakingReq"; }
+  static ::absl::string_view FullMessageName() { return "jw.GamePingReq"; }
 
  protected:
-  explicit GameHandShakingReq(::google::protobuf::Arena* arena);
-  GameHandShakingReq(::google::protobuf::Arena* arena, const GameHandShakingReq& from);
-  GameHandShakingReq(::google::protobuf::Arena* arena, GameHandShakingReq&& from) noexcept
-      : GameHandShakingReq(arena) {
+  explicit GamePingReq(::google::protobuf::Arena* arena);
+  GamePingReq(::google::protobuf::Arena* arena, const GamePingReq& from);
+  GamePingReq(::google::protobuf::Arena* arena, GamePingReq&& from) noexcept
+      : GamePingReq(arena) {
     *this = ::std::move(from);
   }
   const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
@@ -755,19 +762,19 @@ class GameHandShakingReq final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kPacketVersionFieldNumber = 1,
+    kNumFieldNumber = 1,
   };
-  // int32 packetVersion = 1;
-  void clear_packetversion() ;
-  ::int32_t packetversion() const;
-  void set_packetversion(::int32_t value);
+  // int64 num = 1;
+  void clear_num() ;
+  ::int64_t num() const;
+  void set_num(::int64_t value);
 
   private:
-  ::int32_t _internal_packetversion() const;
-  void _internal_set_packetversion(::int32_t value);
+  ::int64_t _internal_num() const;
+  void _internal_set_num(::int64_t value);
 
   public:
-  // @@protoc_insertion_point(class_scope:jw.GameHandShakingReq)
+  // @@protoc_insertion_point(class_scope:jw.GamePingReq)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
@@ -777,7 +784,7 @@ class GameHandShakingReq final : public ::google::protobuf::Message
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
-      &_GameHandShakingReq_default_instance_;
+      &_GamePingReq_default_instance_;
 
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -792,8 +799,8 @@ class GameHandShakingReq final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena);
     inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                           ::google::protobuf::Arena* arena, const Impl_& from,
-                          const GameHandShakingReq& from_msg);
-    ::int32_t packetversion_;
+                          const GamePingReq& from_msg);
+    ::int64_t num_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -802,23 +809,23 @@ class GameHandShakingReq final : public ::google::protobuf::Message
 };
 // -------------------------------------------------------------------
 
-class GameHandShakingFail final : public ::google::protobuf::Message
-/* @@protoc_insertion_point(class_definition:jw.GameHandShakingFail) */ {
+class GamePingOk final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GamePingOk) */ {
  public:
-  inline GameHandShakingFail() : GameHandShakingFail(nullptr) {}
-  ~GameHandShakingFail() PROTOBUF_FINAL;
+  inline GamePingOk() : GamePingOk(nullptr) {}
+  ~GamePingOk() PROTOBUF_FINAL;
   template <typename = void>
-  explicit PROTOBUF_CONSTEXPR GameHandShakingFail(
+  explicit PROTOBUF_CONSTEXPR GamePingOk(
       ::google::protobuf::internal::ConstantInitialized);
 
-  inline GameHandShakingFail(const GameHandShakingFail& from) : GameHandShakingFail(nullptr, from) {}
-  inline GameHandShakingFail(GameHandShakingFail&& from) noexcept
-      : GameHandShakingFail(nullptr, std::move(from)) {}
-  inline GameHandShakingFail& operator=(const GameHandShakingFail& from) {
+  inline GamePingOk(const GamePingOk& from) : GamePingOk(nullptr, from) {}
+  inline GamePingOk(GamePingOk&& from) noexcept
+      : GamePingOk(nullptr, std::move(from)) {}
+  inline GamePingOk& operator=(const GamePingOk& from) {
     CopyFrom(from);
     return *this;
   }
-  inline GameHandShakingFail& operator=(GameHandShakingFail&& from) noexcept {
+  inline GamePingOk& operator=(GamePingOk&& from) noexcept {
     if (this == &from) return *this;
     if (GetArena() == from.GetArena()
 #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -850,16 +857,16 @@ class GameHandShakingFail final : public ::google::protobuf::Message
   static const ::google::protobuf::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const GameHandShakingFail& default_instance() {
+  static const GamePingOk& default_instance() {
     return *internal_default_instance();
   }
-  static inline const GameHandShakingFail* internal_default_instance() {
-    return reinterpret_cast<const GameHandShakingFail*>(
-        &_GameHandShakingFail_default_instance_);
+  static inline const GamePingOk* internal_default_instance() {
+    return reinterpret_cast<const GamePingOk*>(
+        &_GamePingOk_default_instance_);
   }
   static constexpr int kIndexInFileMessages = 2;
-  friend void swap(GameHandShakingFail& a, GameHandShakingFail& b) { a.Swap(&b); }
-  inline void Swap(GameHandShakingFail* other) {
+  friend void swap(GamePingOk& a, GamePingOk& b) { a.Swap(&b); }
+  inline void Swap(GamePingOk* other) {
     if (other == this) return;
 #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetArena() != nullptr && GetArena() == other->GetArena()) {
@@ -871,7 +878,7 @@ class GameHandShakingFail final : public ::google::protobuf::Message
       ::google::protobuf::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(GameHandShakingFail* other) {
+  void UnsafeArenaSwap(GamePingOk* other) {
     if (other == this) return;
     ABSL_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -879,13 +886,13 @@ class GameHandShakingFail final : public ::google::protobuf::Message
 
   // implements Message ----------------------------------------------
 
-  GameHandShakingFail* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
-    return ::google::protobuf::Message::DefaultConstruct<GameHandShakingFail>(arena);
+  GamePingOk* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GamePingOk>(arena);
   }
   using ::google::protobuf::Message::CopyFrom;
-  void CopyFrom(const GameHandShakingFail& from);
+  void CopyFrom(const GamePingOk& from);
   using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom(const GameHandShakingFail& from) { GameHandShakingFail::MergeImpl(*this, from); }
+  void MergeFrom(const GamePingOk& from) { GamePingOk::MergeImpl(*this, from); }
 
   private:
   static void MergeImpl(
@@ -922,16 +929,628 @@ class GameHandShakingFail final : public ::google::protobuf::Message
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void InternalSwap(GameHandShakingFail* other);
+  void InternalSwap(GamePingOk* other);
  private:
   friend class ::google::protobuf::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() { return "jw.GameHandShakingFail"; }
+  static ::absl::string_view FullMessageName() { return "jw.GamePingOk"; }
 
  protected:
-  explicit GameHandShakingFail(::google::protobuf::Arena* arena);
-  GameHandShakingFail(::google::protobuf::Arena* arena, const GameHandShakingFail& from);
-  GameHandShakingFail(::google::protobuf::Arena* arena, GameHandShakingFail&& from) noexcept
-      : GameHandShakingFail(arena) {
+  explicit GamePingOk(::google::protobuf::Arena* arena);
+  GamePingOk(::google::protobuf::Arena* arena, const GamePingOk& from);
+  GamePingOk(::google::protobuf::Arena* arena, GamePingOk&& from) noexcept
+      : GamePingOk(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kNumFieldNumber = 1,
+  };
+  // int64 num = 1;
+  void clear_num() ;
+  ::int64_t num() const;
+  void set_num(::int64_t value);
+
+  private:
+  ::int64_t _internal_num() const;
+  void _internal_set_num(::int64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:jw.GamePingOk)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      0, 1, 0,
+      0, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_GamePingOk_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const GamePingOk& from_msg);
+    ::int64_t num_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_GamaPacket_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GameLoginReq final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GameLoginReq) */ {
+ public:
+  inline GameLoginReq() : GameLoginReq(nullptr) {}
+  ~GameLoginReq() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR GameLoginReq(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline GameLoginReq(const GameLoginReq& from) : GameLoginReq(nullptr, from) {}
+  inline GameLoginReq(GameLoginReq&& from) noexcept
+      : GameLoginReq(nullptr, std::move(from)) {}
+  inline GameLoginReq& operator=(const GameLoginReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GameLoginReq& operator=(GameLoginReq&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GameLoginReq& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GameLoginReq* internal_default_instance() {
+    return reinterpret_cast<const GameLoginReq*>(
+        &_GameLoginReq_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 3;
+  friend void swap(GameLoginReq& a, GameLoginReq& b) { a.Swap(&b); }
+  inline void Swap(GameLoginReq* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GameLoginReq* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GameLoginReq* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GameLoginReq>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const GameLoginReq& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const GameLoginReq& from) { GameLoginReq::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(GameLoginReq* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "jw.GameLoginReq"; }
+
+ protected:
+  explicit GameLoginReq(::google::protobuf::Arena* arena);
+  GameLoginReq(::google::protobuf::Arena* arena, const GameLoginReq& from);
+  GameLoginReq(::google::protobuf::Arena* arena, GameLoginReq&& from) noexcept
+      : GameLoginReq(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kNameFieldNumber = 1,
+    kAuthKeyFieldNumber = 3,
+    kPacketVersionFieldNumber = 2,
+  };
+  // string name = 1;
+  void clear_name() ;
+  const std::string& name() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_name(Arg_&& arg, Args_... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* value);
+
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(
+      const std::string& value);
+  std::string* _internal_mutable_name();
+
+  public:
+  // int64 authKey = 3;
+  void clear_authkey() ;
+  ::int64_t authkey() const;
+  void set_authkey(::int64_t value);
+
+  private:
+  ::int64_t _internal_authkey() const;
+  void _internal_set_authkey(::int64_t value);
+
+  public:
+  // int32 packetVersion = 2;
+  void clear_packetversion() ;
+  ::int32_t packetversion() const;
+  void set_packetversion(::int32_t value);
+
+  private:
+  ::int32_t _internal_packetversion() const;
+  void _internal_set_packetversion(::int32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:jw.GameLoginReq)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 0,
+      28, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_GameLoginReq_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const GameLoginReq& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr name_;
+    ::int64_t authkey_;
+    ::int32_t packetversion_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_GamaPacket_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GameLoginOk final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GameLoginOk) */ {
+ public:
+  inline GameLoginOk() : GameLoginOk(nullptr) {}
+  ~GameLoginOk() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR GameLoginOk(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline GameLoginOk(const GameLoginOk& from) : GameLoginOk(nullptr, from) {}
+  inline GameLoginOk(GameLoginOk&& from) noexcept
+      : GameLoginOk(nullptr, std::move(from)) {}
+  inline GameLoginOk& operator=(const GameLoginOk& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GameLoginOk& operator=(GameLoginOk&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GameLoginOk& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GameLoginOk* internal_default_instance() {
+    return reinterpret_cast<const GameLoginOk*>(
+        &_GameLoginOk_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 4;
+  friend void swap(GameLoginOk& a, GameLoginOk& b) { a.Swap(&b); }
+  inline void Swap(GameLoginOk* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GameLoginOk* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GameLoginOk* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GameLoginOk>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const GameLoginOk& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const GameLoginOk& from) { GameLoginOk::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(GameLoginOk* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "jw.GameLoginOk"; }
+
+ protected:
+  explicit GameLoginOk(::google::protobuf::Arena* arena);
+  GameLoginOk(::google::protobuf::Arena* arena, const GameLoginOk& from);
+  GameLoginOk(::google::protobuf::Arena* arena, GameLoginOk&& from) noexcept
+      : GameLoginOk(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kNameFieldNumber = 1,
+    kUserIdFieldNumber = 2,
+  };
+  // string name = 1;
+  void clear_name() ;
+  const std::string& name() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_name(Arg_&& arg, Args_... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* value);
+
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(
+      const std::string& value);
+  std::string* _internal_mutable_name();
+
+  public:
+  // int64 userId = 2;
+  void clear_userid() ;
+  ::int64_t userid() const;
+  void set_userid(::int64_t value);
+
+  private:
+  ::int64_t _internal_userid() const;
+  void _internal_set_userid(::int64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:jw.GameLoginOk)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      1, 2, 0,
+      27, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_GameLoginOk_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const GameLoginOk& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr name_;
+    ::int64_t userid_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_GamaPacket_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GameLoginFail final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GameLoginFail) */ {
+ public:
+  inline GameLoginFail() : GameLoginFail(nullptr) {}
+  ~GameLoginFail() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR GameLoginFail(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline GameLoginFail(const GameLoginFail& from) : GameLoginFail(nullptr, from) {}
+  inline GameLoginFail(GameLoginFail&& from) noexcept
+      : GameLoginFail(nullptr, std::move(from)) {}
+  inline GameLoginFail& operator=(const GameLoginFail& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GameLoginFail& operator=(GameLoginFail&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GameLoginFail& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GameLoginFail* internal_default_instance() {
+    return reinterpret_cast<const GameLoginFail*>(
+        &_GameLoginFail_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 5;
+  friend void swap(GameLoginFail& a, GameLoginFail& b) { a.Swap(&b); }
+  inline void Swap(GameLoginFail* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GameLoginFail* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GameLoginFail* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GameLoginFail>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const GameLoginFail& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const GameLoginFail& from) { GameLoginFail::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(GameLoginFail* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "jw.GameLoginFail"; }
+
+ protected:
+  explicit GameLoginFail(::google::protobuf::Arena* arena);
+  GameLoginFail(::google::protobuf::Arena* arena, const GameLoginFail& from);
+  GameLoginFail(::google::protobuf::Arena* arena, GameLoginFail&& from) noexcept
+      : GameLoginFail(arena) {
     *this = ::std::move(from);
   }
   const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
@@ -955,7 +1574,7 @@ class GameHandShakingFail final : public ::google::protobuf::Message
   void _internal_set_errcode(::jw::ErrorCode value);
 
   public:
-  // @@protoc_insertion_point(class_scope:jw.GameHandShakingFail)
+  // @@protoc_insertion_point(class_scope:jw.GameLoginFail)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
@@ -965,7 +1584,7 @@ class GameHandShakingFail final : public ::google::protobuf::Message
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
-      &_GameHandShakingFail_default_instance_;
+      &_GameLoginFail_default_instance_;
 
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -980,7 +1599,7 @@ class GameHandShakingFail final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena);
     inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                           ::google::protobuf::Arena* arena, const Impl_& from,
-                          const GameHandShakingFail& from_msg);
+                          const GameLoginFail& from_msg);
     int errcode_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -1045,7 +1664,7 @@ class GameCreateRoomReq final : public ::google::protobuf::Message
     return reinterpret_cast<const GameCreateRoomReq*>(
         &_GameCreateRoomReq_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 3;
+  static constexpr int kIndexInFileMessages = 6;
   friend void swap(GameCreateRoomReq& a, GameCreateRoomReq& b) { a.Swap(&b); }
   inline void Swap(GameCreateRoomReq* other) {
     if (other == this) return;
@@ -1239,7 +1858,7 @@ class GameCreateRoomFail final : public ::google::protobuf::Message
     return reinterpret_cast<const GameCreateRoomFail*>(
         &_GameCreateRoomFail_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 5;
+  static constexpr int kIndexInFileMessages = 8;
   friend void swap(GameCreateRoomFail& a, GameCreateRoomFail& b) { a.Swap(&b); }
   inline void Swap(GameCreateRoomFail* other) {
     if (other == this) return;
@@ -1427,7 +2046,7 @@ class GameChatReq final : public ::google::protobuf::Message
     return reinterpret_cast<const GameChatReq*>(
         &_GameChatReq_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 9;
+  static constexpr int kIndexInFileMessages = 12;
   friend void swap(GameChatReq& a, GameChatReq& b) { a.Swap(&b); }
   inline void Swap(GameChatReq* other) {
     if (other == this) return;
@@ -1639,7 +2258,7 @@ class GameChatOk final : public ::google::protobuf::Message
     return reinterpret_cast<const GameChatOk*>(
         &_GameChatOk_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 10;
+  static constexpr int kIndexInFileMessages = 13;
   friend void swap(GameChatOk& a, GameChatOk& b) { a.Swap(&b); }
   inline void Swap(GameChatOk* other) {
     if (other == this) return;
@@ -1851,7 +2470,7 @@ class GameRoomListOk final : public ::google::protobuf::Message
     return reinterpret_cast<const GameRoomListOk*>(
         &_GameRoomListOk_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 7;
+  static constexpr int kIndexInFileMessages = 10;
   friend void swap(GameRoomListOk& a, GameRoomListOk& b) { a.Swap(&b); }
   inline void Swap(GameRoomListOk* other) {
     if (other == this) return;
@@ -2046,7 +2665,7 @@ class GameRoomListFail final : public ::google::protobuf::Message
     return reinterpret_cast<const GameRoomListFail*>(
         &_GameRoomListFail_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 8;
+  static constexpr int kIndexInFileMessages = 11;
   friend void swap(GameRoomListFail& a, GameRoomListFail& b) { a.Swap(&b); }
   inline void Swap(GameRoomListFail* other) {
     if (other == this) return;
@@ -2132,9 +2751,10 @@ class GameRoomListFail final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kRoomInfoFieldNumber = 1,
+    kRoomInfoFieldNumber = 2,
+    kErrCodeFieldNumber = 1,
   };
-  // repeated .jw.RoomListInfo roomInfo = 1;
+  // repeated .jw.RoomListInfo roomInfo = 2;
   int roominfo_size() const;
   private:
   int _internal_roominfo_size() const;
@@ -2151,12 +2771,22 @@ class GameRoomListFail final : public ::google::protobuf::Message
   const ::jw::RoomListInfo& roominfo(int index) const;
   ::jw::RoomListInfo* add_roominfo();
   const ::google::protobuf::RepeatedPtrField<::jw::RoomListInfo>& roominfo() const;
+  // .jw.ErrorCode errCode = 1;
+  void clear_errcode() ;
+  ::jw::ErrorCode errcode() const;
+  void set_errcode(::jw::ErrorCode value);
+
+  private:
+  ::jw::ErrorCode _internal_errcode() const;
+  void _internal_set_errcode(::jw::ErrorCode value);
+
+  public:
   // @@protoc_insertion_point(class_scope:jw.GameRoomListFail)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      0, 1, 1,
+      1, 2, 1,
       0, 2>
       _table_;
 
@@ -2178,6 +2808,7 @@ class GameRoomListFail final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const GameRoomListFail& from_msg);
     ::google::protobuf::RepeatedPtrField< ::jw::RoomListInfo > roominfo_;
+    int errcode_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -2241,7 +2872,7 @@ class GameCreateRoomOk final : public ::google::protobuf::Message
     return reinterpret_cast<const GameCreateRoomOk*>(
         &_GameCreateRoomOk_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 4;
+  static constexpr int kIndexInFileMessages = 7;
   friend void swap(GameCreateRoomOk& a, GameCreateRoomOk& b) { a.Swap(&b); }
   inline void Swap(GameCreateRoomOk* other) {
     if (other == this) return;
@@ -2469,52 +3100,252 @@ inline void RoomListInfo::set_allocated_name(std::string* value) {
 
 // -------------------------------------------------------------------
 
-// GameHandShakingReq
+// GamePingReq
 
-// int32 packetVersion = 1;
-inline void GameHandShakingReq::clear_packetversion() {
+// int64 num = 1;
+inline void GamePingReq::clear_num() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.packetversion_ = 0;
+  _impl_.num_ = ::int64_t{0};
 }
-inline ::int32_t GameHandShakingReq::packetversion() const {
-  // @@protoc_insertion_point(field_get:jw.GameHandShakingReq.packetVersion)
-  return _internal_packetversion();
+inline ::int64_t GamePingReq::num() const {
+  // @@protoc_insertion_point(field_get:jw.GamePingReq.num)
+  return _internal_num();
 }
-inline void GameHandShakingReq::set_packetversion(::int32_t value) {
-  _internal_set_packetversion(value);
-  // @@protoc_insertion_point(field_set:jw.GameHandShakingReq.packetVersion)
+inline void GamePingReq::set_num(::int64_t value) {
+  _internal_set_num(value);
+  // @@protoc_insertion_point(field_set:jw.GamePingReq.num)
 }
-inline ::int32_t GameHandShakingReq::_internal_packetversion() const {
+inline ::int64_t GamePingReq::_internal_num() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.packetversion_;
+  return _impl_.num_;
 }
-inline void GameHandShakingReq::_internal_set_packetversion(::int32_t value) {
+inline void GamePingReq::_internal_set_num(::int64_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.packetversion_ = value;
+  _impl_.num_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// GameHandShakingFail
+// GamePingOk
+
+// int64 num = 1;
+inline void GamePingOk::clear_num() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.num_ = ::int64_t{0};
+}
+inline ::int64_t GamePingOk::num() const {
+  // @@protoc_insertion_point(field_get:jw.GamePingOk.num)
+  return _internal_num();
+}
+inline void GamePingOk::set_num(::int64_t value) {
+  _internal_set_num(value);
+  // @@protoc_insertion_point(field_set:jw.GamePingOk.num)
+}
+inline ::int64_t GamePingOk::_internal_num() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.num_;
+}
+inline void GamePingOk::_internal_set_num(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.num_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// GameLoginReq
+
+// string name = 1;
+inline void GameLoginReq::clear_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GameLoginReq::name() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameLoginReq.name)
+  return _internal_name();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameLoginReq::set_name(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameLoginReq.name)
+}
+inline std::string* GameLoginReq::mutable_name() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:jw.GameLoginReq.name)
+  return _s;
+}
+inline const std::string& GameLoginReq::_internal_name() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.name_.Get();
+}
+inline void GameLoginReq::_internal_set_name(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(value, GetArena());
+}
+inline std::string* GameLoginReq::_internal_mutable_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.name_.Mutable( GetArena());
+}
+inline std::string* GameLoginReq::release_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameLoginReq.name)
+  return _impl_.name_.Release();
+}
+inline void GameLoginReq::set_allocated_name(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.name_.IsDefault()) {
+          _impl_.name_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameLoginReq.name)
+}
+
+// int32 packetVersion = 2;
+inline void GameLoginReq::clear_packetversion() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.packetversion_ = 0;
+}
+inline ::int32_t GameLoginReq::packetversion() const {
+  // @@protoc_insertion_point(field_get:jw.GameLoginReq.packetVersion)
+  return _internal_packetversion();
+}
+inline void GameLoginReq::set_packetversion(::int32_t value) {
+  _internal_set_packetversion(value);
+  // @@protoc_insertion_point(field_set:jw.GameLoginReq.packetVersion)
+}
+inline ::int32_t GameLoginReq::_internal_packetversion() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.packetversion_;
+}
+inline void GameLoginReq::_internal_set_packetversion(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.packetversion_ = value;
+}
+
+// int64 authKey = 3;
+inline void GameLoginReq::clear_authkey() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.authkey_ = ::int64_t{0};
+}
+inline ::int64_t GameLoginReq::authkey() const {
+  // @@protoc_insertion_point(field_get:jw.GameLoginReq.authKey)
+  return _internal_authkey();
+}
+inline void GameLoginReq::set_authkey(::int64_t value) {
+  _internal_set_authkey(value);
+  // @@protoc_insertion_point(field_set:jw.GameLoginReq.authKey)
+}
+inline ::int64_t GameLoginReq::_internal_authkey() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.authkey_;
+}
+inline void GameLoginReq::_internal_set_authkey(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.authkey_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// GameLoginOk
+
+// string name = 1;
+inline void GameLoginOk::clear_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GameLoginOk::name() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameLoginOk.name)
+  return _internal_name();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameLoginOk::set_name(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameLoginOk.name)
+}
+inline std::string* GameLoginOk::mutable_name() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:jw.GameLoginOk.name)
+  return _s;
+}
+inline const std::string& GameLoginOk::_internal_name() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.name_.Get();
+}
+inline void GameLoginOk::_internal_set_name(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(value, GetArena());
+}
+inline std::string* GameLoginOk::_internal_mutable_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.name_.Mutable( GetArena());
+}
+inline std::string* GameLoginOk::release_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameLoginOk.name)
+  return _impl_.name_.Release();
+}
+inline void GameLoginOk::set_allocated_name(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.name_.IsDefault()) {
+          _impl_.name_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameLoginOk.name)
+}
+
+// int64 userId = 2;
+inline void GameLoginOk::clear_userid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.userid_ = ::int64_t{0};
+}
+inline ::int64_t GameLoginOk::userid() const {
+  // @@protoc_insertion_point(field_get:jw.GameLoginOk.userId)
+  return _internal_userid();
+}
+inline void GameLoginOk::set_userid(::int64_t value) {
+  _internal_set_userid(value);
+  // @@protoc_insertion_point(field_set:jw.GameLoginOk.userId)
+}
+inline ::int64_t GameLoginOk::_internal_userid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.userid_;
+}
+inline void GameLoginOk::_internal_set_userid(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.userid_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// GameLoginFail
 
 // .jw.ErrorCode errCode = 1;
-inline void GameHandShakingFail::clear_errcode() {
+inline void GameLoginFail::clear_errcode() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.errcode_ = 0;
 }
-inline ::jw::ErrorCode GameHandShakingFail::errcode() const {
-  // @@protoc_insertion_point(field_get:jw.GameHandShakingFail.errCode)
+inline ::jw::ErrorCode GameLoginFail::errcode() const {
+  // @@protoc_insertion_point(field_get:jw.GameLoginFail.errCode)
   return _internal_errcode();
 }
-inline void GameHandShakingFail::set_errcode(::jw::ErrorCode value) {
+inline void GameLoginFail::set_errcode(::jw::ErrorCode value) {
   _internal_set_errcode(value);
-  // @@protoc_insertion_point(field_set:jw.GameHandShakingFail.errCode)
+  // @@protoc_insertion_point(field_set:jw.GameLoginFail.errCode)
 }
-inline ::jw::ErrorCode GameHandShakingFail::_internal_errcode() const {
+inline ::jw::ErrorCode GameLoginFail::_internal_errcode() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
   return static_cast<::jw::ErrorCode>(_impl_.errcode_);
 }
-inline void GameHandShakingFail::_internal_set_errcode(::jw::ErrorCode value) {
+inline void GameLoginFail::_internal_set_errcode(::jw::ErrorCode value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.errcode_ = value;
 }
@@ -2804,7 +3635,29 @@ GameRoomListOk::_internal_mutable_roominfo() {
 
 // GameRoomListFail
 
-// repeated .jw.RoomListInfo roomInfo = 1;
+// .jw.ErrorCode errCode = 1;
+inline void GameRoomListFail::clear_errcode() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.errcode_ = 0;
+}
+inline ::jw::ErrorCode GameRoomListFail::errcode() const {
+  // @@protoc_insertion_point(field_get:jw.GameRoomListFail.errCode)
+  return _internal_errcode();
+}
+inline void GameRoomListFail::set_errcode(::jw::ErrorCode value) {
+  _internal_set_errcode(value);
+  // @@protoc_insertion_point(field_set:jw.GameRoomListFail.errCode)
+}
+inline ::jw::ErrorCode GameRoomListFail::_internal_errcode() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::jw::ErrorCode>(_impl_.errcode_);
+}
+inline void GameRoomListFail::_internal_set_errcode(::jw::ErrorCode value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.errcode_ = value;
+}
+
+// repeated .jw.RoomListInfo roomInfo = 2;
 inline int GameRoomListFail::_internal_roominfo_size() const {
   return _internal_roominfo().size();
 }

@@ -41,6 +41,8 @@ namespace jw
         Session* CreateSession();
         bool DestroySession(Session* session);
 
+        std::shared_ptr<Session> GetSession(const int32_t sessionIndex);
+
     private:
 
         size_t getAvailableSessionCount();

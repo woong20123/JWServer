@@ -3,6 +3,10 @@
 #include "StringConverter.h"
 #include "PacketBuffer.h"
 #include "PacketBufferPool.h"
+#include "PacketHelper.hpp"
+#include "User.h"
+#include "Network.h"
+#include "SampleServer.h"
 #include "../Packet/GamePacket/Cpp/GamaPacket.pb.h"
 #include <codecvt>
 #include "StopWatch.h"
@@ -19,6 +23,8 @@ LOG_FETAL(L"fail req parser, sessionId:{}, req-typeid:{}, protoBufferSize:{}", s
 
 namespace jw
 {
+
+
     void GamePacketHandleFuncList::Initialize(std::shared_ptr<PacketHandler>& packetHandler)
     {
         GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -30,7 +36,7 @@ namespace jw
     void GamePacketHandleFuncList::registGamePacketHandleList()
     {
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_PING_REQ, GamePacketHandleFuncList::HandleGamePingReq);
-        REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_HAND_SHAKING_REQ, GamePacketHandleFuncList::HandleGameHandShakingReq);
+        REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_LOGIN_REQ, GamePacketHandleFuncList::HandleGameLoginReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CREATE_ROOM_REQ, GamePacketHandleFuncList::HandleGameCreateRoomReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_LIST_REQ, GamePacketHandleFuncList::HandleGameRoomListReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CHAT_REQ, GamePacketHandleFuncList::HandleGameChatReq);
@@ -41,31 +47,61 @@ namespace jw
         return packet.GetBody() + sizeof(PacketHandler::cmdType);
     }
 
-    bool GamePacketHandleFuncList::HandleGamePingReq(const Session* session, const Packet& packet)
+    bool GamePacketHandleFuncList::HandleGamePingReq(Session* session, const Packet& packet)
     {
         LOG_DEBUG(L"on ping packet, sessionId:{}", session->GetId());
         return true;
     }
 
-    bool GamePacketHandleFuncList::HandleGameHandShakingReq(const Session* session, const Packet& packet)
+    bool GamePacketHandleFuncList::HandleGameLoginReq(Session* session, const Packet& packet)
     {
-        ;
-        PARSER_PROTO_PACKET_DATA(GameHandShakingReq, req, packet);
+        PARSER_PROTO_PACKET_DATA(GameLoginReq, req, packet);
+
+        const auto& name = req.name();
+        const auto& clientAuthKey = req.authkey();
+        const auto& serverAuthKey = static_cast<int>(GamePacketInfo::GAME_PACKET_AUTH_KEY);
+        if (serverAuthKey != clientAuthKey)
+        {
+            LOG_ERROR(L"not equal auth key, clientAuthKey:{}, serverAuthKey:{}", clientAuthKey, serverAuthKey);
+            GameLoginFail gameLoginFail;
+            gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_AUTH);
+            PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            return true;
+        }
 
         const auto clientPacketVersion = req.packetversion();
         const auto serverPacketVersion = static_cast<int>(GamePacketInfo::GAME_PACKET_INFO_VERSION);
         if (serverPacketVersion != clientPacketVersion)
         {
             LOG_ERROR(L"not equal packet version, clientPacketVersion:{}, serverPacketVersion:{}", clientPacketVersion, serverPacketVersion);
-            return false;
+            GameLoginFail gameLoginFail;
+            gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_NAME);
+            PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            return true;
         }
 
+        std::shared_ptr<User> user = std::make_shared<User>();
+        user->Initialize(NETWORK().GetSession(session->GetPortId(), session->GetIndex()), name);
+        if (!SAMPLE_SERVER().GetWorld()->RegistUser(user))
+        {
+            GameLoginFail gameLoginFail;
+            gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME);
+            PacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            return true;
+        }
 
-        LOG_DEBUG(L"on hand shaking packet, sessionId:{}", session->GetId());
+        session->SetChannelKey(user->GetUserKey());
+
+        GameLoginOk gameLoginOk;
+        gameLoginOk.set_name(name);
+        gameLoginOk.set_userid(user->GetUserKey());
+        PacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_OK, gameLoginOk);
+
+        LOG_DEBUG(L"on login packet, sessionId:{}, userKey:{}", session->GetId(), user->GetUserKey());
         return true;
     }
 
-    bool GamePacketHandleFuncList::HandleGameCreateRoomReq(const Session* session, const Packet& packet)
+    bool GamePacketHandleFuncList::HandleGameCreateRoomReq(Session* session, const Packet& packet)
     {
         PARSER_PROTO_PACKET_DATA(GameCreateRoomReq, req, packet);
 
@@ -73,7 +109,7 @@ namespace jw
         return true;
     }
 
-    bool GamePacketHandleFuncList::HandleGameRoomListReq(const Session* session, const Packet& packet)
+    bool GamePacketHandleFuncList::HandleGameRoomListReq(Session* session, const Packet& packet)
     {
         PARSER_PROTO_PACKET_DATA(GameRoomListReq, req, packet);
 
@@ -81,29 +117,21 @@ namespace jw
         return true;
     }
 
-    bool GamePacketHandleFuncList::HandleGameChatReq(const Session* session, const Packet& packet)
+    bool GamePacketHandleFuncList::HandleGameChatReq(Session* session, const Packet& packet)
     {
         PARSER_PROTO_PACKET_DATA(GameChatReq, req, packet);
         LOG_DEBUG(L"on chat req packet, sessionId:{}, name:{}, msg:{}", session->GetId(), StringConverter::StrA2WUseUTF8(req.name())->c_str(), StringConverter::StrA2WUseUTF8(req.msg())->c_str());
 
-        GameChatOk response;
-        response.set_name(req.name());
-        response.set_msg(req.msg());
-        ;
+        GameChatOk gameChatOk;
+        gameChatOk.set_name(req.name());
+        gameChatOk.set_msg(req.msg());
+
         Packet sendPacket;
-        std::shared_ptr<PacketBuffer> packetBuffer{ PACKET_BUFFER_POOL().Acquire(), [](PacketBuffer* obj) { PACKET_BUFFER_POOL().Release(obj); } };
-        sendPacket.SetPacketBuffer(packetBuffer);
+        sendPacket.Allocate();
 
-
-        PacketHandler::cmdType cmd = GAME_PACKET_CMD_CHAT_OK;
-        char responseBody[256] = { 0, };
-        const auto responseSize = response.ByteSizeLong();
-        response.SerializeToArray(responseBody, (int)responseSize);
-
-        sendPacket.Add(&cmd, sizeof(PacketHandler::cmdType));
-        sendPacket.Add(responseBody, (int)responseSize);
-
-        const_cast<Session*>(session)->Send(sendPacket);
+        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CHAT_OK, gameChatOk);
+        session->Send(sendPacket);
         return true;
     }
+
 }

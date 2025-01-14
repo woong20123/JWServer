@@ -13,11 +13,11 @@ namespace jw
     {
     public:
         void Initialize(std::shared_ptr<PacketHandler>& packetHandler);
-        bool HandleGamePingReq(const Session* session, const Packet& packet);
-        bool HandleGameHandShakingReq(const Session* session, const Packet& packet);
-        bool HandleGameCreateRoomReq(const Session* session, const Packet& packet);
-        bool HandleGameRoomListReq(const Session* session, const Packet& packet);
-        bool HandleGameChatReq(const Session* session, const Packet& packet);
+        bool HandleGamePingReq(Session* session, const Packet& packet);
+        bool HandleGameLoginReq(Session* session, const Packet& packet);
+        bool HandleGameCreateRoomReq(Session* session, const Packet& packet);
+        bool HandleGameRoomListReq(Session* session, const Packet& packet);
+        bool HandleGameChatReq(Session* session, const Packet& packet);
     protected:
         GamePacketHandleFuncList() = default;
         ~GamePacketHandleFuncList() = default;

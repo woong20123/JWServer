@@ -1,11 +1,18 @@
 ﻿#include "Packet.h"
 #include "PacketBuffer.h"
+#include "PacketBufferPool.h"
 #include "TypeDefinition.h"
 
 namespace jw
 {
     Packet::Packet() : _header{ nullptr }
     { }
+
+    void Packet::Allocate()
+    {
+        std::shared_ptr<PacketBuffer> packetBuffer{ PACKET_BUFFER_POOL().Acquire(), [](PacketBuffer* obj) { PACKET_BUFFER_POOL().Release(obj); } };
+        setPacketBuffer(packetBuffer);
+    }
 
     bool Packet::Add(const void* data, Packet::packetSize size)
     {
@@ -36,10 +43,7 @@ namespace jw
 
     void Packet::SetPacketBuffer(std::shared_ptr<PacketBuffer>& buffer)
     {
-        _packetBuffer = buffer;
-        _header = reinterpret_cast<Header*>(_packetBuffer->GetBuffer());
-        _header->_size = sizeof(Header);
-
+        setPacketBuffer(buffer);
     }
 
     Packet::Header* Packet::GetHeader()  const
@@ -61,6 +65,13 @@ namespace jw
     {
         if (getSize() == 0) return 0;
         return getSize();
+    }
+
+    void Packet::setPacketBuffer(std::shared_ptr<PacketBuffer>& buffer)
+    {
+        _packetBuffer = buffer;
+        _header = reinterpret_cast<Header*>(_packetBuffer->GetBuffer());
+        _header->_size = sizeof(Header);
     }
 
     Packet::packetSize Packet::getSize() const
