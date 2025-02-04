@@ -28,12 +28,8 @@
     <ClCompile Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.cc">
       <Filter>packet</Filter>
     </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
+    <ClCompile Include="World.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Serilog;
 
 namespace SampleClient
 {
@@ -37,6 +38,11 @@ namespace SampleClient
         public LoginWindow()
         {
             InitializeComponent();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File("logs/SampleClient_.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             Network.Network.Instance.Initialize();
             Network.Network.Instance.SetDispatcher(System.Windows.Threading.Dispatcher.CurrentDispatcher);

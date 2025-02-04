@@ -19,6 +19,7 @@ namespace jw
 
         bool onStartLog() override;
         bool onStartNetwork() override;
+        bool onInitialize() override;
         bool onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj) override;
         void onClosedServer() override;
 

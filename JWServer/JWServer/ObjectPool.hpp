@@ -18,7 +18,7 @@ namespace jw
 		{
 			T* ret{ nullptr };
 			{
-				std::unique_lock<std::shared_mutex> lk{ _list_mutex };
+				std::unique_lock<std::shared_mutex> lk{ _listMutex };
 
 				if (_list.size() == 0)
 					allocate();
@@ -31,7 +31,7 @@ namespace jw
 		void Release(T* object)
 		{
 			{
-				std::unique_lock<std::shared_mutex> lk{ _list_mutex };
+				std::unique_lock<std::shared_mutex> lk{ _listMutex };
 				_list.push_back(object);
 			}
 		}
@@ -53,7 +53,7 @@ namespace jw
 		}
 
 		std::list<T*>			_list;
-		std::shared_mutex		_list_mutex;
+		std::shared_mutex		_listMutex;
 		size_t					_allocateCount{ BASE_ALLOCATE_COUNT };
 	};
 }

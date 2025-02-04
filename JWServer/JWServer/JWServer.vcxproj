@@ -167,17 +167,22 @@ bootstrap.bat</Command>
     <ClInclude Include="PacketHandler.h" />
     <ClInclude Include="PacketHelper.hpp" />
     <ClInclude Include="Port.h" />
+    <ClInclude Include="SerializeObject.h" />
+    <ClInclude Include="Serializer.h" />
+    <ClInclude Include="SerializerManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionBuffer.h" />
     <ClInclude Include="SessionHandler.h" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="StringConverter.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerLauncher.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
-    <ClCompile Include="AsyncIOObject.h" />
+    <ClCompile Include="AsyncObject.h" />
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
@@ -197,11 +202,16 @@ bootstrap.bat</Command>
     <ClCompile Include="PacketBufferPool.cpp" />
     <ClCompile Include="Port.cpp" />
     <ClCompile Include="ProducerContainer.hpp" />
+    <ClCompile Include="SerializeObject.cpp" />
+    <ClCompile Include="Serializer.cpp" />
+    <ClCompile Include="SerializerManager.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionBuffer.cpp" />
     <ClCompile Include="StopWatch.h" />
     <ClCompile Include="StringConverter.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerLauncher.cpp" />
     <ClCompile Include="TypeDefinition.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

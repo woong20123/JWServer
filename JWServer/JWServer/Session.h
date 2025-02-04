@@ -6,7 +6,7 @@ class Session
 #pragma once
 #ifndef __JW_SESSION_H__
 #define __JW_SESSION_H__
-#include "AsyncIOObject.h"
+#include "AsyncObject.h"
 #include "SessionBuffer.h"
 #include <shared_mutex>
 
@@ -91,7 +91,7 @@ namespace jw
         CLOSE_REASON_CLIENT_DISCONNECTED,
     };
 
-    class Session : public AsyncIOObject
+    class Session : public AsyncObject
     {
     public:
         Session();
@@ -103,7 +103,7 @@ namespace jw
         int16_t GetPortId() const;
         int32_t GetIndex() const;
 
-        uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_SESSION; }
+        uint32_t GetAsyncObjectId() const override { return ASYNC_OBJ_SESSION; }
         bool HandleEvent(AsyncContext* context, paramType bytes) override;
         void HandleFailedEvent(AsyncContext* context, paramType param) override;
 

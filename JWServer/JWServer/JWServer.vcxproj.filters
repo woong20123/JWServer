@@ -79,6 +79,21 @@
     <ClInclude Include="PacketBufferPool.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="Serializer.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializeObject.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializerManager.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerLauncher.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />
@@ -125,7 +140,7 @@
     <ClCompile Include="NetworkHelper.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="AsyncIOObject.h">
+    <ClCompile Include="AsyncObject.h">
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="IOWorker.cpp">
@@ -159,6 +174,21 @@
     <ClCompile Include="PacketBufferPool.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="Serializer.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializeObject.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializerManager.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerLauncher.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">
@@ -169,6 +199,12 @@
     </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{84320413-131f-46a1-b702-cc0aafc98bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Serializer">
+      <UniqueIdentifier>{e9961551-4bb4-4c96-b9d5-332efdfa1620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{7b35c05d-2cd7-4c72-896f-c45df6b3d248}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

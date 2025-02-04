@@ -29,17 +29,18 @@ namespace jw
         uint32_t _id;
     };
 
-    class AsyncIOObject
+    class AsyncObject
     {
     public:
         using paramType = unsigned long;
 
         enum
         {
-            ASYNC_IO_OBJ_NONE = 0,
-            ASYNC_IO_OBJ_LISTENER,
-            ASYNC_IO_OBJ_SESSION,
-            ASYNC_IO_OBJ_MAX
+            ASYNC_OBJ_NONE = 0,
+            ASYNC_OBJ_LISTENER,
+            ASYNC_OBJ_SESSION,
+            ASYNC_OBJ_TIMER,
+            ASYNC_OBJ_MAX
         };
 
         virtual uint32_t GetAsyncObjectId() const = 0;

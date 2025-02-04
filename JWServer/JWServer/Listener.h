@@ -1,7 +1,7 @@
 ﻿#pragma once
 #ifndef __JW_LISTENER_H__
 #define __JW_LISTENER_H__
-#include "AsyncIOObject.h"
+#include "AsyncObject.h"
 #include <memory>
 #include <array>
 #include <ws2tcpip.h>
@@ -31,13 +31,13 @@ namespace jw
 		uint8_t		_buffer[CONTEXT_BUFFER_COUNT];
 	};
 
-	class Listener : public AsyncIOObject
+	class Listener : public AsyncObject
 	{
 	public:
 		Listener();
 		~Listener();
 		bool Initialize(uint32_t portId, uint16_t portNumber, HANDLE iocpHandle, const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc);
-		uint32_t GetAsyncObjectId() const override { return ASYNC_IO_OBJ_LISTENER; }
+		uint32_t GetAsyncObjectId() const override { return ASYNC_OBJ_LISTENER; }
 		bool HandleEvent(AsyncContext* context, unsigned long bytes) override;
 
 

@@ -1,6 +1,8 @@
 #include "World.h"
 #include "User.h"
 #include "TypeDefinition.h"
+#include "Serializer.h"
+#include "SerializerManager.h"
 
 namespace jw
 {
@@ -17,6 +19,9 @@ namespace jw
             _issueBaseKey.push(i);
         }
 
+        // WorldSerializer µî·Ï 
+        _serializer = std::make_shared<Serializer>(1);
+        SERIALIZER_MANAGER().RegistSerializer(_serializer->GetSerializerId(), _serializer);
     }
 
     bool World::RegistUser(std::shared_ptr<User> user)
@@ -51,5 +56,11 @@ namespace jw
     {
         READ_LOCK(_userList_mutex);
         return _userList[userKey];
+    }
+
+    bool World::PostSO(std::shared_ptr<SerializeObject>& so)
+    {
+        _serializer->Post(so);
+        return true;
     }
 }

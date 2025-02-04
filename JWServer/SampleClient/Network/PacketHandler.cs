@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Jw;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace SampleClient.Network
 
         public void Initialize()
         {
+            packetHandler.Add((int)GamePacketCmd.LoginOk, handleGameLoginOk);
+            packetHandler.Add((int)GamePacketCmd.LoginFail, handleGameLoginFail);
             packetHandler.Add((int)GamePacketCmd.ChatOk, handleGameChatOk);
         }
 
@@ -52,6 +55,41 @@ namespace SampleClient.Network
         private MainWindow? GetMainWindow()
         {
             return Application.Current.Windows.OfType<Window>().Where(window => window is MainWindow).FirstOrDefault() as MainWindow;
+        }
+
+        private void handleGameLoginOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var loginOk = ToPacket<GameLoginOk>(packetData, 0, packetBodySize);
+
+
+
+            var callBackAction = () =>
+            {
+                var mainWindow = GetMainWindow();
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+
+            Log.Information($"[PacketHandler] handleGameLoginOk name:{loginOk.Name}, userID:{loginOk.UserId}");
+        }
+
+        private void handleGameLoginFail(Session session, byte[] packetData, int packetBodySize)
+        {
+            var loginFail = ToPacket<GameLoginFail>(packetData, 0, packetBodySize);
+
+            var callBackAction = () =>
+            {
+                var mainWindow = GetMainWindow();
+                Environment.Exit(0);
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                mainWindow.Close();
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+
+            Log.Information($"[PacketHandler] handleGameLoginFail errorCode:{loginFail.ErrCode}");
         }
 
         private void handleGameChatOk(Session session, byte[] packetData, int packetBodySize)

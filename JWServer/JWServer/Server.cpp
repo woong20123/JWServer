@@ -9,6 +9,7 @@
 #include "LogConsoleStream.h"
 #include "LogFileStream.h"
 #include "Port.h"
+#include "TimerLauncher.h"
 #include <list>
 #include <chrono>
 
@@ -20,7 +21,6 @@ namespace jw
         _workerThreadCount{ 0 },
         _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
         _state{ ServerState::SERVER_STATE_NONE }
-
     {}
 
     Server::~Server() {}
@@ -29,6 +29,8 @@ namespace jw
     {
         _name = name;
         _logWorker = std::make_unique<LogWorker>();
+
+        onInitialize();
 
         setState(ServerState::SERVER_STATE_INIT);
 
@@ -186,6 +188,12 @@ namespace jw
         return true;
     }
 
+    void Server::startTimer()
+    {
+        TIMER_LAUNCHER().Initialize();
+        TIMER_LAUNCHER().Run();
+    }
+
     void Server::waitEvent()
     {
         while (true)
@@ -222,7 +230,11 @@ namespace jw
     {
         NETWORK().Stop();
         LOGGER().Stop();
+        TIMER_LAUNCHER().Stop();
 
         onClosedServer();
+
+        // 서버의 정리작업을 기다립니다. 
+        std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));
     }
 }

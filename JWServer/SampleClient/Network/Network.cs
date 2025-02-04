@@ -181,6 +181,21 @@ namespace SampleClient.Network
             Instance.AsyncSend(sendBuffer);
         }
 
+        public void AsyncSendLoginReq(string name)
+        {
+            GameLoginReq loginReq = new GameLoginReq
+            {
+                Name = name,
+                PacketVersion = (int)GamePacketInfo.Version,
+                AuthKey = (int)GamePacketInfo.GamePacketAuthKey,
+            };
+
+            byte[] reqBytes = loginReq.ToByteArray();
+            int reqBytesLength = reqBytes.Length;
+            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.LoginReq, reqBytesLength, reqBytes);
+            Instance.AsyncSend(sendBuffer);
+        }
+
         public void AsyncSendChatReq(string name, string msg)
         {
             GameChatReq chatReq = new GameChatReq

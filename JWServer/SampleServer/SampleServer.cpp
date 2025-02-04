@@ -10,7 +10,9 @@
 namespace jw
 {
     SampleServer::SampleServer()
-    {}
+    {
+        _world = std::make_unique<World>();
+    }
     SampleServer::~SampleServer()
     {}
 
@@ -52,6 +54,14 @@ namespace jw
 
         reigstPort(clientPort);
 
+        return true;
+    }
+
+    bool SampleServer::onInitialize()
+    {
+        _world->Initialize(World::USER_LIST_MAX_SIZE);
+
+        LOG_INFO(L"initialize server, name:{}", GetName().data());
         return true;
     }
 

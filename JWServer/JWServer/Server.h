@@ -4,7 +4,6 @@
 #define __JW_SERVER_H__
 #include <string>
 #include <memory>
-#include <span>
 #include "Logger.h"
 #include "ProducerContainer.hpp"
 
@@ -14,6 +13,7 @@ namespace jw
     struct PortInfo;
     class LogWorker;
     class LogStream;
+    class Timer;
 
     enum ServerEventID
     {
@@ -61,11 +61,21 @@ namespace jw
     public:
         static constexpr const wchar_t* INVALID_SERVER_NAME = L"INVALID_SERVER_NAME";
 
-        static constexpr uint32_t   NONE_PORT_ID = 0;
-        static constexpr uint32_t   CLIENT_PORT_ID = 1;
-        static constexpr uint32_t   INTERNAL_PORT_ID = 2;
+        static constexpr int32_t   NONE_PORT_ID = 0;
+        static constexpr int32_t   CLIENT_PORT_ID = 1;
+        static constexpr int32_t   INTERNAL_PORT_ID = 2;
+
+        static constexpr int32_t   DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND = 100;
+        // 관리되는 최대 타이머 틱
+        // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
+        // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다. 
+        static constexpr int32_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
+        static constexpr int32_t   LONGTERM_CHECK_TIME_MILLISECOND = DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND * DEFAULT_TIMER_MANAGE_MAX_TICK;
+        static constexpr int32_t   SERVER_CLOSE_WAIT_SECOND = 5;
 
         using ServerEventProducerCon = ProducerContainer<std::shared_ptr<ServerEvent>>;
+        using TimerList = std::list<Timer*>;
+        using TimerListArray = std::array<TimerList, DEFAULT_TIMER_MANAGE_MAX_TICK>;
 
         Server();
         virtual ~Server();
@@ -95,6 +105,8 @@ namespace jw
         // - PacketHandler 등록 
         virtual bool onStartNetwork() = 0;
 
+        virtual bool onInitialize() = 0;
+
         // 런타임에 서버에 전달되는 이벤트 처리 동작을 추가 합니다. 
         virtual bool onHandleEvent(const std::shared_ptr<ServerEvent>& event) = 0;
 
@@ -109,11 +121,11 @@ namespace jw
         void reigstPort(const PortInfo& portInfo);
 
         void setState(ServerState state);
-
     private:
         bool startLog();
         bool setArgument(int argc, char* argv[]);
         bool startNetwork();
+        void startTimer();
         void waitEvent();
         void handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs);
         void closeServer();

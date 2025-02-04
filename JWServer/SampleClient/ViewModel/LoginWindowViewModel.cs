@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Serilog;
 
 namespace SampleClient.ViewModel
 {
@@ -54,15 +55,14 @@ namespace SampleClient.ViewModel
                 {
                     Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
                     {
+                        Log.Information("Success Session Connected");
+
                         MainWindow mainWindow = new MainWindow();
                         mainWindow.Show();
                         Network.Network.Instance.LoginInfo = new LoginInfo("woong", ip, port);
 
                         OnRequestWindowClose!(this, new EventArgs());
-                        Task.Run(() =>
-                        {
-                            MessageBox.Show("서버 연결에 성공하였습니다.", "Information");
-                        });
+                        Network.Network.Instance.AsyncSendLoginReq("woong");
                     }));
                 });
         }

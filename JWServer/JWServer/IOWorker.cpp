@@ -1,6 +1,6 @@
 ﻿#include "IOWorker.h"
 #include "Logger.h"
-#include "AsyncIOObject.h"
+#include "AsyncObject.h"
 
 namespace jw
 {
@@ -44,7 +44,7 @@ namespace jw
 
         BOOL result{ FALSE };
         unsigned long numOfBytes{ 0 };
-        AsyncIOObject* object{ nullptr };
+        AsyncObject* object{ nullptr };
         AsyncContext* context{ nullptr };
         constexpr int MAX_WAIT = 1000;
 
