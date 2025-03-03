@@ -3,11 +3,11 @@
 #define __JW_SERIALIZER_MANAGER_H__
 #include "Singleton.hpp"
 #include <memory>
-#include <unordered_map>
+#include <map>
+#include "Serializer.h"
 
 namespace jw
 {
-    class Serializer;
     class SerializeObject;
     class SerializerManager : public Singleton<SerializerManager>
     {
@@ -16,11 +16,11 @@ namespace jw
         constexpr static int32_t NO_DELAY_TIME = 0;
 
         void Initialize();
-        bool RegistSerializer(int64_t serializerId, std::shared_ptr<Serializer>& serializer);
-        std::shared_ptr<Serializer> GetSerializer(int64_t serializerId);
-        void Post(int64_t serializerId, std::shared_ptr<SerializeObject>& so);
-        void Post(int64_t serializerId, std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
-        int64_t MakeSerializeId(int32_t serializeType);
+        bool RegistSerializer(SerializerKey& serializerKey, std::shared_ptr<Serializer>& serializer);
+        std::shared_ptr<Serializer> GetSerializer(const SerializerKey& serializerKey);
+        bool Post(SerializerKey& serializerKey, const std::shared_ptr<SerializeObject>& so);
+        bool Post(SerializerKey& serializerKey, const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
+        int32_t MakeSerializeId(const int16_t serializeType);
     protected:
         SerializerManager();
         ~SerializerManager();
@@ -28,7 +28,7 @@ namespace jw
         SerializerManager& operator=(const SerializerManager&) = delete;
     private:
         friend class Singleton<SerializerManager>;
-        std::unordered_map<int64_t, std::shared_ptr<Serializer>> _serializers;
+        std::map<SerializerKey, std::shared_ptr<Serializer>> _serializers;
         std::atomic<int32_t> _serializeIndexs[MAX_SERIALIZE_TYPE];
     };
 }

@@ -9,9 +9,18 @@
 
 namespace jw
 {
+    enum SERIALIZER_TYPE
+    {
+        SERIALIZER_TYPE_NONE = 0,
+        SERIALIZER_TYPE_WORLD,
+        SERIALIZER_TYPE_MAX
+    };
+
     class User;
     class Serializer;
+    struct SerializerKey;
     class SerializeObject;
+    class Packet;
     class World
     {
     public:
@@ -23,7 +32,9 @@ namespace jw
         bool RegistUser(std::shared_ptr<User> user);
         void UnregistUser(std::shared_ptr<User> user, const int64_t key);
         std::shared_ptr<User> FindUser(const int64_t userKey);
+        void BroadcastPacket(Packet& packet);
         bool PostSO(std::shared_ptr<SerializeObject>& so);
+        SerializerKey GetSerializerKey() const;
     private:
 
         std::shared_mutex	_userList_mutex;
@@ -31,6 +42,7 @@ namespace jw
         std::unordered_map<int64_t, std::shared_ptr<User>> _userList;
         std::unordered_map<std::string, std::shared_ptr<User>> _userListByName;
         std::shared_ptr<Serializer> _serializer;
+        std::unique_ptr<SerializerKey> _serializerKey;
     };
 }
 

@@ -161,18 +161,23 @@
     <ClCompile Include="GamePacketHandler.cpp" />
     <ClCompile Include="GameSessionHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RoomSerializeObject.cpp" />
     <ClCompile Include="SampleServer.cpp" />
+    <ClCompile Include="SerializerInfo.h" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="WorldSerializeObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Packet\GamePacket\Cpp\GamaPacket.pb.h" />
     <ClInclude Include="GamePacketHandleFuncList.h" />
     <ClInclude Include="GamePacketHandler.h" />
     <ClInclude Include="GameSessionHandler.h" />
+    <ClInclude Include="RoomSerializeObject.h" />
     <ClInclude Include="SampleServer.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="WorldSerializeObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Packet\EditGamaPacket.proto" />

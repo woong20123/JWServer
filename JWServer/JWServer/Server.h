@@ -105,6 +105,8 @@ namespace jw
         // - PacketHandler 등록 
         virtual bool onStartNetwork() = 0;
 
+        virtual bool onStartTimer() = 0;
+
         virtual bool onInitialize() = 0;
 
         // 런타임에 서버에 전달되는 이벤트 처리 동작을 추가 합니다. 

@@ -10,7 +10,7 @@ namespace jw
     public:
         Timer();
         uint32_t GetAsyncObjectId() const override;
-        bool HandleEvent(AsyncContext* context, paramType param) override;
+        bool HandleEvent(AsyncContext* context, paramType nonValue) override;
 
         virtual void OnTimer() = 0;
 
@@ -18,11 +18,15 @@ namespace jw
         void SetExpireMs(const time_t expireMs);
         void AddExpireMs(const time_t expireMs);
 
+        time_t GetExcuteTick() const;
+        void SetExcuteTick(const time_t executeTick);
+
         time_t GetExpireTick() const;
         void SetExpireTick(const time_t expireTick);
     private:
 
         time_t _expireTick;
+        time_t _executeTick;
         time_t _expireMs;
     };
 }

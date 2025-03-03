@@ -12,6 +12,9 @@
     <Filter Include="packet">
       <UniqueIdentifier>{32219a4b-a315-4dba-a9ec-ba8e20c55a77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Serializer">
+      <UniqueIdentifier>{27857932-253a-4413-b1df-b12e3c81c2dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -30,6 +33,15 @@
     </ClCompile>
     <ClCompile Include="World.cpp" />
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="SerializerInfo.h">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomSerializeObject.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldSerializeObject.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />
@@ -47,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="User.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="RoomSerializeObject.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldSerializeObject.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Packet\GamaPacket.proto">

@@ -53,6 +53,8 @@ namespace jw
 
         startNetwork();
 
+        startTimer();
+
         LOG_INFO(L"on start, name:{}", _name);
 
         setState(ServerState::SERVER_STATE_ON_SERVER);
@@ -192,6 +194,8 @@ namespace jw
     {
         TIMER_LAUNCHER().Initialize();
         TIMER_LAUNCHER().Run();
+
+        onStartTimer();
     }
 
     void Server::waitEvent()

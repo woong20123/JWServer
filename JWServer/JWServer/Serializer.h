@@ -10,14 +10,25 @@ namespace jw
 {
     class SerializeObject;
 
+    struct SerializerKey
+    {
+        int16_t type;
+        int32_t id;
+
+        bool operator==(const SerializerKey& rhs) const = default;
+        auto operator<=>(const SerializerKey&) const = default;
+
+    };
+
+
     class SerializerTimer : public Timer
     {
     public:
-        SerializerTimer(int32_t serializerId);
+        SerializerTimer(SerializerKey serializerKey);
         void OnTimer() override;
-        void Post(std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
+        bool Post(const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
     private:
-        int32_t _serializerId;
+        SerializerKey _serializerKey;
         std::list<std::shared_ptr<SerializeObject>> _postObjects;
         std::shared_mutex		                    _postObjectsMutex;
     };
@@ -27,16 +38,17 @@ namespace jw
     public:
         static constexpr int32_t NO_DELAY = 0;
 
-        Serializer(int32_t serializerId);
+        Serializer(SerializerKey serializerKey);
         ~Serializer();
 
-        int32_t GetSerializerId() const { return _serializerId; }
-        void Post(std::shared_ptr<SerializeObject>& so);
-        void Post(std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
+        SerializerKey GetSerializerKey() const { return _serializerKey; }
+        bool Post(const std::shared_ptr<SerializeObject>& so);
+        bool Post(const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
         void SpliceAll(std::list<std::shared_ptr<SerializeObject>>& toList);
+        std::shared_ptr<SerializerTimer> GetTimer() const { return _timer; }
     private:
-        int32_t _serializerId;
-        std::unique_ptr<SerializerTimer>            _timer;
+        SerializerKey _serializerKey;
+        std::shared_ptr<SerializerTimer>            _timer;
     };
 }
 

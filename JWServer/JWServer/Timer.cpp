@@ -11,13 +11,12 @@ namespace jw
     {
         return ASYNC_OBJ_TIMER;
     }
-    bool Timer::HandleEvent(AsyncContext* context, paramType currentTick)
+    bool Timer::HandleEvent(AsyncContext* context, paramType nonValue)
     {
-        if (currentTick != _expireTick)
+        if (_executeTick != _expireTick)
         {
-            // 데이터 오류가 있습니다. 
-            LOG_ERROR(L"currentTick != _expireTick, currentTick:{}, expireTick:{}", currentTick, _expireTick);
-            return true;
+            // 틱에 오차가 있습니다. 
+            LOG_WARN(L"currentTick != _expireTick, _executeTick:{}, expireTick:{}", _executeTick, _expireTick);
         }
 
         OnTimer();
@@ -42,6 +41,15 @@ namespace jw
         {
             _expireMs = 0;
         }
+    }
+
+    time_t Timer::GetExcuteTick() const
+    {
+        return _executeTick;
+    }
+    void Timer::SetExcuteTick(const time_t executeTick)
+    {
+        _executeTick = executeTick;
     }
 
     time_t Timer::GetExpireTick() const

@@ -10,36 +10,29 @@ namespace jw
     enum SerializeObjectType
     {
         SERAILIZE_OBJECT_TYPE_NONE = 0,
-        SERAILIZE_OBJECT_TYPE_LAMBDA = 1,
+        SERAILIZE_OBJECT_TYPE_LAMBDA,
+        SERAILIZE_OBJECT_TYPE_MAX,
     };
 
     class SerializeObject
     {
     public:
-        SerializeObject(int id);
+        SerializeObject(int32_t type, int32_t id);
         ~SerializeObject();
 
         void Initialize(int32_t delayMilliSeconds);
         virtual void Execute() = 0;
 
+        int32_t GetType() const { return _type; }
+        int32_t GetID() const { return _id; }
+
     private:
-        int64_t _id;
+        int32_t _type;
+        int32_t _id;
         int32_t _delayMilliSeconds;
         int64_t _registMilliSeconds;
         int64_t _executeTick;
         int32_t _serializerId;
-    };
-
-    class LambdaSerializeObject : public SerializeObject
-    {
-    public:
-        LambdaSerializeObject(std::function<void()> func) : SerializeObject(SERAILIZE_OBJECT_TYPE_LAMBDA)
-        {};
-        ~LambdaSerializeObject() {};
-
-        void Execute() override;
-    private:
-        std::function<void()> _func;
     };
 }
 

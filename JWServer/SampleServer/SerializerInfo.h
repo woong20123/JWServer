@@ -1,0 +1,32 @@
+#pragma once
+#ifndef __JW_SERIALIZE_INFO_H__
+#define __JW_SERIALIZE_INFO_H__
+#include "SerializeObject.h"
+
+namespace jw
+{
+    enum ExpandSerializeObjectType
+    {
+        EXPAND_SERAILIZE_OBJECT_TYPE_WORLD = SERAILIZE_OBJECT_TYPE_MAX,
+        EXPAND_SERAILIZE_OBJECT_TYPE_ROOM,
+        EXPAND_SERAILIZE_OBJECT_TYPE_MAX,
+    };
+
+    enum SerializeObjectWorldId
+    {
+        SERIALIZE_OBJECT_WORLD_ID_NONE = 0,
+        SERIALIZE_OBJECT_WORLD_ID_START = 1000000,
+        SERIALIZE_OBJECT_WORLD_ID_LOGIN = SERIALIZE_OBJECT_WORLD_ID_START,
+        SERIALIZE_OBJECT_WORLD_ID_CHAT,
+        SERIALIZE_OBJECT_WORLD_ID_MAX,
+    };
+
+    enum SerializeObjectRoomId
+    {
+        SERIALIZE_OBJECT_ROOM_ID_NONE = 0,
+        SERIALIZE_OBJECT_ROOM_ID_START = 2000000,
+        SERIALIZE_OBJECT_ROOM_ID_CHAT = SERIALIZE_OBJECT_ROOM_ID_START,
+        SERIALIZE_OBJECT_ROOM_ID_MAX,
+    };
+}
+#endif // __JW_SERIALIZE_INFO_H__

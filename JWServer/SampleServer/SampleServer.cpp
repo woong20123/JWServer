@@ -2,6 +2,9 @@
 #include "Logger.h"
 #include "Port.h"
 #include "Network.h"
+#include "Serializer.h"
+#include "SerializerManager.h"
+#include "TimerLauncher.h"
 #include "GameSessionHandler.h"
 #include "GamePacketHandler.h"
 #include "GamePacketHandleFuncList.h"
@@ -54,6 +57,11 @@ namespace jw
 
         reigstPort(clientPort);
 
+        return true;
+    }
+
+    bool SampleServer::onStartTimer()
+    {
         return true;
     }
 

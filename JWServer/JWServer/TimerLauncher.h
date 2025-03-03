@@ -52,6 +52,7 @@ namespace jw
         std::shared_mutex                       _timerMutex;
         TimerListArray                          _timerEventArray;
         std::list<Timer*>                       _longTermTimerList;
+        std::thread                             _timerLogicThread;
     };
 }
 

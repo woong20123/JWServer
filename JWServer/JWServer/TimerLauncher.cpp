@@ -12,7 +12,8 @@ namespace jw
 
     TimerLauncher::~TimerLauncher()
     {
-
+        Stop();
+        _timerLogicThread.join();
     }
 
     void TimerLauncher::Initialize()
@@ -21,7 +22,7 @@ namespace jw
 
     void TimerLauncher::Run()
     {
-        std::thread t([this]() {
+        _timerLogicThread = std::thread([this]() {
             time_t runTimeMs{ 0 };
             time_t remainIntervalMs{ 0 };
             _isRun = true;
@@ -42,16 +43,22 @@ namespace jw
                 {
                     std::unique_lock<std::shared_mutex> lk(_timerMutex);
                     const auto currentIndex = GetCurrentTimerTickToIndex();
-                    _timerEventArray[currentIndex].splice(_timerEventArray[currentIndex].begin(), timerList);
+                    TimerList& currentList = _timerEventArray[currentIndex];
+                    timerList.splice(timerList.begin(), currentList);
                     _lastTimerTick = _timerTick.fetch_add(1);
                 }
 
-                for (auto& timer : timerList)
-                {
-                    ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
-                }
 
-                if (!timerList.empty()) timerList.clear();
+                if (!timerList.empty())
+                {
+                    for (auto& timer : timerList)
+                    {
+                        timer->SetExcuteTick(_lastTimerTick);
+                        ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
+                    }
+
+                    timerList.clear();
+                }
 
                 // timer Array가 한바퀴 돌았다면 longTermTimerList를 검사하여 timer에 다시 등록
                 if (_lastTimerTick % DEFAULT_TIMER_MANAGE_MAX_TICK == 0)

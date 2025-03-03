@@ -3,6 +3,7 @@
 #include "TypeDefinition.h"
 #include "Serializer.h"
 #include "SerializerManager.h"
+#include "Packet.h"
 
 namespace jw
 {
@@ -20,8 +21,10 @@ namespace jw
         }
 
         // WorldSerializer µî·Ï 
-        _serializer = std::make_shared<Serializer>(1);
-        SERIALIZER_MANAGER().RegistSerializer(_serializer->GetSerializerId(), _serializer);
+        SerializerKey serializerKey{ SERIALIZER_TYPE_WORLD, SERIALIZER_MANAGER().MakeSerializeId(SERIALIZER_TYPE_WORLD) };
+        _serializerKey = std::make_unique<SerializerKey>(serializerKey);
+        _serializer = std::make_shared<Serializer>(serializerKey);
+        SERIALIZER_MANAGER().RegistSerializer(serializerKey, _serializer);
     }
 
     bool World::RegistUser(std::shared_ptr<User> user)
@@ -58,9 +61,23 @@ namespace jw
         return _userList[userKey];
     }
 
+    void World::BroadcastPacket(Packet& packet)
+    {
+        WRITE_LOCK(_userList_mutex);
+        for (const auto& user : _userList)
+        {
+            user.second->Send(packet);
+        }
+    }
+
     bool World::PostSO(std::shared_ptr<SerializeObject>& so)
     {
         _serializer->Post(so);
         return true;
+    }
+
+    SerializerKey World::GetSerializerKey() const
+    {
+        return *_serializerKey;
     }
 }

@@ -10,6 +10,8 @@
 #include "../Packet/GamePacket/Cpp/GamaPacket.pb.h"
 #include <codecvt>
 #include "StopWatch.h"
+#include "WorldSerializeObject.h"
+#include "SerializerManager.h"
 
 #define REGIST_HANDLE(cmd, handleFun) _packetHandler->RegistHandler(cmd, std::bind(&handleFun, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -122,15 +124,13 @@ namespace jw
         PARSER_PROTO_PACKET_DATA(GameChatReq, req, packet);
         LOG_DEBUG(L"on chat req packet, sessionId:{}, name:{}, msg:{}", session->GetId(), StringConverter::StrA2WUseUTF8(req.name())->c_str(), StringConverter::StrA2WUseUTF8(req.msg())->c_str());
 
-        GameChatOk gameChatOk;
-        gameChatOk.set_name(req.name());
-        gameChatOk.set_msg(req.msg());
-
-        Packet sendPacket;
-        sendPacket.Allocate();
-
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CHAT_OK, gameChatOk);
-        session->Send(sendPacket);
+        std::shared_ptr<WorldChatTask> worldChatTask = std::make_shared<WorldChatTask>();
+        worldChatTask->Initialize(req.name(), req.msg());
+        auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(worldSerializerKey, worldChatTask))
+        {
+            LOG_ERROR(L"Fail WorldChatTask Post");
+        }
         return true;
     }
 

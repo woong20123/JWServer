@@ -3,7 +3,7 @@
 
 namespace jw
 {
-    SerializeObject::SerializeObject(int id) : _id{ id }, _registMilliSeconds{ 0 }, _executeTick{ 0 }, _serializerId{ 0 }, _delayMilliSeconds{ 0 }
+    SerializeObject::SerializeObject(int32_t type, int32_t id) : _type{ type }, _id{ id }, _registMilliSeconds{ 0 }, _executeTick{ 0 }, _serializerId{ 0 }, _delayMilliSeconds{ 0 }
 
     {
     }
@@ -19,9 +19,4 @@ namespace jw
         _executeTick = delayMilliSeconds / 100;
     }
 
-
-    void LambdaSerializeObject::Execute()
-    {
-        _func();
-    }
 }

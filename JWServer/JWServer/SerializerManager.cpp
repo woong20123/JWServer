@@ -1,5 +1,4 @@
 ﻿#include "SerializerManager.h"
-#include "Serializer.h"
 #include "Logger.h"
 
 namespace jw
@@ -16,57 +15,55 @@ namespace jw
     {
     }
 
-    bool SerializerManager::RegistSerializer(int64_t serializerId, std::shared_ptr<Serializer>& serializer)
+    bool SerializerManager::RegistSerializer(SerializerKey& serializerKey, std::shared_ptr<Serializer>& serializer)
     {
-        if (_serializers.contains(serializerId))
+        if (_serializers.contains(serializerKey))
         {
-            LOG_ERROR(L"Already exist serializer id: {}", serializerId);
-
+            LOG_ERROR(L"Already exist serializer type:{}, id:{}", serializerKey.type, serializerKey.id);
             return false;
         }
 
-        _serializers[serializerId] = serializer;
+        _serializers[serializerKey] = serializer;
         return true;
     }
 
-    std::shared_ptr<Serializer> SerializerManager::GetSerializer(int64_t serializerId)
+    std::shared_ptr<Serializer> SerializerManager::GetSerializer(const SerializerKey& serializerKey)
     {
-        if (!_serializers.contains(serializerId))
+        if (!_serializers.contains(serializerKey))
         {
-            LOG_ERROR(L"Can't find serializer id: {}", serializerId);
+            LOG_ERROR(L"Can't find serializer, type:{}, id:{}", serializerKey.type, serializerKey.id);
             return nullptr;
         }
 
-        return _serializers[serializerId];
+        return _serializers[serializerKey];
     }
 
-    void SerializerManager::Post(int64_t serializerId, std::shared_ptr<SerializeObject>& so)
+    bool SerializerManager::Post(SerializerKey& serializerKey, const std::shared_ptr<SerializeObject>& so)
     {
-        return Post(serializerId, so, NO_DELAY_TIME);
+        return Post(serializerKey, so, NO_DELAY_TIME);
     }
 
-    void SerializerManager::Post(int64_t serializerId, std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds)
+    bool SerializerManager::Post(SerializerKey& serializerKey, const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds)
     {
-        if (!_serializers.contains(serializerId))
+        if (!_serializers.contains(serializerKey))
         {
-            LOG_ERROR(L"Can't find serializer id: {}", serializerId);
-            return;
+            LOG_ERROR(L"Can't find serializer type:{} ,id:{}", serializerKey.type, serializerKey.id);
+            return false;
         }
 
-        _serializers[serializerId]->Post(so, delayMilliSeconds);
+        return _serializers[serializerKey]->Post(so, delayMilliSeconds);
     }
 
-    int64_t SerializerManager::MakeSerializeId(int32_t serializeType)
+    int32_t SerializerManager::MakeSerializeId(const int16_t serializeType)
     {
         if (serializeType < 0 || serializeType >= MAX_SERIALIZE_TYPE)
         {
             LOG_ERROR(L"Invalid serialize type: {}", serializeType);
             return 0;
         }
-        const auto index = ++_serializeIndexs[serializeType];
-        const auto id = (static_cast<int64_t>(serializeType) << 32) | static_cast<int64_t>(index);
+        const auto id = ++_serializeIndexs[serializeType];
 
-        LOG_INFO(L"issue serializer id:{}, type:{} index:{}", id, serializeType, index);
+        LOG_INFO(L"issue serializer id:{}, type:{}", id, serializeType);
 
         return id;
     }
