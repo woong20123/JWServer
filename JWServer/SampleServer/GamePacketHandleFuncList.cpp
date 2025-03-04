@@ -64,7 +64,7 @@ namespace jw
         const auto& serverAuthKey = static_cast<int>(GamePacketInfo::GAME_PACKET_AUTH_KEY);
         if (serverAuthKey != clientAuthKey)
         {
-            LOG_ERROR(L"not equal auth key, clientAuthKey:{}, serverAuthKey:{}", clientAuthKey, serverAuthKey);
+            LOG_ERROR(L"not equal auth key, sessionId:{}, clientAuthKey:{}, serverAuthKey:{}", session->GetId(), clientAuthKey, serverAuthKey);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_AUTH);
             PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
@@ -75,7 +75,7 @@ namespace jw
         const auto serverPacketVersion = static_cast<int>(GamePacketInfo::GAME_PACKET_INFO_VERSION);
         if (serverPacketVersion != clientPacketVersion)
         {
-            LOG_ERROR(L"not equal packet version, clientPacketVersion:{}, serverPacketVersion:{}", clientPacketVersion, serverPacketVersion);
+            LOG_ERROR(L"not equal packet version, sessionId:{}, clientPacketVersion:{}, serverPacketVersion:{}", session->GetId(), clientPacketVersion, serverPacketVersion);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_NAME);
             PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
@@ -84,8 +84,11 @@ namespace jw
 
         std::shared_ptr<User> user = std::make_shared<User>();
         user->Initialize(NETWORK().GetSession(session->GetPortId(), session->GetIndex()), name);
-        if (!SAMPLE_SERVER().GetWorld()->RegistUser(user))
+        if (const auto registerUserResult = SAMPLE_SERVER().GetWorld()->RegistUser(user);
+            registerUserResult != REGITER_USER_RESULT_SUCCESS)
         {
+            const auto& userName = StringConverter::StrA2WUseUTF8(user->GetName().data()).value_or(L"empty");
+            LOG_ERROR(L"register User Fail, sessionId:{}, UserName:{}, result:{}", session->GetId(), userName.c_str(), (int)registerUserResult);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME);
             PacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);

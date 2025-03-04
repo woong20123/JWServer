@@ -59,10 +59,10 @@ namespace SampleClient.ViewModel
 
                         MainWindow mainWindow = new MainWindow();
                         mainWindow.Show();
-                        Network.Network.Instance.LoginInfo = new LoginInfo("woong", ip, port);
+                        Network.Network.Instance.LoginInfo = new LoginInfo(_name, ip, port);
 
                         OnRequestWindowClose!(this, new EventArgs());
-                        Network.Network.Instance.AsyncSendLoginReq("woong");
+                        Network.Network.Instance.AsyncSendLoginReq(_name);
                     }));
                 });
         }

@@ -36,17 +36,14 @@ namespace SampleClient.ViewModel
             var LoginInfo = Network.Network.Instance.LoginInfo;
             var inputMsg = InputString;
 
-            ViewText += string.Format($"{LoginInfo.UserName} : {InputString} {Environment.NewLine}");
             InputString = string.Empty;
-
 
             Network.Network.Instance.AsyncSendChatReq(LoginInfo.UserName, inputMsg);
         }
 
         public void SetViewText(string name, string str)
         {
-            var LoginInfo = Network.Network.Instance.LoginInfo;
-            ViewText += string.Format($"{LoginInfo.UserName} : {str} {Environment.NewLine}");
+            ViewText += string.Format($"{name} : {str} {Environment.NewLine}");
         }
     }
 }

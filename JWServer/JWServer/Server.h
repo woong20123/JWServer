@@ -3,6 +3,7 @@
 #ifndef __JW_SERVER_H__
 #define __JW_SERVER_H__
 #include <string>
+#include <span>
 #include <memory>
 #include "Logger.h"
 #include "ProducerContainer.hpp"

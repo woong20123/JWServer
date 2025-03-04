@@ -161,6 +161,7 @@ namespace SampleClient.Network
                 {
                     int remainRecvBufferSize = _recvBuffer.Length - recvSize;
                     int bytesRead = await ns.ReadAsync(_recvBuffer, recvSize, remainRecvBufferSize).ConfigureAwait(false);
+                    
                     recvSize += bytesRead;
                     if (!ns.DataAvailable)
                     {

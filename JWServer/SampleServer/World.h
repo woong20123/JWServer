@@ -16,6 +16,16 @@ namespace jw
         SERIALIZER_TYPE_MAX
     };
 
+    enum REGITER_USER_RESULT
+    {
+        REGITER_USER_RESULT_NONE = 0,
+        REGITER_USER_RESULT_SUCCESS,
+        REGITER_USER_RESULT_FAIL,
+        REGITER_USER_RESULT_DUPLICATE_NAME,
+        REGITER_USER_RESULT_NOT_FIND_ISSUE_KEY,
+        REGITER_USER_RESULT_MAX
+    };
+
     class User;
     class Serializer;
     struct SerializerKey;
@@ -29,7 +39,7 @@ namespace jw
         virtual ~World();
 
         void Initialize(size_t userListSize);
-        bool RegistUser(std::shared_ptr<User> user);
+        REGITER_USER_RESULT RegistUser(std::shared_ptr<User> user);
         void UnregistUser(std::shared_ptr<User> user, const int64_t key);
         std::shared_ptr<User> FindUser(const int64_t userKey);
         void BroadcastPacket(Packet& packet);

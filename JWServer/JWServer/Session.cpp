@@ -34,7 +34,7 @@ namespace jw
         _sessionHandler = sessionHandler;
         _recvBuffer = std::make_unique<SessionRecvBuffer>();
         _sendBuffer = std::make_unique<SessionSendBuffer>();
-        _packetBufferHandler = std::move(packetBufferHandelr);
+        _packetBufferHandler = packetBufferHandelr;
 
         setState(SessionState::SESSION_STATE_CREATE);
 

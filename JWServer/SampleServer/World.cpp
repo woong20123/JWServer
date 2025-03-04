@@ -27,16 +27,16 @@ namespace jw
         SERIALIZER_MANAGER().RegistSerializer(serializerKey, _serializer);
     }
 
-    bool World::RegistUser(std::shared_ptr<User> user)
+    REGITER_USER_RESULT World::RegistUser(std::shared_ptr<User> user)
     {
         // 이름이 추가 가능한지 체크
         WRITE_LOCK(_userList_mutex);
         std::string name = user->GetName().data();
         if (name.empty() || _userListByName.contains(name))
-            return false;
+            return REGITER_USER_RESULT_DUPLICATE_NAME;
 
         if (_issueBaseKey.empty())
-            return false;
+            return REGITER_USER_RESULT_NOT_FIND_ISSUE_KEY;
 
         const auto key = _issueBaseKey.front();
         _issueBaseKey.pop();
@@ -45,7 +45,7 @@ namespace jw
         _userListByName[user->GetName().data()] = user;
         user->SetUserKey(key);
 
-        return true;
+        return REGITER_USER_RESULT_SUCCESS;
     }
     void World::UnregistUser(std::shared_ptr<User> user, const int64_t key)
     {
