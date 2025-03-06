@@ -26,11 +26,20 @@ namespace SampleClient
 
             rightFrame.Navigate(chat);
             rightFrame.RegisterName("chatPage", chat);
+
+            RoomList roomList = new RoomList();
+            mainFrame.Navigate(roomList);
+            mainFrame.RegisterName("roomList", roomList);
         }
 
         public Chat? GetChatPage()
         {
             return rightFrame.FindName("chatPage") as Chat;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Network.Network.Instance.Close();
         }
     }
 }

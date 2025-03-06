@@ -4,6 +4,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -35,6 +36,8 @@ namespace SampleClient.Network
         {
             packetHandler.Add((int)GamePacketCmd.LoginOk, handleGameLoginOk);
             packetHandler.Add((int)GamePacketCmd.LoginFail, handleGameLoginFail);
+            packetHandler.Add((int)GamePacketCmd.RoomListOk, handleGameRoomListOk);
+            packetHandler.Add((int)GamePacketCmd.RoomListFail, handleGameRoomListFail);
             packetHandler.Add((int)GamePacketCmd.ChatOk, handleGameChatOk);
         }
 
@@ -57,11 +60,10 @@ namespace SampleClient.Network
             return Application.Current.Windows.OfType<Window>().Where(window => window is MainWindow).FirstOrDefault() as MainWindow;
         }
 
+
         private void handleGameLoginOk(Session session, byte[] packetData, int packetBodySize)
         {
             var loginOk = ToPacket<GameLoginOk>(packetData, 0, packetBodySize);
-
-
 
             var callBackAction = () =>
             {
@@ -90,6 +92,47 @@ namespace SampleClient.Network
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
 
             Log.Information($"[PacketHandler] handleGameLoginFail errorCode:{loginFail.ErrCode}");
+        }
+
+        private void handleGameCreateRoomOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var createRoomOk = ToPacket<GameCreateRoomOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameCreateRoomFail(Session session, byte[] packetData, int packetBodySize)
+        {
+            var createRoomFail = ToPacket<GameCreateRoomFail>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomListOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomListOk = ToPacket<GameRoomListOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+            };
+
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomListFail(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomListFail = ToPacket<GameRoomListOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+            };
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
         }
 
         private void handleGameChatOk(Session session, byte[] packetData, int packetBodySize)

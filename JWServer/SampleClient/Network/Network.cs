@@ -50,15 +50,19 @@ namespace SampleClient.Network
         private Session _session;
         private EventQueue _eventQuene;
         private Thread _thread;
+        private CancellationTokenSource _cts;
         private PacketHandler _packetHandler;
+        private PacketSender _packetSender;
         public LoginInfo LoginInfo { get; set; }
 
         public Network()
         {
             _session = new Session();
             _eventQuene = new EventQueue("NetworkEvent");
-            _thread = new Thread(run);
+            _cts = new CancellationTokenSource();
+            _thread = new Thread(() => run(_cts.Token));
             _packetHandler = new PacketHandler();
+            _packetSender = new PacketSender();
         }
 
         public void Initialize()
@@ -66,7 +70,15 @@ namespace SampleClient.Network
             _session.Initialize();
             _thread.Start();
             _packetHandler.Initialize();
+            _packetSender.Initialize();
 
+        }
+
+        public void Close()
+        {
+            _session.Dispose();
+            _cts.Cancel();
+            _thread.Join();
         }
 
         public void SetDispatcher(Dispatcher mainDispacher)
@@ -75,9 +87,9 @@ namespace SampleClient.Network
             _packetHandler.SetDispatcher(mainDispacher);
         }
 
-        private void run()
+        private void run(CancellationToken token)
         {
-            _eventQuene.Process();
+            _eventQuene.Process(token);
         }
 
         public void SessionConnect(string ip, int port, Action? onConnectAction)
@@ -124,6 +136,10 @@ namespace SampleClient.Network
 
         }
 
+        public static ushort GetDefaultPacketSize()
+        {
+            return sizeof(ushort) + sizeof(uint);
+        }
 
         async public void AsyncRead()
         {
@@ -156,58 +172,11 @@ namespace SampleClient.Network
             }
         }
 
-        public static ushort GetDefaultPacketSize()
+        public PacketSender? GetPacketSender()
         {
-            return sizeof(ushort) + sizeof(uint);
+            return _packetSender;
         }
 
-        public byte[] makeSendBuffer(uint cmd, int reqSize, byte[] reqBytes)
-        {
-            ushort defaultSize = GetDefaultPacketSize();
-            ushort size = (ushort)(defaultSize + reqSize);
-            byte[] sendBuffer = new byte[size];
-            int bufferIndex = 0;
-            Array.Copy(BitConverter.GetBytes(size), 0, sendBuffer, bufferIndex, sizeof(ushort)); bufferIndex += sizeof(ushort);
-            Array.Copy(BitConverter.GetBytes(cmd), 0, sendBuffer, bufferIndex, sizeof(uint)); bufferIndex += sizeof(uint);
-            if (0 < reqSize)
-                Array.Copy(reqBytes, 0, sendBuffer, bufferIndex, reqSize); bufferIndex += reqSize;
 
-            return sendBuffer;
-        }
-
-        public void AsyncSendPingReq()
-        {
-            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.PingReq, 0, []);
-            Instance.AsyncSend(sendBuffer);
-        }
-
-        public void AsyncSendLoginReq(string name)
-        {
-            GameLoginReq loginReq = new GameLoginReq
-            {
-                Name = name,
-                PacketVersion = (int)GamePacketInfo.Version,
-                AuthKey = (int)GamePacketInfo.GamePacketAuthKey,
-            };
-
-            byte[] reqBytes = loginReq.ToByteArray();
-            int reqBytesLength = reqBytes.Length;
-            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.LoginReq, reqBytesLength, reqBytes);
-            Instance.AsyncSend(sendBuffer);
-        }
-
-        public void AsyncSendChatReq(string name, string msg)
-        {
-            GameChatReq chatReq = new GameChatReq
-            {
-                Name = name,
-                Msg = msg
-            };
-
-            byte[] reqBytes = chatReq.ToByteArray();
-            int reqBytesLength = reqBytes.Length;
-            byte[] sendBuffer = makeSendBuffer((uint)GamePacketCmd.ChatReq, reqBytesLength, reqBytes);
-            Instance.AsyncSend(sendBuffer);
-        }
     }
 }

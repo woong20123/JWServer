@@ -224,13 +224,16 @@ namespace SampleClient
         private ManualResetEvent _notifyEvent = new ManualResetEvent(false);
         private List<AsyncEventBase> _queueList = new List<AsyncEventBase>();
 
-        public void Process()
+        public void Process(CancellationToken token)
         {
             WaitHandle[] handles = { _stopEvent, _notifyEvent };
             List<AsyncEventBase> queueList = new List<AsyncEventBase>();
 
             while (!_stopEvent.WaitOne(0))
             {
+                if (token.IsCancellationRequested)
+                    break;
+
                 int rc = WaitHandle.WaitAny(handles, 1000);
                 if (WaitHandle.WaitTimeout == rc)
                 {

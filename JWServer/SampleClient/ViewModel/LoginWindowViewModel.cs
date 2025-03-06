@@ -15,7 +15,7 @@ using Serilog;
 
 namespace SampleClient.ViewModel
 {
-    class LoginWindowViewModel : BindableBase
+    internal class LoginWindowViewModel : BindableBase
     {
         public ICommand LoginCommand => new DelegateCommand(Login);
         public ICommand ExitCommand => new DelegateCommand(Exit);
@@ -61,8 +61,8 @@ namespace SampleClient.ViewModel
                         mainWindow.Show();
                         Network.Network.Instance.LoginInfo = new LoginInfo(_name, ip, port);
 
-                        OnRequestWindowClose!(this, new EventArgs());
-                        Network.Network.Instance.AsyncSendLoginReq(_name);
+                        OnRequestWindowClose!(this, EventArgs.Empty);
+                        Network.Network.Instance.GetPacketSender()?.SendLoginReq(_name);
                     }));
                 });
         }
@@ -71,7 +71,7 @@ namespace SampleClient.ViewModel
         {
             Environment.Exit(0);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
-            OnRequestWindowClose!(this, new EventArgs());
+            OnRequestWindowClose!(this, EventArgs.Empty);
         }
     }
 }

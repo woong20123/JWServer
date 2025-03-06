@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace SampleClient.ViewModel
 {
-    public class ChatViewModel : BindableBase
+    internal class ChatViewModel : BindableBase
     {
         public ICommand SendCommand => new DelegateCommand(send);
 
@@ -38,7 +38,7 @@ namespace SampleClient.ViewModel
 
             InputString = string.Empty;
 
-            Network.Network.Instance.AsyncSendChatReq(LoginInfo.UserName, inputMsg);
+            Network.Network.Instance.GetPacketSender()?.SendChatReq(LoginInfo.UserName, inputMsg);
         }
 
         public void SetViewText(string name, string str)
