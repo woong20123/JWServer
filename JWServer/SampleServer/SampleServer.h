@@ -9,10 +9,12 @@
 namespace jw
 {
     class World;
+    class RoomManager;
     class SampleServer : public Server, public Singleton<SampleServer>
     {
     public:
         World* GetWorld();
+        RoomManager* GetRoomManager();
     protected:
         SampleServer();
         virtual ~SampleServer();
@@ -27,6 +29,7 @@ namespace jw
     private:
 
         std::unique_ptr<World> _world;
+        std::unique_ptr<RoomManager> _roomManager;
         friend class Singleton<SampleServer>;
     };
 }

@@ -15,6 +15,9 @@
     <Filter Include="Serializer">
       <UniqueIdentifier>{27857932-253a-4413-b1df-b12e3c81c2dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Logic">
+      <UniqueIdentifier>{314c6ef9-d3ed-4d03-91de-b78ddffb69a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -42,6 +45,12 @@
     <ClCompile Include="WorldSerializeObject.cpp">
       <Filter>Serializer</Filter>
     </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomManager.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />
@@ -65,6 +74,10 @@
     <ClInclude Include="WorldSerializeObject.h">
       <Filter>Serializer</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Packet\GamaPacket.proto">

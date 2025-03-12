@@ -36,6 +36,8 @@ namespace SampleClient.Network
         {
             packetHandler.Add((int)GamePacketCmd.LoginOk, handleGameLoginOk);
             packetHandler.Add((int)GamePacketCmd.LoginFail, handleGameLoginFail);
+            packetHandler.Add((int)GamePacketCmd.CreateRoomOk, handleGameCreateRoomOk);
+            packetHandler.Add((int)GamePacketCmd.CreateRoomFail, handleGameCreateRoomFail);
             packetHandler.Add((int)GamePacketCmd.RoomListOk, handleGameRoomListOk);
             packetHandler.Add((int)GamePacketCmd.RoomListFail, handleGameRoomListFail);
             packetHandler.Add((int)GamePacketCmd.ChatOk, handleGameChatOk);
@@ -60,6 +62,11 @@ namespace SampleClient.Network
             return Application.Current.Windows.OfType<Window>().Where(window => window is MainWindow).FirstOrDefault() as MainWindow;
         }
 
+        private CreateRoomWindow? GetCreateRoomWindow()
+        {
+            return Application.Current.Windows.OfType<Window>().Where(window => window is CreateRoomWindow).FirstOrDefault() as CreateRoomWindow;
+        }
+
 
         private void handleGameLoginOk(Session session, byte[] packetData, int packetBodySize)
         {
@@ -67,7 +74,7 @@ namespace SampleClient.Network
 
             var callBackAction = () =>
             {
-                var mainWindow = GetMainWindow();
+
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -85,7 +92,7 @@ namespace SampleClient.Network
                 var mainWindow = GetMainWindow();
                 Environment.Exit(0);
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
-                mainWindow.Close();
+                mainWindow?.Close();
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -99,6 +106,11 @@ namespace SampleClient.Network
             var createRoomOk = ToPacket<GameCreateRoomOk>(packetData, 0, packetBodySize);
             var callBackAction = () =>
             {
+                // CreateRoomWindow 닫기
+                var createRoomWindow = GetCreateRoomWindow();
+                createRoomWindow?.Close();
+
+                // Room 관련 윈도우 띄우기
             };
 
             // UI 로직이여서 메인 스레드에서 처리

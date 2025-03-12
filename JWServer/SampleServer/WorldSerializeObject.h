@@ -6,6 +6,7 @@
 
 namespace jw
 {
+    class User;
     class WorldSerializeObject : public SerializeObject
     {
     public:
@@ -26,6 +27,27 @@ namespace jw
     private:
         std::string _name;
         std::string _message;
+    };
+
+    class CreateRoomTask : public WorldSerializeObject
+    {
+    public:
+        CreateRoomTask();
+        virtual ~CreateRoomTask();
+        void Initialize(std::shared_ptr<User> user, const std::string& roomName);
+        void Execute() override;
+    private:
+        void sendFail(int32_t errCode);
+        std::shared_ptr<User> _user;
+        std::string _roomName;
+    };
+
+    class GameRoomListTask : public WorldSerializeObject
+    {
+    public:
+        GameRoomListTask();
+        virtual ~GameRoomListTask();
+        void Execute() override;
     };
 }
 

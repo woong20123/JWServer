@@ -110,6 +110,17 @@ namespace jw
     {
         PARSER_PROTO_PACKET_DATA(GameCreateRoomReq, req, packet);
 
+        std::shared_ptr<CreateRoomTask> createRoomTask = std::make_shared<CreateRoomTask>();
+
+        const auto user = SAMPLE_SERVER().GetWorld()->FindUser(session->GetChannelKey());
+
+        createRoomTask->Initialize(user, req.name());
+        auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(worldSerializerKey, createRoomTask))
+        {
+            LOG_ERROR(L"Fail CreateRoomTask Post");
+        }
+
         LOG_DEBUG(L"on create room packet, sessionId:{}", session->GetId());
         return true;
     }
@@ -118,7 +129,13 @@ namespace jw
     {
         PARSER_PROTO_PACKET_DATA(GameRoomListReq, req, packet);
 
-        LOG_DEBUG(L"on room list packet, sessionId:{}", session->GetId());
+        std::shared_ptr<GameRoomListTask> gameRoomListTask = std::make_shared<GameRoomListTask>();
+
+        auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(worldSerializerKey, gameRoomListTask))
+        {
+            LOG_ERROR(L"Fail WorldChatTask Post");
+        }
         return true;
     }
 

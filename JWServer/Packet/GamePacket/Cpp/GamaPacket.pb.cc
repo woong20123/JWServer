@@ -609,18 +609,19 @@ const char descriptor_table_protodef_GamaPacket_2eproto[] ABSL_ATTRIBUTE_SECTION
     "T_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST_OK\020"
     "\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020\013\022\034\n"
     "\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_PACK"
-    "ET_CMD_CHAT_OK\020\r*\271\001\n\tErrorCode\022\032\n\026ERROR_"
+    "ET_CMD_CHAT_OK\020\r*\332\001\n\tErrorCode\022\032\n\026ERROR_"
     "CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCCESS"
     "\020\001\022(\n$ERROR_CODE_LOGIN_FAIL_DUPLICATE_NA"
     "ME\020\002\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_NA"
     "ME\020\003\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_AU"
-    "TH\020\004b\006proto3"
+    "TH\020\004\022\037\n\033ERROR_CODE_CREATE_ROOM_FAIL\020\005b\006p"
+    "roto3"
 };
 static ::absl::once_flag descriptor_table_GamaPacket_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_GamaPacket_2eproto = {
     false,
     false,
-    1492,
+    1525,
     descriptor_table_protodef_GamaPacket_2eproto,
     "GamaPacket.proto",
     &descriptor_table_GamaPacket_2eproto_once,
@@ -657,9 +658,9 @@ const ::google::protobuf::EnumDescriptor* ErrorCode_descriptor() {
   return file_level_enum_descriptors_GamaPacket_2eproto[2];
 }
 PROTOBUF_CONSTINIT const uint32_t ErrorCode_internal_data_[] = {
-    327680u, 0u, };
+    393216u, 0u, };
 bool ErrorCode_IsValid(int value) {
-  return 0 <= value && value <= 4;
+  return 0 <= value && value <= 5;
 }
 // ===================================================================
 

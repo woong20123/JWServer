@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SampleClient"
         xmlns:vm="clr-namespace:SampleClient.ViewModel"
         mc:Ignorable="d"
-        Title="CreateRoomWindow" Height="300" Width="400">
+        Title="CreateRoomWindow" Height="295" Width="405">
 
 
     <Window.DataContext>
@@ -14,8 +14,8 @@
     </Window.DataContext>
 
     <Grid>
-        <Button x:Name="CreateButton" Content="Button" HorizontalAlignment="Left" Margin="180,214,0,0" VerticalAlignment="Top" Height="50" Width="95"/>
-        <Button x:Name="CancelButton" Content="Button" HorizontalAlignment="Left" Margin="295,214,0,0" VerticalAlignment="Top" Height="50" Width="95"/>
+        <Button x:Name="CreateButton" Content="방 생성" Command="{Binding CreateRoomCommand}" HorizontalAlignment="Left" Margin="180,214,0,0" VerticalAlignment="Top" Height="50" Width="95" FontSize="18" FontWeight="Bold"/>
+        <Button x:Name="CancelButton" Content="취 소" Command="{Binding CancelCommand}" HorizontalAlignment="Left" Margin="295,214,0,0" VerticalAlignment="Top" Height="50" Width="95" FontSize="18" FontWeight="Bold"/>
         <TextBox HorizontalAlignment="Left" Margin="65,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" FontSize="16" Text="{Binding RoomInfo.Name}"/>
 
     </Grid>

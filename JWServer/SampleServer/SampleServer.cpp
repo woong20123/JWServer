@@ -9,12 +9,14 @@
 #include "GamePacketHandler.h"
 #include "GamePacketHandleFuncList.h"
 #include "PacketBufferHandler.h"
+#include "RoomManager.h"
 
 namespace jw
 {
     SampleServer::SampleServer()
     {
         _world = std::make_unique<World>();
+        _roomManager = std::make_unique<RoomManager>();
     }
     SampleServer::~SampleServer()
     {}
@@ -87,5 +89,10 @@ namespace jw
     World* SampleServer::GetWorld()
     {
         return _world.get();
+    }
+
+    RoomManager* SampleServer::GetRoomManager()
+    {
+        return _roomManager.get();
     }
 }

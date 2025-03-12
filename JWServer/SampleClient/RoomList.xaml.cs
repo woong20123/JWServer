@@ -23,6 +23,8 @@ namespace SampleClient
         public RoomList()
         {
             InitializeComponent();
+
+            Network.Network.Instance.GetPacketSender()?.SendRoomList();
         }
     }
 }

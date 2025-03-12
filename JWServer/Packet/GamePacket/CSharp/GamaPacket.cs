@@ -52,12 +52,12 @@ namespace Jw {
             "X0ZBSUwQCBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9MSVNUX1JFURAJEiAK",
             "HEdBTUVfUEFDS0VUX0NNRF9ST09NX0xJU1RfT0sQChIiCh5HQU1FX1BBQ0tF",
             "VF9DTURfUk9PTV9MSVNUX0ZBSUwQCxIcChhHQU1FX1BBQ0tFVF9DTURfQ0hB",
-            "VF9SRVEQDBIbChdHQU1FX1BBQ0tFVF9DTURfQ0hBVF9PSxANKrkBCglFcnJv",
+            "VF9SRVEQDBIbChdHQU1FX1BBQ0tFVF9DTURfQ0hBVF9PSxANKtoBCglFcnJv",
             "ckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhYKEkVSUk9SX0NP",
             "REVfU1VDQ0VTUxABEigKJEVSUk9SX0NPREVfTE9HSU5fRkFJTF9EVVBMSUNB",
             "VEVfTkFNRRACEiYKIkVSUk9SX0NPREVfTE9HSU5fRkFJTF9JTlZBTElEX05B",
-            "TUUQAxImCiJFUlJPUl9DT0RFX0xPR0lOX0ZBSUxfSU5WQUxJRF9BVVRIEARi",
-            "BnByb3RvMw=="));
+            "TUUQAxImCiJFUlJPUl9DT0RFX0xPR0lOX0ZBSUxfSU5WQUxJRF9BVVRIEAQS",
+            "HwobRVJST1JfQ09ERV9DUkVBVEVfUk9PTV9GQUlMEAViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Jw.GamePacketInfo), typeof(global::Jw.GamePacketCmd), typeof(global::Jw.ErrorCode), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -117,6 +117,7 @@ namespace Jw {
     [pbr::OriginalName("ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME")] LoginFailDuplicateName = 2,
     [pbr::OriginalName("ERROR_CODE_LOGIN_FAIL_INVALID_NAME")] LoginFailInvalidName = 3,
     [pbr::OriginalName("ERROR_CODE_LOGIN_FAIL_INVALID_AUTH")] LoginFailInvalidAuth = 4,
+    [pbr::OriginalName("ERROR_CODE_CREATE_ROOM_FAIL")] CreateRoomFail = 5,
   }
 
   #endregion

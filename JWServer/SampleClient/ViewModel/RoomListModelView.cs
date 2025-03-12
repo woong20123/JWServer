@@ -5,11 +5,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace SampleClient.ViewModel
 {
     internal class RoomListViewModel
     {
+        public ICommand CreateRoomCommand => new DelegateCommand(openCreateRoomWindow);
+
         public ObservableCollection<Room> Rooms { get; set; }
 
         public RoomListViewModel()
@@ -20,6 +23,12 @@ namespace SampleClient.ViewModel
                 new Room { Name = "Meeting Room B", Capacity = 5, IsAvailable = false },
                 new Room { Name = "Seminar Hall", Capacity = 50, IsAvailable = true }
             };
+        }
+
+        private void openCreateRoomWindow()
+        {
+            CreateRoomWindow createWindow = new CreateRoomWindow();
+            createWindow.Show();
         }
     }
 }

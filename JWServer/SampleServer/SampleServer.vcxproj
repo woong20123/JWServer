@@ -161,6 +161,8 @@
     <ClCompile Include="GamePacketHandler.cpp" />
     <ClCompile Include="GameSessionHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomSerializeObject.cpp" />
     <ClCompile Include="SampleServer.cpp" />
     <ClCompile Include="SerializerInfo.h" />
@@ -173,6 +175,8 @@
     <ClInclude Include="GamePacketHandleFuncList.h" />
     <ClInclude Include="GamePacketHandler.h" />
     <ClInclude Include="GameSessionHandler.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="RoomSerializeObject.h" />
     <ClInclude Include="SampleServer.h" />
     <ClInclude Include="User.h" />
