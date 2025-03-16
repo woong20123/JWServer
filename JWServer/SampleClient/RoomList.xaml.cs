@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SampleClient.Model;
+using SampleClient.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SampleClient
 {
@@ -20,11 +23,26 @@ namespace SampleClient
     /// </summary>
     public partial class RoomList : Page
     {
+        RoomListViewModel rlvm;
         public RoomList()
         {
             InitializeComponent();
+            rlvm = new RoomListViewModel();
+            this.DataContext = rlvm;
 
-            Network.Network.Instance.GetPacketSender()?.SendRoomList();
+            Thread.Sleep(100);
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, () => Network.Network.Instance.GetPacketSender()?.SendRoomList());
+
+
+        }
+
+        public void UpdateRoomList(List<Room> rooms)
+        {
+            rlvm.ClearRooms();
+            foreach (var room in rooms)
+            {
+                rlvm.AddRoom(room);
+            }
         }
     }
 }

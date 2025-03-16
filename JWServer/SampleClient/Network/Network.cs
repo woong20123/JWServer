@@ -77,6 +77,7 @@ namespace SampleClient.Network
         public void Close()
         {
             _session.Dispose();
+            _eventQuene.Stop();
             _cts.Cancel();
             _thread.Join();
         }

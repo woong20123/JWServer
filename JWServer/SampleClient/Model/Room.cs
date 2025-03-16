@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SampleClient.Model
 {
-    internal class Room
+    public class Room
     {
         public string? Name { get; set; }
-        public int Capacity { get; set; }
-        public bool IsAvailable { get; set; }
+        public long Id { get; set; }
+        public long HostId { get; set; }
+        public string? HostName { get; set; }
     }
 }

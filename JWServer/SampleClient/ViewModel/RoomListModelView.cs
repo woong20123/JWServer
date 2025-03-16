@@ -19,9 +19,6 @@ namespace SampleClient.ViewModel
         {
             Rooms = new ObservableCollection<Room>
             {
-                new Room { Name = "Conference Room A", Capacity = 10, IsAvailable = true },
-                new Room { Name = "Meeting Room B", Capacity = 5, IsAvailable = false },
-                new Room { Name = "Seminar Hall", Capacity = 50, IsAvailable = true }
             };
         }
 
@@ -29,6 +26,16 @@ namespace SampleClient.ViewModel
         {
             CreateRoomWindow createWindow = new CreateRoomWindow();
             createWindow.Show();
+        }
+
+        public void ClearRooms()
+        {
+            Rooms.Clear();
+        }
+
+        public void AddRoom(Room room)
+        {
+            Rooms.Add(room);
         }
     }
 }

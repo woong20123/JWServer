@@ -37,9 +37,29 @@ namespace SampleClient
             return rightFrame.FindName("chatPage") as Chat;
         }
 
+        public RoomList? RoomList
+        {
+            get
+            {
+                return mainFrame.FindName("roomList") as RoomList;
+            }
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
             Network.Network.Instance.Close();
         }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.processKill();
+            this.Close();
+        }
+        private void processKill()
+        {
+            Environment.Exit(0);
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
     }
 }

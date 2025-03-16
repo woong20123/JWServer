@@ -24,44 +24,45 @@ namespace Jw {
     static GamaPacketReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChBHYW1hUGFja2V0LnByb3RvEgJqdyIsCgxSb29tTGlzdEluZm8SDgoGcm9v",
-            "bUlkGAEgASgDEgwKBG5hbWUYAiABKAkiGgoLR2FtZVBpbmdSZXESCwoDbnVt",
-            "GAEgASgDIhkKCkdhbWVQaW5nT2sSCwoDbnVtGAEgASgDIkQKDEdhbWVMb2dp",
-            "blJlcRIMCgRuYW1lGAEgASgJEhUKDXBhY2tldFZlcnNpb24YAiABKAUSDwoH",
-            "YXV0aEtleRgDIAEoAyIrCgtHYW1lTG9naW5PaxIMCgRuYW1lGAEgASgJEg4K",
-            "BnVzZXJJZBgCIAEoAyIvCg1HYW1lTG9naW5GYWlsEh4KB2VyckNvZGUYASAB",
-            "KA4yDS5qdy5FcnJvckNvZGUiIQoRR2FtZUNyZWF0ZVJvb21SZXESDAoEbmFt",
-            "ZRgBIAEoCSI2ChBHYW1lQ3JlYXRlUm9vbU9rEiIKCHJvb21JbmZvGAEgASgL",
-            "MhAuancuUm9vbUxpc3RJbmZvIjQKEkdhbWVDcmVhdGVSb29tRmFpbBIeCgdl",
-            "cnJDb2RlGAEgASgOMg0uancuRXJyb3JDb2RlIjMKD0dhbWVSb29tTGlzdFJl",
-            "cRIQCghzdGFydFNlcRgBIAEoBRIOCgZlbmRTZXEYAiABKAUiNAoOR2FtZVJv",
-            "b21MaXN0T2sSIgoIcm9vbUluZm8YASADKAsyEC5qdy5Sb29tTGlzdEluZm8i",
-            "VgoQR2FtZVJvb21MaXN0RmFpbBIeCgdlcnJDb2RlGAEgASgOMg0uancuRXJy",
-            "b3JDb2RlEiIKCHJvb21JbmZvGAIgAygLMhAuancuUm9vbUxpc3RJbmZvIigK",
-            "C0dhbWVDaGF0UmVxEgwKBG5hbWUYASABKAkSCwoDbXNnGAIgASgJIicKCkdh",
-            "bWVDaGF0T2sSDAoEbmFtZRgBIAEoCRILCgNtc2cYAiABKAkqagoOR2FtZVBh",
-            "Y2tldEluZm8SIAocR0FNRV9QQUNLRVRfSU5GT19VTlNQRUNJRklFRBAAEhwK",
-            "GEdBTUVfUEFDS0VUX0lORk9fVkVSU0lPThACEhgKFEdBTUVfUEFDS0VUX0FV",
-            "VEhfS0VZEHIq2wMKDUdhbWVQYWNrZXRDbWQSHwobR0FNRV9QQUNLRVRfQ01E",
-            "X1VOU1BFQ0lGSUVEEAASHAoYR0FNRV9QQUNLRVRfQ01EX1BJTkdfUkVREAES",
-            "GwoXR0FNRV9QQUNLRVRfQ01EX1BJTkdfT0sQAhIdChlHQU1FX1BBQ0tFVF9D",
-            "TURfTE9HSU5fUkVREAMSHAoYR0FNRV9QQUNLRVRfQ01EX0xPR0lOX09LEAQS",
-            "HgoaR0FNRV9QQUNLRVRfQ01EX0xPR0lOX0ZBSUwQBRIjCh9HQU1FX1BBQ0tF",
-            "VF9DTURfQ1JFQVRFX1JPT01fUkVREAYSIgoeR0FNRV9QQUNLRVRfQ01EX0NS",
-            "RUFURV9ST09NX09LEAcSJAogR0FNRV9QQUNLRVRfQ01EX0NSRUFURV9ST09N",
-            "X0ZBSUwQCBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9MSVNUX1JFURAJEiAK",
-            "HEdBTUVfUEFDS0VUX0NNRF9ST09NX0xJU1RfT0sQChIiCh5HQU1FX1BBQ0tF",
-            "VF9DTURfUk9PTV9MSVNUX0ZBSUwQCxIcChhHQU1FX1BBQ0tFVF9DTURfQ0hB",
-            "VF9SRVEQDBIbChdHQU1FX1BBQ0tFVF9DTURfQ0hBVF9PSxANKtoBCglFcnJv",
-            "ckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhYKEkVSUk9SX0NP",
-            "REVfU1VDQ0VTUxABEigKJEVSUk9SX0NPREVfTE9HSU5fRkFJTF9EVVBMSUNB",
-            "VEVfTkFNRRACEiYKIkVSUk9SX0NPREVfTE9HSU5fRkFJTF9JTlZBTElEX05B",
-            "TUUQAxImCiJFUlJPUl9DT0RFX0xPR0lOX0ZBSUxfSU5WQUxJRF9BVVRIEAQS",
-            "HwobRVJST1JfQ09ERV9DUkVBVEVfUk9PTV9GQUlMEAViBnByb3RvMw=="));
+            "ChBHYW1hUGFja2V0LnByb3RvEgJqdyJWCgxSb29tTGlzdEluZm8SDgoGcm9v",
+            "bUlkGAEgASgDEgwKBG5hbWUYAiABKAkSEgoKaG9zdFVzZXJJZBgDIAEoAxIU",
+            "Cgxob3N0VXNlck5hbWUYBCABKAkiGgoLR2FtZVBpbmdSZXESCwoDbnVtGAEg",
+            "ASgDIhkKCkdhbWVQaW5nT2sSCwoDbnVtGAEgASgDIkQKDEdhbWVMb2dpblJl",
+            "cRIMCgRuYW1lGAEgASgJEhUKDXBhY2tldFZlcnNpb24YAiABKAUSDwoHYXV0",
+            "aEtleRgDIAEoAyIrCgtHYW1lTG9naW5PaxIMCgRuYW1lGAEgASgJEg4KBnVz",
+            "ZXJJZBgCIAEoAyIvCg1HYW1lTG9naW5GYWlsEh4KB2VyckNvZGUYASABKA4y",
+            "DS5qdy5FcnJvckNvZGUiIQoRR2FtZUNyZWF0ZVJvb21SZXESDAoEbmFtZRgB",
+            "IAEoCSI2ChBHYW1lQ3JlYXRlUm9vbU9rEiIKCHJvb21JbmZvGAEgASgLMhAu",
+            "ancuUm9vbUxpc3RJbmZvIjQKEkdhbWVDcmVhdGVSb29tRmFpbBIeCgdlcnJD",
+            "b2RlGAEgASgOMg0uancuRXJyb3JDb2RlIjMKD0dhbWVSb29tTGlzdFJlcRIQ",
+            "CghzdGFydFNlcRgBIAEoBRIOCgZlbmRTZXEYAiABKAUiNAoOR2FtZVJvb21M",
+            "aXN0T2sSIgoIcm9vbUluZm8YASADKAsyEC5qdy5Sb29tTGlzdEluZm8iVgoQ",
+            "R2FtZVJvb21MaXN0RmFpbBIeCgdlcnJDb2RlGAEgASgOMg0uancuRXJyb3JD",
+            "b2RlEiIKCHJvb21JbmZvGAIgAygLMhAuancuUm9vbUxpc3RJbmZvIigKC0dh",
+            "bWVDaGF0UmVxEgwKBG5hbWUYASABKAkSCwoDbXNnGAIgASgJIicKCkdhbWVD",
+            "aGF0T2sSDAoEbmFtZRgBIAEoCRILCgNtc2cYAiABKAkqagoOR2FtZVBhY2tl",
+            "dEluZm8SIAocR0FNRV9QQUNLRVRfSU5GT19VTlNQRUNJRklFRBAAEhwKGEdB",
+            "TUVfUEFDS0VUX0lORk9fVkVSU0lPThACEhgKFEdBTUVfUEFDS0VUX0FVVEhf",
+            "S0VZEHIq2wMKDUdhbWVQYWNrZXRDbWQSHwobR0FNRV9QQUNLRVRfQ01EX1VO",
+            "U1BFQ0lGSUVEEAASHAoYR0FNRV9QQUNLRVRfQ01EX1BJTkdfUkVREAESGwoX",
+            "R0FNRV9QQUNLRVRfQ01EX1BJTkdfT0sQAhIdChlHQU1FX1BBQ0tFVF9DTURf",
+            "TE9HSU5fUkVREAMSHAoYR0FNRV9QQUNLRVRfQ01EX0xPR0lOX09LEAQSHgoa",
+            "R0FNRV9QQUNLRVRfQ01EX0xPR0lOX0ZBSUwQBRIjCh9HQU1FX1BBQ0tFVF9D",
+            "TURfQ1JFQVRFX1JPT01fUkVREAYSIgoeR0FNRV9QQUNLRVRfQ01EX0NSRUFU",
+            "RV9ST09NX09LEAcSJAogR0FNRV9QQUNLRVRfQ01EX0NSRUFURV9ST09NX0ZB",
+            "SUwQCBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9MSVNUX1JFURAJEiAKHEdB",
+            "TUVfUEFDS0VUX0NNRF9ST09NX0xJU1RfT0sQChIiCh5HQU1FX1BBQ0tFVF9D",
+            "TURfUk9PTV9MSVNUX0ZBSUwQCxIcChhHQU1FX1BBQ0tFVF9DTURfQ0hBVF9S",
+            "RVEQDBIbChdHQU1FX1BBQ0tFVF9DTURfQ0hBVF9PSxANKtoBCglFcnJvckNv",
+            "ZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhYKEkVSUk9SX0NPREVf",
+            "U1VDQ0VTUxABEigKJEVSUk9SX0NPREVfTE9HSU5fRkFJTF9EVVBMSUNBVEVf",
+            "TkFNRRACEiYKIkVSUk9SX0NPREVfTE9HSU5fRkFJTF9JTlZBTElEX05BTUUQ",
+            "AxImCiJFUlJPUl9DT0RFX0xPR0lOX0ZBSUxfSU5WQUxJRF9BVVRIEAQSHwob",
+            "RVJST1JfQ09ERV9DUkVBVEVfUk9PTV9GQUlMEAViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Jw.GamePacketInfo), typeof(global::Jw.GamePacketCmd), typeof(global::Jw.ErrorCode), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.RoomListInfo), global::Jw.RoomListInfo.Parser, new[]{ "RoomId", "Name" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.RoomListInfo), global::Jw.RoomListInfo.Parser, new[]{ "RoomId", "Name", "HostUserId", "HostUserName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GamePingReq), global::Jw.GamePingReq.Parser, new[]{ "Num" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GamePingOk), global::Jw.GamePingOk.Parser, new[]{ "Num" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameLoginReq), global::Jw.GameLoginReq.Parser, new[]{ "Name", "PacketVersion", "AuthKey" }, null, null, null, null),
@@ -163,6 +164,8 @@ namespace Jw {
     public RoomListInfo(RoomListInfo other) : this() {
       roomId_ = other.roomId_;
       name_ = other.name_;
+      hostUserId_ = other.hostUserId_;
+      hostUserName_ = other.hostUserName_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -196,6 +199,30 @@ namespace Jw {
       }
     }
 
+    /// <summary>Field number for the "hostUserId" field.</summary>
+    public const int HostUserIdFieldNumber = 3;
+    private long hostUserId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long HostUserId {
+      get { return hostUserId_; }
+      set {
+        hostUserId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "hostUserName" field.</summary>
+    public const int HostUserNameFieldNumber = 4;
+    private string hostUserName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string HostUserName {
+      get { return hostUserName_; }
+      set {
+        hostUserName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -213,6 +240,8 @@ namespace Jw {
       }
       if (RoomId != other.RoomId) return false;
       if (Name != other.Name) return false;
+      if (HostUserId != other.HostUserId) return false;
+      if (HostUserName != other.HostUserName) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -222,6 +251,8 @@ namespace Jw {
       int hash = 1;
       if (RoomId != 0L) hash ^= RoomId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (HostUserId != 0L) hash ^= HostUserId.GetHashCode();
+      if (HostUserName.Length != 0) hash ^= HostUserName.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -248,6 +279,14 @@ namespace Jw {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
+      if (HostUserId != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(HostUserId);
+      }
+      if (HostUserName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(HostUserName);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -266,6 +305,14 @@ namespace Jw {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
+      if (HostUserId != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(HostUserId);
+      }
+      if (HostUserName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(HostUserName);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -281,6 +328,12 @@ namespace Jw {
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (HostUserId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(HostUserId);
+      }
+      if (HostUserName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HostUserName);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -299,6 +352,12 @@ namespace Jw {
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
+      }
+      if (other.HostUserId != 0L) {
+        HostUserId = other.HostUserId;
+      }
+      if (other.HostUserName.Length != 0) {
+        HostUserName = other.HostUserName;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -327,6 +386,14 @@ namespace Jw {
             Name = input.ReadString();
             break;
           }
+          case 24: {
+            HostUserId = input.ReadInt64();
+            break;
+          }
+          case 34: {
+            HostUserName = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -352,6 +419,14 @@ namespace Jw {
           }
           case 18: {
             Name = input.ReadString();
+            break;
+          }
+          case 24: {
+            HostUserId = input.ReadInt64();
+            break;
+          }
+          case 34: {
+            HostUserName = input.ReadString();
             break;
           }
         }

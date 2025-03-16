@@ -34,7 +34,7 @@ namespace jw
     public:
         CreateRoomTask();
         virtual ~CreateRoomTask();
-        void Initialize(std::shared_ptr<User> user, const std::string& roomName);
+        void Initialize(const std::shared_ptr<User>& user, const std::string& roomName);
         void Execute() override;
     private:
         void sendFail(int32_t errCode);
@@ -47,7 +47,10 @@ namespace jw
     public:
         GameRoomListTask();
         virtual ~GameRoomListTask();
+        void Initialize(const std::shared_ptr<User>& user);
         void Execute() override;
+    private:
+        std::shared_ptr<User> _user;
     };
 }
 

@@ -21,12 +21,15 @@ namespace jw
         Room();
         ~Room();
 
-        void Initialize(RoomID id, const std::string& name);
-        const std::string& GetRoomName() const { return _name; }
-
+        void Initialize(RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName);
+        const std::string_view& GetRoomName() const { return _name; }
+        const std::string_view& getHostUserName() const { return _hostUserName; }
+        const int64_t GetHostUserId() const { return _hostUserId; }
     private:
         RoomID _id;
         std::string _name;
+        int64_t _hostUserId;
+        std::string _hostUserName;
         std::unordered_map<userID, RoomUserInfo> _userList;
     };
 }

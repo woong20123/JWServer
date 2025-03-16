@@ -14,12 +14,12 @@ namespace jw
     {
     }
 
-    CreatRoomResult RoomManager::CreateRoom(const std::string& roomName)
+    CreatRoomResult RoomManager::CreateRoom(const std::string& roomName, const HostInfo& hostInfo)
     {
         auto roomId = _roomIdIssuer.fetch_add(1);
 
         std::shared_ptr<Room> room = std::make_shared<Room>();
-        room->Initialize(roomId, roomName);
+        room->Initialize(roomId, roomName, hostInfo._userId, hostInfo._name);
 
         if (!_roomList.insert({ roomId, room }).second)
         {
@@ -36,7 +36,8 @@ namespace jw
 
         for (const auto& roomInfo : _roomList | std::views::take(10))
         {
-            roomList.push_back({ roomInfo.first, roomInfo.second->GetRoomName() });
+            const auto& room = roomInfo.second;
+            roomList.push_back({ roomInfo.first, room->GetRoomName().data(), room->getHostUserName().data(), room->GetHostUserId() });
         }
         return roomList;
     }

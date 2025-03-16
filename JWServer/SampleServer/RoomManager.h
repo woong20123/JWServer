@@ -13,8 +13,16 @@ namespace jw
     class Room;
     struct RoomInfo
     {
-        int64_t _roomId;
-        std::string _roomName;
+        int64_t         _roomId;
+        std::string     _roomName;
+        std::string     _hostUserName;
+        int64_t         _hostUserId;
+    };
+
+    struct HostInfo
+    {
+        std::string _name;
+        int64_t _userId;
     };
 
     struct CreatRoomResult
@@ -30,7 +38,7 @@ namespace jw
         RoomManager();
         virtual ~RoomManager();
 
-        CreatRoomResult CreateRoom(const std::string& roomName);
+        CreatRoomResult CreateRoom(const std::string& roomName, const HostInfo& hostInfo);
         std::vector<RoomInfo> GetRoomList();
 
     private:

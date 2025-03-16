@@ -9,7 +9,7 @@ namespace SampleClient.Model
 {
     class CreateRoomInfo : BindableBase
     {
-        private string _name = "empty";
+        private string _name = "친목 방";
         public string Name
         {
             get => _name;

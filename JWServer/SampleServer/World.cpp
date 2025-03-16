@@ -4,6 +4,7 @@
 #include "Serializer.h"
 #include "SerializerManager.h"
 #include "Packet.h"
+#include "Logger.h"
 
 namespace jw
 {
@@ -66,7 +67,10 @@ namespace jw
         WRITE_LOCK(_userList_mutex);
         for (const auto& user : _userList)
         {
-            user.second->Send(packet);
+            if (user.second)
+                user.second->Send(packet);
+            else
+                LOG_ERROR(L"BroadcastPacket user is nullptr");
         }
     }
 

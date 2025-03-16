@@ -30,7 +30,11 @@ inline constexpr RoomListInfo::Impl_::Impl_(
       : name_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
+        hostusername_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
         roomid_{::int64_t{0}},
+        hostuserid_{::int64_t{0}},
         _cached_size_{0} {}
 
 template <typename>
@@ -415,6 +419,8 @@ const ::uint32_t
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.roomid_),
         PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.hostuserid_),
+        PROTOBUF_FIELD_OFFSET(::jw::RoomListInfo, _impl_.hostusername_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::jw::GamePingReq, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -545,19 +551,19 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::jw::RoomListInfo)},
-        {10, -1, -1, sizeof(::jw::GamePingReq)},
-        {19, -1, -1, sizeof(::jw::GamePingOk)},
-        {28, -1, -1, sizeof(::jw::GameLoginReq)},
-        {39, -1, -1, sizeof(::jw::GameLoginOk)},
-        {49, -1, -1, sizeof(::jw::GameLoginFail)},
-        {58, -1, -1, sizeof(::jw::GameCreateRoomReq)},
-        {67, 76, -1, sizeof(::jw::GameCreateRoomOk)},
-        {77, -1, -1, sizeof(::jw::GameCreateRoomFail)},
-        {86, -1, -1, sizeof(::jw::GameRoomListReq)},
-        {96, -1, -1, sizeof(::jw::GameRoomListOk)},
-        {105, -1, -1, sizeof(::jw::GameRoomListFail)},
-        {115, -1, -1, sizeof(::jw::GameChatReq)},
-        {125, -1, -1, sizeof(::jw::GameChatOk)},
+        {12, -1, -1, sizeof(::jw::GamePingReq)},
+        {21, -1, -1, sizeof(::jw::GamePingOk)},
+        {30, -1, -1, sizeof(::jw::GameLoginReq)},
+        {41, -1, -1, sizeof(::jw::GameLoginOk)},
+        {51, -1, -1, sizeof(::jw::GameLoginFail)},
+        {60, -1, -1, sizeof(::jw::GameCreateRoomReq)},
+        {69, 78, -1, sizeof(::jw::GameCreateRoomOk)},
+        {79, -1, -1, sizeof(::jw::GameCreateRoomFail)},
+        {88, -1, -1, sizeof(::jw::GameRoomListReq)},
+        {98, -1, -1, sizeof(::jw::GameRoomListOk)},
+        {107, -1, -1, sizeof(::jw::GameRoomListFail)},
+        {117, -1, -1, sizeof(::jw::GameChatReq)},
+        {127, -1, -1, sizeof(::jw::GameChatOk)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::jw::_RoomListInfo_default_instance_._instance,
@@ -577,51 +583,52 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 const char descriptor_table_protodef_GamaPacket_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\020GamaPacket.proto\022\002jw\",\n\014RoomListInfo\022\016"
-    "\n\006roomId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\"\032\n\013GamePing"
-    "Req\022\013\n\003num\030\001 \001(\003\"\031\n\nGamePingOk\022\013\n\003num\030\001 "
-    "\001(\003\"D\n\014GameLoginReq\022\014\n\004name\030\001 \001(\t\022\025\n\rpac"
-    "ketVersion\030\002 \001(\005\022\017\n\007authKey\030\003 \001(\003\"+\n\013Gam"
-    "eLoginOk\022\014\n\004name\030\001 \001(\t\022\016\n\006userId\030\002 \001(\003\"/"
-    "\n\rGameLoginFail\022\036\n\007errCode\030\001 \001(\0162\r.jw.Er"
-    "rorCode\"!\n\021GameCreateRoomReq\022\014\n\004name\030\001 \001"
-    "(\t\"6\n\020GameCreateRoomOk\022\"\n\010roomInfo\030\001 \001(\013"
-    "2\020.jw.RoomListInfo\"4\n\022GameCreateRoomFail"
-    "\022\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\"3\n\017Game"
-    "RoomListReq\022\020\n\010startSeq\030\001 \001(\005\022\016\n\006endSeq\030"
-    "\002 \001(\005\"4\n\016GameRoomListOk\022\"\n\010roomInfo\030\001 \003("
-    "\0132\020.jw.RoomListInfo\"V\n\020GameRoomListFail\022"
-    "\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\022\"\n\010roomI"
-    "nfo\030\002 \003(\0132\020.jw.RoomListInfo\"(\n\013GameChatR"
-    "eq\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\"\'\n\nGameCha"
-    "tOk\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t*j\n\016GamePa"
-    "cketInfo\022 \n\034GAME_PACKET_INFO_UNSPECIFIED"
-    "\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020\002\022\030\n\024GAME"
-    "_PACKET_AUTH_KEY\020r*\333\003\n\rGamePacketCmd\022\037\n\033"
-    "GAME_PACKET_CMD_UNSPECIFIED\020\000\022\034\n\030GAME_PA"
-    "CKET_CMD_PING_REQ\020\001\022\033\n\027GAME_PACKET_CMD_P"
-    "ING_OK\020\002\022\035\n\031GAME_PACKET_CMD_LOGIN_REQ\020\003\022"
-    "\034\n\030GAME_PACKET_CMD_LOGIN_OK\020\004\022\036\n\032GAME_PA"
-    "CKET_CMD_LOGIN_FAIL\020\005\022#\n\037GAME_PACKET_CMD"
-    "_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CMD_CR"
-    "EATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CREATE"
-    "_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM_LIS"
-    "T_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST_OK\020"
-    "\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020\013\022\034\n"
-    "\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_PACK"
-    "ET_CMD_CHAT_OK\020\r*\332\001\n\tErrorCode\022\032\n\026ERROR_"
-    "CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCCESS"
-    "\020\001\022(\n$ERROR_CODE_LOGIN_FAIL_DUPLICATE_NA"
-    "ME\020\002\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_NA"
-    "ME\020\003\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_AU"
-    "TH\020\004\022\037\n\033ERROR_CODE_CREATE_ROOM_FAIL\020\005b\006p"
-    "roto3"
+    "\n\020GamaPacket.proto\022\002jw\"V\n\014RoomListInfo\022\016"
+    "\n\006roomId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\022\n\nhostUser"
+    "Id\030\003 \001(\003\022\024\n\014hostUserName\030\004 \001(\t\"\032\n\013GamePi"
+    "ngReq\022\013\n\003num\030\001 \001(\003\"\031\n\nGamePingOk\022\013\n\003num\030"
+    "\001 \001(\003\"D\n\014GameLoginReq\022\014\n\004name\030\001 \001(\t\022\025\n\rp"
+    "acketVersion\030\002 \001(\005\022\017\n\007authKey\030\003 \001(\003\"+\n\013G"
+    "ameLoginOk\022\014\n\004name\030\001 \001(\t\022\016\n\006userId\030\002 \001(\003"
+    "\"/\n\rGameLoginFail\022\036\n\007errCode\030\001 \001(\0162\r.jw."
+    "ErrorCode\"!\n\021GameCreateRoomReq\022\014\n\004name\030\001"
+    " \001(\t\"6\n\020GameCreateRoomOk\022\"\n\010roomInfo\030\001 \001"
+    "(\0132\020.jw.RoomListInfo\"4\n\022GameCreateRoomFa"
+    "il\022\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\"3\n\017Ga"
+    "meRoomListReq\022\020\n\010startSeq\030\001 \001(\005\022\016\n\006endSe"
+    "q\030\002 \001(\005\"4\n\016GameRoomListOk\022\"\n\010roomInfo\030\001 "
+    "\003(\0132\020.jw.RoomListInfo\"V\n\020GameRoomListFai"
+    "l\022\036\n\007errCode\030\001 \001(\0162\r.jw.ErrorCode\022\"\n\010roo"
+    "mInfo\030\002 \003(\0132\020.jw.RoomListInfo\"(\n\013GameCha"
+    "tReq\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\"\'\n\nGameC"
+    "hatOk\022\014\n\004name\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t*j\n\016Game"
+    "PacketInfo\022 \n\034GAME_PACKET_INFO_UNSPECIFI"
+    "ED\020\000\022\034\n\030GAME_PACKET_INFO_VERSION\020\002\022\030\n\024GA"
+    "ME_PACKET_AUTH_KEY\020r*\333\003\n\rGamePacketCmd\022\037"
+    "\n\033GAME_PACKET_CMD_UNSPECIFIED\020\000\022\034\n\030GAME_"
+    "PACKET_CMD_PING_REQ\020\001\022\033\n\027GAME_PACKET_CMD"
+    "_PING_OK\020\002\022\035\n\031GAME_PACKET_CMD_LOGIN_REQ\020"
+    "\003\022\034\n\030GAME_PACKET_CMD_LOGIN_OK\020\004\022\036\n\032GAME_"
+    "PACKET_CMD_LOGIN_FAIL\020\005\022#\n\037GAME_PACKET_C"
+    "MD_CREATE_ROOM_REQ\020\006\022\"\n\036GAME_PACKET_CMD_"
+    "CREATE_ROOM_OK\020\007\022$\n GAME_PACKET_CMD_CREA"
+    "TE_ROOM_FAIL\020\010\022!\n\035GAME_PACKET_CMD_ROOM_L"
+    "IST_REQ\020\t\022 \n\034GAME_PACKET_CMD_ROOM_LIST_O"
+    "K\020\n\022\"\n\036GAME_PACKET_CMD_ROOM_LIST_FAIL\020\013\022"
+    "\034\n\030GAME_PACKET_CMD_CHAT_REQ\020\014\022\033\n\027GAME_PA"
+    "CKET_CMD_CHAT_OK\020\r*\332\001\n\tErrorCode\022\032\n\026ERRO"
+    "R_CODE_UNSPECIFIED\020\000\022\026\n\022ERROR_CODE_SUCCE"
+    "SS\020\001\022(\n$ERROR_CODE_LOGIN_FAIL_DUPLICATE_"
+    "NAME\020\002\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_"
+    "NAME\020\003\022&\n\"ERROR_CODE_LOGIN_FAIL_INVALID_"
+    "AUTH\020\004\022\037\n\033ERROR_CODE_CREATE_ROOM_FAIL\020\005b"
+    "\006proto3"
 };
 static ::absl::once_flag descriptor_table_GamaPacket_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_GamaPacket_2eproto = {
     false,
     false,
-    1525,
+    1567,
     descriptor_table_protodef_GamaPacket_2eproto,
     "GamaPacket.proto",
     &descriptor_table_GamaPacket_2eproto_once,
@@ -681,6 +688,7 @@ inline PROTOBUF_NDEBUG_INLINE RoomListInfo::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
     const Impl_& from, const ::jw::RoomListInfo& from_msg)
       : name_(arena, from.name_),
+        hostusername_(arena, from.hostusername_),
         _cached_size_{0} {}
 
 RoomListInfo::RoomListInfo(
@@ -696,7 +704,13 @@ RoomListInfo::RoomListInfo(
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
-  _impl_.roomid_ = from._impl_.roomid_;
+  ::memcpy(reinterpret_cast<char *>(&_impl_) +
+               offsetof(Impl_, roomid_),
+           reinterpret_cast<const char *>(&from._impl_) +
+               offsetof(Impl_, roomid_),
+           offsetof(Impl_, hostuserid_) -
+               offsetof(Impl_, roomid_) +
+               sizeof(Impl_::hostuserid_));
 
   // @@protoc_insertion_point(copy_constructor:jw.RoomListInfo)
 }
@@ -704,11 +718,17 @@ inline PROTOBUF_NDEBUG_INLINE RoomListInfo::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
       : name_(arena),
+        hostusername_(arena),
         _cached_size_{0} {}
 
 inline void RoomListInfo::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  _impl_.roomid_ = {};
+  ::memset(reinterpret_cast<char *>(&_impl_) +
+               offsetof(Impl_, roomid_),
+           0,
+           offsetof(Impl_, hostuserid_) -
+               offsetof(Impl_, roomid_) +
+               sizeof(Impl_::hostuserid_));
 }
 RoomListInfo::~RoomListInfo() {
   // @@protoc_insertion_point(destructor:jw.RoomListInfo)
@@ -718,6 +738,7 @@ RoomListInfo::~RoomListInfo() {
 inline void RoomListInfo::SharedDtor() {
   ABSL_DCHECK(GetArena() == nullptr);
   _impl_.name_.Destroy();
+  _impl_.hostusername_.Destroy();
   _impl_.~Impl_();
 }
 
@@ -750,15 +771,15 @@ const ::google::protobuf::MessageLite::ClassData* RoomListInfo::GetClassData() c
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 28, 2> RoomListInfo::_table_ = {
+const ::_pbi::TcParseTable<2, 4, 0, 40, 2> RoomListInfo::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    2, 8,  // max_field_number, fast_idx_mask
+    4, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967292,  // skipmap
+    4294967280,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    2,  // num_field_entries
+    4,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -768,12 +789,18 @@ const ::_pbi::TcParseTable<1, 2, 0, 28, 2> RoomListInfo::_table_ = {
     ::_pbi::TcParser::GetTable<::jw::RoomListInfo>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // string name = 2;
+    // string hostUserName = 4;
     {::_pbi::TcParser::FastUS1,
-     {18, 63, 0, PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.name_)}},
+     {34, 63, 0, PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.hostusername_)}},
     // int64 roomId = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(RoomListInfo, _impl_.roomid_), 63>(),
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.roomid_)}},
+    // string name = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.name_)}},
+    // int64 hostUserId = 3;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(RoomListInfo, _impl_.hostuserid_), 63>(),
+     {24, 63, 0, PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.hostuserid_)}},
   }}, {{
     65535, 65535
   }}, {{
@@ -783,12 +810,19 @@ const ::_pbi::TcParseTable<1, 2, 0, 28, 2> RoomListInfo::_table_ = {
     // string name = 2;
     {PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.name_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // int64 hostUserId = 3;
+    {PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.hostuserid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+    // string hostUserName = 4;
+    {PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.hostusername_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\17\0\4\0\0\0\0\0"
+    "\17\0\4\0\14\0\0\0"
     "jw.RoomListInfo"
     "name"
+    "hostUserName"
   }},
 };
 
@@ -800,7 +834,10 @@ PROTOBUF_NOINLINE void RoomListInfo::Clear() {
   (void) cached_has_bits;
 
   _impl_.name_.ClearToEmpty();
-  _impl_.roomid_ = ::int64_t{0};
+  _impl_.hostusername_.ClearToEmpty();
+  ::memset(&_impl_.roomid_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.hostuserid_) -
+      reinterpret_cast<char*>(&_impl_.roomid_)) + sizeof(_impl_.hostuserid_));
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
@@ -834,6 +871,21 @@ PROTOBUF_NOINLINE void RoomListInfo::Clear() {
             target = stream->WriteStringMaybeAliased(2, _s, target);
           }
 
+          // int64 hostUserId = 3;
+          if (this_._internal_hostuserid() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt64ToArrayWithField<3>(
+                    stream, this_._internal_hostuserid(), target);
+          }
+
+          // string hostUserName = 4;
+          if (!this_._internal_hostusername().empty()) {
+            const std::string& _s = this_._internal_hostusername();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "jw.RoomListInfo.hostUserName");
+            target = stream->WriteStringMaybeAliased(4, _s, target);
+          }
+
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
             target =
                 ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -864,10 +916,20 @@ PROTOBUF_NOINLINE void RoomListInfo::Clear() {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_name());
             }
+            // string hostUserName = 4;
+            if (!this_._internal_hostusername().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_hostusername());
+            }
             // int64 roomId = 1;
             if (this_._internal_roomid() != 0) {
               total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
                   this_._internal_roomid());
+            }
+            // int64 hostUserId = 3;
+            if (this_._internal_hostuserid() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+                  this_._internal_hostuserid());
             }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
@@ -885,8 +947,14 @@ void RoomListInfo::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::go
   if (!from._internal_name().empty()) {
     _this->_internal_set_name(from._internal_name());
   }
+  if (!from._internal_hostusername().empty()) {
+    _this->_internal_set_hostusername(from._internal_hostusername());
+  }
   if (from._internal_roomid() != 0) {
     _this->_impl_.roomid_ = from._impl_.roomid_;
+  }
+  if (from._internal_hostuserid() != 0) {
+    _this->_impl_.hostuserid_ = from._impl_.hostuserid_;
   }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -905,7 +973,13 @@ void RoomListInfo::InternalSwap(RoomListInfo* PROTOBUF_RESTRICT other) {
   ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
-        swap(_impl_.roomid_, other->_impl_.roomid_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.hostusername_, &other->_impl_.hostusername_, arena);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.hostuserid_)
+      + sizeof(RoomListInfo::_impl_.hostuserid_)
+      - PROTOBUF_FIELD_OFFSET(RoomListInfo, _impl_.roomid_)>(
+          reinterpret_cast<char*>(&_impl_.roomid_),
+          reinterpret_cast<char*>(&other->_impl_.roomid_));
 }
 
 ::google::protobuf::Metadata RoomListInfo::GetMetadata() const {

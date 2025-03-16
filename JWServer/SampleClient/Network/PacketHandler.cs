@@ -89,6 +89,7 @@ namespace SampleClient.Network
 
             var callBackAction = () =>
             {
+                MessageBox.Show($"Login Fail. ErrorCode:{loginFail.ErrCode}");
                 var mainWindow = GetMainWindow();
                 Environment.Exit(0);
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -111,6 +112,7 @@ namespace SampleClient.Network
                 createRoomWindow?.Close();
 
                 // Room 관련 윈도우 띄우기
+                Network.Instance.GetPacketSender()?.SendRoomList();
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -133,6 +135,8 @@ namespace SampleClient.Network
             var roomListOk = ToPacket<GameRoomListOk>(packetData, 0, packetBodySize);
             var callBackAction = () =>
             {
+                var mainWindow = GetMainWindow();
+                mainWindow?.RoomList?.UpdateRoomList(roomListOk.RoomInfo.Select(r => new Model.Room { Name = r.Name, Id = r.RoomId, HostId = r.HostUserId, HostName = r.HostUserName }).ToList());
             };
 
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);

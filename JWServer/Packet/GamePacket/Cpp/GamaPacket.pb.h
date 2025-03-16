@@ -358,7 +358,9 @@ class RoomListInfo final : public ::google::protobuf::Message
   // accessors -------------------------------------------------------
   enum : int {
     kNameFieldNumber = 2,
+    kHostUserNameFieldNumber = 4,
     kRoomIdFieldNumber = 1,
+    kHostUserIdFieldNumber = 3,
   };
   // string name = 2;
   void clear_name() ;
@@ -376,6 +378,22 @@ class RoomListInfo final : public ::google::protobuf::Message
   std::string* _internal_mutable_name();
 
   public:
+  // string hostUserName = 4;
+  void clear_hostusername() ;
+  const std::string& hostusername() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_hostusername(Arg_&& arg, Args_... args);
+  std::string* mutable_hostusername();
+  PROTOBUF_NODISCARD std::string* release_hostusername();
+  void set_allocated_hostusername(std::string* value);
+
+  private:
+  const std::string& _internal_hostusername() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_hostusername(
+      const std::string& value);
+  std::string* _internal_mutable_hostusername();
+
+  public:
   // int64 roomId = 1;
   void clear_roomid() ;
   ::int64_t roomid() const;
@@ -386,13 +404,23 @@ class RoomListInfo final : public ::google::protobuf::Message
   void _internal_set_roomid(::int64_t value);
 
   public:
+  // int64 hostUserId = 3;
+  void clear_hostuserid() ;
+  ::int64_t hostuserid() const;
+  void set_hostuserid(::int64_t value);
+
+  private:
+  ::int64_t _internal_hostuserid() const;
+  void _internal_set_hostuserid(::int64_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:jw.RoomListInfo)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      1, 2, 0,
-      28, 2>
+      2, 4, 0,
+      40, 2>
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
@@ -413,7 +441,9 @@ class RoomListInfo final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const RoomListInfo& from_msg);
     ::google::protobuf::internal::ArenaStringPtr name_;
+    ::google::protobuf::internal::ArenaStringPtr hostusername_;
     ::int64_t roomid_;
+    ::int64_t hostuserid_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -3097,6 +3127,78 @@ inline void RoomListInfo::set_allocated_name(std::string* value) {
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:jw.RoomListInfo.name)
+}
+
+// int64 hostUserId = 3;
+inline void RoomListInfo::clear_hostuserid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostuserid_ = ::int64_t{0};
+}
+inline ::int64_t RoomListInfo::hostuserid() const {
+  // @@protoc_insertion_point(field_get:jw.RoomListInfo.hostUserId)
+  return _internal_hostuserid();
+}
+inline void RoomListInfo::set_hostuserid(::int64_t value) {
+  _internal_set_hostuserid(value);
+  // @@protoc_insertion_point(field_set:jw.RoomListInfo.hostUserId)
+}
+inline ::int64_t RoomListInfo::_internal_hostuserid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.hostuserid_;
+}
+inline void RoomListInfo::_internal_set_hostuserid(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostuserid_ = value;
+}
+
+// string hostUserName = 4;
+inline void RoomListInfo::clear_hostusername() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostusername_.ClearToEmpty();
+}
+inline const std::string& RoomListInfo::hostusername() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.RoomListInfo.hostUserName)
+  return _internal_hostusername();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void RoomListInfo::set_hostusername(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostusername_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.RoomListInfo.hostUserName)
+}
+inline std::string* RoomListInfo::mutable_hostusername() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_hostusername();
+  // @@protoc_insertion_point(field_mutable:jw.RoomListInfo.hostUserName)
+  return _s;
+}
+inline const std::string& RoomListInfo::_internal_hostusername() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.hostusername_.Get();
+}
+inline void RoomListInfo::_internal_set_hostusername(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostusername_.Set(value, GetArena());
+}
+inline std::string* RoomListInfo::_internal_mutable_hostusername() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.hostusername_.Mutable( GetArena());
+}
+inline std::string* RoomListInfo::release_hostusername() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.RoomListInfo.hostUserName)
+  return _impl_.hostusername_.Release();
+}
+inline void RoomListInfo::set_allocated_hostusername(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hostusername_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.hostusername_.IsDefault()) {
+          _impl_.hostusername_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.RoomListInfo.hostUserName)
 }
 
 // -------------------------------------------------------------------

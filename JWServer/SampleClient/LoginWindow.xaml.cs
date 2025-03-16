@@ -57,6 +57,11 @@ namespace SampleClient
             };
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Network.Network.Instance.Close();
+        }
+
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             this.processKill();

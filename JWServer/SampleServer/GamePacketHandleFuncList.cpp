@@ -23,6 +23,12 @@ if (!req.ParseFromArray(packetData, protoBufferSize)){ \
 auto reqName = typeid(req).name(); \
 LOG_FETAL(L"fail req parser, sessionId:{}, req-typeid:{}, protoBufferSize:{}", session->GetId(), StringConverter::StrA2WUseUTF8(reqName)->c_str(), protoBufferSize ); return false; }
 
+#define FIND_AND_INVALID_CHECK_USER(session) \
+SAMPLE_SERVER().GetWorld()->FindUser(session->GetChannelKey());\
+if (!user){\
+    LOG_ERROR(L"Fail FindUser, sessionId:{}", session->GetId());\
+    return true;}
+
 namespace jw
 {
 
@@ -111,8 +117,7 @@ namespace jw
         PARSER_PROTO_PACKET_DATA(GameCreateRoomReq, req, packet);
 
         std::shared_ptr<CreateRoomTask> createRoomTask = std::make_shared<CreateRoomTask>();
-
-        const auto user = SAMPLE_SERVER().GetWorld()->FindUser(session->GetChannelKey());
+        const auto user = FIND_AND_INVALID_CHECK_USER(session);
 
         createRoomTask->Initialize(user, req.name());
         auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
@@ -130,6 +135,8 @@ namespace jw
         PARSER_PROTO_PACKET_DATA(GameRoomListReq, req, packet);
 
         std::shared_ptr<GameRoomListTask> gameRoomListTask = std::make_shared<GameRoomListTask>();
+        const auto user = FIND_AND_INVALID_CHECK_USER(session);
+        gameRoomListTask->Initialize(user);
 
         auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
         if (!SERIALIZER_MANAGER().Post(worldSerializerKey, gameRoomListTask))

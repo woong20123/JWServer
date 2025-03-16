@@ -21,13 +21,13 @@ namespace SampleClient
     /// </summary>
     public partial class Chat : Page
     {
-        ChatViewModel vm;
+        ChatViewModel cvm;
         public Chat()
         {
             InitializeComponent();
 
-            vm = new ChatViewModel();
-            this.DataContext = vm;
+            cvm = new ChatViewModel();
+            this.DataContext = cvm;
 
             viewTextBox.TextChanged += (s, e) =>
             {
@@ -39,13 +39,13 @@ namespace SampleClient
         {
             if (Key.Enter == e.Key)
             {
-                vm.SendCommand.Execute(null);
+                cvm.SendCommand.Execute(null);
             }
         }
 
         public void ViewText(string name, string str)
         {
-            vm.SetViewText(name, str);
+            cvm.SetViewText(name, str);
         }
     }
 }
