@@ -32,6 +32,9 @@ enum GamePacketCmd
 	GAME_PACKET_CMD_ROOM_LIST_REQ;
 	GAME_PACKET_CMD_ROOM_LIST_OK;
 	GAME_PACKET_CMD_ROOM_LIST_FAIL;
+	GAME_PACKET_CMD_ROOM_ENTER_REQ;
+	GAME_PACKET_CMD_ROOM_ENTER_OK;
+	GAME_PACKET_CMD_ROOM_ENTER_FAIL;
 	GAME_PACKET_CMD_CHAT_REQ;
 	GAME_PACKET_CMD_CHAT_OK;
 }
@@ -52,6 +55,12 @@ message RoomListInfo {
 	string name = 2;
 	int64 hostUserId = 3;
 	string hostUserName = 4;
+}
+
+message UserInfo
+{
+	int64 userId = 1;
+	string userName = 2;
 }
 
 ///// 패킷 등록
@@ -116,15 +125,33 @@ message GameRoomListFail
 	repeated RoomListInfo roomInfo = 2;
 }
 
+message GameRoomEnterReq
+{
+	int64 roomId = 1;
+}
+
+message GameRoomEnterOk
+{
+	repeated UserInfo memberUserInfos = 1;
+	RoomListInfo roomInfo = 2;
+}
+
+message GameRoomEnterFail
+{
+	ErrorCode errCode = 1;
+}
+
 message GameChatReq
 {
-	string name = 1;
-	string msg = 2;
+	int64 roomId = 1;
+	string name = 2;
+	string msg = 3;
 }
 
 message GameChatOk
 {
-	string name = 1;
-	string msg = 2;
+	int64 roomId = 1;
+	string name = 2;
+	string msg = 3;
 }
 

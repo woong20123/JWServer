@@ -49,6 +49,7 @@ namespace SampleClient
 
             var vm = new LoginWindowViewModel();
             this.DataContext = vm;
+            this.Closed += Window_Closed;
 
             // 로그인 창만 닫히도록 등록
             vm.OnRequestWindowClose += (s, e) =>
@@ -57,15 +58,16 @@ namespace SampleClient
             };
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closed(object? sender, EventArgs e)
         {
-            Network.Network.Instance.Close();
+
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             this.processKill();
             this.Close();
+            Network.Network.Instance.Close();
         }
 
         private void processKill()

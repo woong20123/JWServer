@@ -22,14 +22,12 @@ namespace SampleClient
         public MainWindow()
         {
             InitializeComponent();
-            Chat chat = new Chat();
-
-            rightFrame.Navigate(chat);
-            rightFrame.RegisterName("chatPage", chat);
 
             RoomList roomList = new RoomList();
             mainFrame.Navigate(roomList);
             mainFrame.RegisterName("roomList", roomList);
+
+            this.Closed += Window_Closed;
         }
 
         public Chat? GetChatPage()
@@ -45,7 +43,7 @@ namespace SampleClient
             }
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closed(object? sender, EventArgs e)
         {
             Network.Network.Instance.Close();
         }

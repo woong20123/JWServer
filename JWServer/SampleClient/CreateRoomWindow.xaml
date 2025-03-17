@@ -6,17 +6,112 @@
         xmlns:local="clr-namespace:SampleClient"
         xmlns:vm="clr-namespace:SampleClient.ViewModel"
         mc:Ignorable="d"
-        Title="CreateRoomWindow" Height="295" Width="405">
+        Title="방생성 창" Height="190" Width="370">
 
 
     <Window.DataContext>
         <vm:CreateRoomWindowViewModel />
     </Window.DataContext>
 
-    <Grid>
-        <Button x:Name="CreateButton" Content="방 생성" Command="{Binding CreateRoomCommand}" HorizontalAlignment="Left" Margin="180,214,0,0" VerticalAlignment="Top" Height="50" Width="95" FontSize="18" FontWeight="Bold"/>
-        <Button x:Name="CancelButton" Content="취 소" Command="{Binding CancelCommand}" HorizontalAlignment="Left" Margin="295,214,0,0" VerticalAlignment="Top" Height="50" Width="95" FontSize="18" FontWeight="Bold"/>
-        <TextBox HorizontalAlignment="Left" Margin="65,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" FontSize="16" Text="{Binding RoomInfo.Name}"/>
+    <Grid Margin="1,0,-1,0">
+        <Label Content="방 이름 :" HorizontalAlignment="Left" Margin="5,23,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" />
+        <TextBox HorizontalAlignment="Left" Margin="77,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" FontSize="16" Padding="1" Text="{Binding RoomInfo.Name}"
+         Foreground="#333" Background="White"
+         BorderBrush="#CCCCCC" BorderThickness="2" >
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TextBox">
+                                <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10" Padding="5">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="8"/>
+                                    </Border.Effect>
+                                    <ScrollViewer Margin="5" x:Name="PART_ContentHost"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="BorderBrush" Value="#4CAF50"/>
+                                        <Setter Property="BorderThickness" Value="3"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
 
+        <Button x:Name="CreateButton" Content="방 생성" Command="{Binding CreateRoomCommand}" Width="80" Height="35"
+                FontSize="12" FontWeight="Bold"
+                Background="#8B4513" Foreground="White"
+                BorderThickness="0" Cursor="Hand"
+                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="177,108,0,0">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="25" Background="{TemplateBinding Background}"
+                                        Padding="10" Width="80" Height="35">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="10"/>
+                                    </Border.Effect>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <!-- 마우스를 올렸을 때 효과 -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#8B4513"/>
+                                    </Trigger>
+                                    <!-- 클릭했을 때 효과 -->
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#FFD700"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <Button x:Name="CancelButton" Content="취 소" Command="{Binding CancelCommand}" Width="80" Height="35"
+         FontSize="12" FontWeight="Bold"
+         Background="#8B4513" Foreground="White"
+         BorderThickness="0" Cursor="Hand"
+         HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,108,0,0">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="25" Background="{TemplateBinding Background}"
+                                 Padding="10" Width="80" Height="35">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="10"/>
+                                    </Border.Effect>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <!-- 마우스를 올렸을 때 효과 -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#8B4513"/>
+                                    </Trigger>
+                                    <!-- 클릭했을 때 효과 -->
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#FFD700"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
+
 </Window>

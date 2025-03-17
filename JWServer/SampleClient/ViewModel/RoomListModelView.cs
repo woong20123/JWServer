@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SampleClient.ViewModel
@@ -12,6 +13,7 @@ namespace SampleClient.ViewModel
     internal class RoomListViewModel
     {
         public ICommand CreateRoomCommand => new DelegateCommand(openCreateRoomWindow);
+        public ICommand EnterRoomCommand => new RelayCommand<Room>(onEnterRoom);
 
         public ObservableCollection<Room> Rooms { get; set; }
 
@@ -28,6 +30,12 @@ namespace SampleClient.ViewModel
             createWindow.Show();
         }
 
+        private void onEnterRoom(Room enterRoom)
+        {
+            MessageBox.Show("Enter Room : " + enterRoom.Name);
+            Network.Network.Instance.GetPacketSender()?.SendEnterRoom(enterRoom.Id);
+        }
+
         public void ClearRooms()
         {
             Rooms.Clear();
@@ -37,5 +45,6 @@ namespace SampleClient.ViewModel
         {
             Rooms.Add(room);
         }
+
     }
 }

@@ -5,18 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SampleClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1000">
+        Title="MainWindow" Height="450" Width="650">
     <Window.Resources>
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="325"/>
         </Grid.ColumnDefinitions>
 
-        <Frame x:Name="mainFrame" Margin="0,0,0,4" VerticalAlignment="Top"/>
-        <Frame x:Name="rightFrame" Margin="0,0,0,4" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+        <Frame x:Name="mainFrame" VerticalAlignment="Center"/>
+        <Frame x:Name="rightFrame" VerticalAlignment="Center"/>
 
     </Grid>
 </Window>

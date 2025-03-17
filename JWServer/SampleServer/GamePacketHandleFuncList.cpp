@@ -47,6 +47,7 @@ namespace jw
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_LOGIN_REQ, GamePacketHandleFuncList::HandleGameLoginReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CREATE_ROOM_REQ, GamePacketHandleFuncList::HandleGameCreateRoomReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_LIST_REQ, GamePacketHandleFuncList::HandleGameRoomListReq);
+        REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_ENTER_REQ, GamePacketHandleFuncList::HandleGameRoomEnterReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CHAT_REQ, GamePacketHandleFuncList::HandleGameChatReq);
     }
 
@@ -143,6 +144,12 @@ namespace jw
         {
             LOG_ERROR(L"Fail WorldChatTask Post");
         }
+        return true;
+    }
+
+    bool GamePacketHandleFuncList::HandleGameRoomEnterReq(Session* session, const Packet& packet)
+    {
+        PARSER_PROTO_PACKET_DATA(GameRoomEnterReq, req, packet);
         return true;
     }
 

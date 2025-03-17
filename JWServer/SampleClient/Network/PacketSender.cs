@@ -89,5 +89,15 @@ namespace SampleClient.Network
             byte[] sendBuffer = PacketToSendBuffer(chatReq, (uint)GamePacketCmd.ChatReq);
             Network.Instance.AsyncSend(sendBuffer);
         }
+
+        public void SendEnterRoom(long roomId)
+        {
+            GameRoomEnterReq enterRoomReq = new GameRoomEnterReq
+            {
+                RoomId = roomId,
+            };
+            byte[] sendBuffer = PacketToSendBuffer(enterRoomReq, (uint)GamePacketCmd.RoomEnterReq);
+            Network.Instance.AsyncSend(sendBuffer);
+        }
     }
 }

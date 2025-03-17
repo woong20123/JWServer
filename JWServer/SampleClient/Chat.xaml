@@ -1,4 +1,4 @@
-﻿<Page x:Class="SampleClient.Chat"
+﻿<Window x:Class="SampleClient.Chat"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,9 +8,9 @@
       mc:Ignorable="d"
       Title="Chat" Width="325" Height="420">
 
-    <Page.DataContext>
+    <Window.DataContext>
         <vm:ChatViewModel />
-    </Page.DataContext>
+    </Window.DataContext>
 
     <Grid Background="#FFB1B1B1" Margin="0,0,0,10">
         <Grid.RowDefinitions>
@@ -28,4 +28,4 @@
         <Button x:Name="SendButton" Content="Send" Command="{Binding SendCommand}" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="2" Height="40" Width="40" Margin="3,3,0,0" FontWeight="Bold" />
 
     </Grid>
-</Page>
+</Window>

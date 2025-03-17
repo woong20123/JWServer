@@ -22,8 +22,8 @@ namespace jw
         ~Room();
 
         void Initialize(RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName);
-        const std::string_view& GetRoomName() const { return _name; }
-        const std::string_view& getHostUserName() const { return _hostUserName; }
+        const std::string_view GetRoomName() const { return _name; }
+        const std::string_view getHostUserName() const { return _hostUserName; }
         const int64_t GetHostUserId() const { return _hostUserId; }
     private:
         RoomID _id;

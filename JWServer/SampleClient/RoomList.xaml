@@ -6,13 +6,14 @@
       xmlns:local="clr-namespace:SampleClient"
       xmlns:vm="clr-namespace:SampleClient.ViewModel"
       mc:Ignorable="d"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       Title="RoomList" Height="400" Width="625">
 
     <Page.DataContext>
         <vm:RoomListViewModel />
     </Page.DataContext>
 
-    <Grid Margin="6,0,10,0" Height="435" VerticalAlignment="Top">
+    <Grid Margin="6,0,10,0" Height="400" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="463*"/>
             <ColumnDefinition Width="137*"/>
@@ -22,7 +23,12 @@
             <RowDefinition/>
             <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding Rooms}" Margin="10,10,20,10" Grid.RowSpan="2">
+        <ListView ItemsSource="{Binding Rooms}" Margin="10,10,21,30" Grid.RowSpan="2">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName ="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding EnterRoomCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView} } }" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Room ID" DisplayMemberBinding="{Binding Id}" Width="30"/>

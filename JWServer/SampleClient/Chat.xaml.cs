@@ -19,7 +19,7 @@ namespace SampleClient
     /// <summary>
     /// Chat.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class Chat : Page
+    public partial class Chat : Window
     {
         ChatViewModel cvm;
         public Chat()
