@@ -81,6 +81,12 @@ extern GamePingOkDefaultTypeInternal _GamePingOk_default_instance_;
 class GamePingReq;
 struct GamePingReqDefaultTypeInternal;
 extern GamePingReqDefaultTypeInternal _GamePingReq_default_instance_;
+class GameRoomChatOk;
+struct GameRoomChatOkDefaultTypeInternal;
+extern GameRoomChatOkDefaultTypeInternal _GameRoomChatOk_default_instance_;
+class GameRoomChatReq;
+struct GameRoomChatReqDefaultTypeInternal;
+extern GameRoomChatReqDefaultTypeInternal _GameRoomChatReq_default_instance_;
 class GameRoomEnterFail;
 struct GameRoomEnterFailDefaultTypeInternal;
 extern GameRoomEnterFailDefaultTypeInternal _GameRoomEnterFail_default_instance_;
@@ -158,6 +164,8 @@ enum GamePacketCmd : int {
   GAME_PACKET_CMD_ROOM_ENTER_FAIL = 14,
   GAME_PACKET_CMD_CHAT_REQ = 15,
   GAME_PACKET_CMD_CHAT_OK = 16,
+  GAME_PACKET_CMD_ROOM_CHAT_REQ = 17,
+  GAME_PACKET_CMD_ROOM_CHAT_OK = 18,
   GamePacketCmd_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   GamePacketCmd_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -167,8 +175,8 @@ enum GamePacketCmd : int {
 bool GamePacketCmd_IsValid(int value);
 extern const uint32_t GamePacketCmd_internal_data_[];
 constexpr GamePacketCmd GamePacketCmd_MIN = static_cast<GamePacketCmd>(0);
-constexpr GamePacketCmd GamePacketCmd_MAX = static_cast<GamePacketCmd>(16);
-constexpr int GamePacketCmd_ARRAYSIZE = 16 + 1;
+constexpr GamePacketCmd GamePacketCmd_MAX = static_cast<GamePacketCmd>(18);
+constexpr int GamePacketCmd_ARRAYSIZE = 18 + 1;
 const ::google::protobuf::EnumDescriptor*
 GamePacketCmd_descriptor();
 template <typename T>
@@ -181,7 +189,7 @@ const std::string& GamePacketCmd_Name(T value) {
 template <>
 inline const std::string& GamePacketCmd_Name(GamePacketCmd value) {
   return ::google::protobuf::internal::NameOfDenseEnum<GamePacketCmd_descriptor,
-                                                 0, 16>(
+                                                 0, 18>(
       static_cast<int>(value));
 }
 inline bool GamePacketCmd_Parse(absl::string_view name, GamePacketCmd* value) {
@@ -1241,6 +1249,454 @@ class GameRoomEnterFail final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const GameRoomEnterFail& from_msg);
     int errcode_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_GamaPacket_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GameRoomChatReq final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GameRoomChatReq) */ {
+ public:
+  inline GameRoomChatReq() : GameRoomChatReq(nullptr) {}
+  ~GameRoomChatReq() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR GameRoomChatReq(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline GameRoomChatReq(const GameRoomChatReq& from) : GameRoomChatReq(nullptr, from) {}
+  inline GameRoomChatReq(GameRoomChatReq&& from) noexcept
+      : GameRoomChatReq(nullptr, std::move(from)) {}
+  inline GameRoomChatReq& operator=(const GameRoomChatReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GameRoomChatReq& operator=(GameRoomChatReq&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GameRoomChatReq& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GameRoomChatReq* internal_default_instance() {
+    return reinterpret_cast<const GameRoomChatReq*>(
+        &_GameRoomChatReq_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 18;
+  friend void swap(GameRoomChatReq& a, GameRoomChatReq& b) { a.Swap(&b); }
+  inline void Swap(GameRoomChatReq* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GameRoomChatReq* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GameRoomChatReq* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GameRoomChatReq>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const GameRoomChatReq& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const GameRoomChatReq& from) { GameRoomChatReq::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(GameRoomChatReq* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "jw.GameRoomChatReq"; }
+
+ protected:
+  explicit GameRoomChatReq(::google::protobuf::Arena* arena);
+  GameRoomChatReq(::google::protobuf::Arena* arena, const GameRoomChatReq& from);
+  GameRoomChatReq(::google::protobuf::Arena* arena, GameRoomChatReq&& from) noexcept
+      : GameRoomChatReq(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kNameFieldNumber = 2,
+    kMsgFieldNumber = 3,
+    kRoomIdFieldNumber = 1,
+  };
+  // string name = 2;
+  void clear_name() ;
+  const std::string& name() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_name(Arg_&& arg, Args_... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* value);
+
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(
+      const std::string& value);
+  std::string* _internal_mutable_name();
+
+  public:
+  // string msg = 3;
+  void clear_msg() ;
+  const std::string& msg() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_msg(Arg_&& arg, Args_... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* value);
+
+  private:
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(
+      const std::string& value);
+  std::string* _internal_mutable_msg();
+
+  public:
+  // int64 roomId = 1;
+  void clear_roomid() ;
+  ::int64_t roomid() const;
+  void set_roomid(::int64_t value);
+
+  private:
+  ::int64_t _internal_roomid() const;
+  void _internal_set_roomid(::int64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:jw.GameRoomChatReq)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 0,
+      34, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_GameRoomChatReq_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const GameRoomChatReq& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr name_;
+    ::google::protobuf::internal::ArenaStringPtr msg_;
+    ::int64_t roomid_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_GamaPacket_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GameRoomChatOk final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:jw.GameRoomChatOk) */ {
+ public:
+  inline GameRoomChatOk() : GameRoomChatOk(nullptr) {}
+  ~GameRoomChatOk() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR GameRoomChatOk(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline GameRoomChatOk(const GameRoomChatOk& from) : GameRoomChatOk(nullptr, from) {}
+  inline GameRoomChatOk(GameRoomChatOk&& from) noexcept
+      : GameRoomChatOk(nullptr, std::move(from)) {}
+  inline GameRoomChatOk& operator=(const GameRoomChatOk& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GameRoomChatOk& operator=(GameRoomChatOk&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GameRoomChatOk& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GameRoomChatOk* internal_default_instance() {
+    return reinterpret_cast<const GameRoomChatOk*>(
+        &_GameRoomChatOk_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 19;
+  friend void swap(GameRoomChatOk& a, GameRoomChatOk& b) { a.Swap(&b); }
+  inline void Swap(GameRoomChatOk* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GameRoomChatOk* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GameRoomChatOk* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<GameRoomChatOk>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const GameRoomChatOk& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const GameRoomChatOk& from) { GameRoomChatOk::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(GameRoomChatOk* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "jw.GameRoomChatOk"; }
+
+ protected:
+  explicit GameRoomChatOk(::google::protobuf::Arena* arena);
+  GameRoomChatOk(::google::protobuf::Arena* arena, const GameRoomChatOk& from);
+  GameRoomChatOk(::google::protobuf::Arena* arena, GameRoomChatOk&& from) noexcept
+      : GameRoomChatOk(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kNameFieldNumber = 2,
+    kMsgFieldNumber = 3,
+    kRoomIdFieldNumber = 1,
+  };
+  // string name = 2;
+  void clear_name() ;
+  const std::string& name() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_name(Arg_&& arg, Args_... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* value);
+
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(
+      const std::string& value);
+  std::string* _internal_mutable_name();
+
+  public:
+  // string msg = 3;
+  void clear_msg() ;
+  const std::string& msg() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_msg(Arg_&& arg, Args_... args);
+  std::string* mutable_msg();
+  PROTOBUF_NODISCARD std::string* release_msg();
+  void set_allocated_msg(std::string* value);
+
+  private:
+  const std::string& _internal_msg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_msg(
+      const std::string& value);
+  std::string* _internal_mutable_msg();
+
+  public:
+  // int64 roomId = 1;
+  void clear_roomid() ;
+  ::int64_t roomid() const;
+  void set_roomid(::int64_t value);
+
+  private:
+  ::int64_t _internal_roomid() const;
+  void _internal_set_roomid(::int64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:jw.GameRoomChatOk)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 0,
+      33, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_GameRoomChatOk_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const GameRoomChatOk& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr name_;
+    ::google::protobuf::internal::ArenaStringPtr msg_;
+    ::int64_t roomid_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -2760,11 +3216,10 @@ class GameChatReq final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kNameFieldNumber = 2,
-    kMsgFieldNumber = 3,
-    kRoomIdFieldNumber = 1,
+    kNameFieldNumber = 1,
+    kMsgFieldNumber = 2,
   };
-  // string name = 2;
+  // string name = 1;
   void clear_name() ;
   const std::string& name() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -2780,7 +3235,7 @@ class GameChatReq final : public ::google::protobuf::Message
   std::string* _internal_mutable_name();
 
   public:
-  // string msg = 3;
+  // string msg = 2;
   void clear_msg() ;
   const std::string& msg() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -2796,22 +3251,12 @@ class GameChatReq final : public ::google::protobuf::Message
   std::string* _internal_mutable_msg();
 
   public:
-  // int64 roomId = 1;
-  void clear_roomid() ;
-  ::int64_t roomid() const;
-  void set_roomid(::int64_t value);
-
-  private:
-  ::int64_t _internal_roomid() const;
-  void _internal_set_roomid(::int64_t value);
-
-  public:
   // @@protoc_insertion_point(class_scope:jw.GameChatReq)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      2, 3, 0,
+      1, 2, 0,
       30, 2>
       _table_;
 
@@ -2834,7 +3279,6 @@ class GameChatReq final : public ::google::protobuf::Message
                           const GameChatReq& from_msg);
     ::google::protobuf::internal::ArenaStringPtr name_;
     ::google::protobuf::internal::ArenaStringPtr msg_;
-    ::int64_t roomid_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -2984,11 +3428,10 @@ class GameChatOk final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kNameFieldNumber = 2,
-    kMsgFieldNumber = 3,
-    kRoomIdFieldNumber = 1,
+    kNameFieldNumber = 1,
+    kMsgFieldNumber = 2,
   };
-  // string name = 2;
+  // string name = 1;
   void clear_name() ;
   const std::string& name() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -3004,7 +3447,7 @@ class GameChatOk final : public ::google::protobuf::Message
   std::string* _internal_mutable_name();
 
   public:
-  // string msg = 3;
+  // string msg = 2;
   void clear_msg() ;
   const std::string& msg() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -3020,22 +3463,12 @@ class GameChatOk final : public ::google::protobuf::Message
   std::string* _internal_mutable_msg();
 
   public:
-  // int64 roomId = 1;
-  void clear_roomid() ;
-  ::int64_t roomid() const;
-  void set_roomid(::int64_t value);
-
-  private:
-  ::int64_t _internal_roomid() const;
-  void _internal_set_roomid(::int64_t value);
-
-  public:
   // @@protoc_insertion_point(class_scope:jw.GameChatOk)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      2, 3, 0,
+      1, 2, 0,
       29, 2>
       _table_;
 
@@ -3058,7 +3491,6 @@ class GameChatOk final : public ::google::protobuf::Message
                           const GameChatOk& from_msg);
     ::google::protobuf::internal::ArenaStringPtr name_;
     ::google::protobuf::internal::ArenaStringPtr msg_;
-    ::int64_t roomid_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -4924,29 +5356,7 @@ inline void GameRoomEnterFail::_internal_set_errcode(::jw::ErrorCode value) {
 
 // GameChatReq
 
-// int64 roomId = 1;
-inline void GameChatReq::clear_roomid() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.roomid_ = ::int64_t{0};
-}
-inline ::int64_t GameChatReq::roomid() const {
-  // @@protoc_insertion_point(field_get:jw.GameChatReq.roomId)
-  return _internal_roomid();
-}
-inline void GameChatReq::set_roomid(::int64_t value) {
-  _internal_set_roomid(value);
-  // @@protoc_insertion_point(field_set:jw.GameChatReq.roomId)
-}
-inline ::int64_t GameChatReq::_internal_roomid() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.roomid_;
-}
-inline void GameChatReq::_internal_set_roomid(::int64_t value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.roomid_ = value;
-}
-
-// string name = 2;
+// string name = 1;
 inline void GameChatReq::clear_name() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.name_.ClearToEmpty();
@@ -4996,7 +5406,7 @@ inline void GameChatReq::set_allocated_name(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:jw.GameChatReq.name)
 }
 
-// string msg = 3;
+// string msg = 2;
 inline void GameChatReq::clear_msg() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.msg_.ClearToEmpty();
@@ -5050,29 +5460,7 @@ inline void GameChatReq::set_allocated_msg(std::string* value) {
 
 // GameChatOk
 
-// int64 roomId = 1;
-inline void GameChatOk::clear_roomid() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.roomid_ = ::int64_t{0};
-}
-inline ::int64_t GameChatOk::roomid() const {
-  // @@protoc_insertion_point(field_get:jw.GameChatOk.roomId)
-  return _internal_roomid();
-}
-inline void GameChatOk::set_roomid(::int64_t value) {
-  _internal_set_roomid(value);
-  // @@protoc_insertion_point(field_set:jw.GameChatOk.roomId)
-}
-inline ::int64_t GameChatOk::_internal_roomid() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.roomid_;
-}
-inline void GameChatOk::_internal_set_roomid(::int64_t value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.roomid_ = value;
-}
-
-// string name = 2;
+// string name = 1;
 inline void GameChatOk::clear_name() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.name_.ClearToEmpty();
@@ -5122,7 +5510,7 @@ inline void GameChatOk::set_allocated_name(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:jw.GameChatOk.name)
 }
 
-// string msg = 3;
+// string msg = 2;
 inline void GameChatOk::clear_msg() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.msg_.ClearToEmpty();
@@ -5170,6 +5558,258 @@ inline void GameChatOk::set_allocated_msg(std::string* value) {
         }
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:jw.GameChatOk.msg)
+}
+
+// -------------------------------------------------------------------
+
+// GameRoomChatReq
+
+// int64 roomId = 1;
+inline void GameRoomChatReq::clear_roomid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.roomid_ = ::int64_t{0};
+}
+inline ::int64_t GameRoomChatReq::roomid() const {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatReq.roomId)
+  return _internal_roomid();
+}
+inline void GameRoomChatReq::set_roomid(::int64_t value) {
+  _internal_set_roomid(value);
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatReq.roomId)
+}
+inline ::int64_t GameRoomChatReq::_internal_roomid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.roomid_;
+}
+inline void GameRoomChatReq::_internal_set_roomid(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.roomid_ = value;
+}
+
+// string name = 2;
+inline void GameRoomChatReq::clear_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GameRoomChatReq::name() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatReq.name)
+  return _internal_name();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameRoomChatReq::set_name(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatReq.name)
+}
+inline std::string* GameRoomChatReq::mutable_name() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:jw.GameRoomChatReq.name)
+  return _s;
+}
+inline const std::string& GameRoomChatReq::_internal_name() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.name_.Get();
+}
+inline void GameRoomChatReq::_internal_set_name(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(value, GetArena());
+}
+inline std::string* GameRoomChatReq::_internal_mutable_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.name_.Mutable( GetArena());
+}
+inline std::string* GameRoomChatReq::release_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameRoomChatReq.name)
+  return _impl_.name_.Release();
+}
+inline void GameRoomChatReq::set_allocated_name(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.name_.IsDefault()) {
+          _impl_.name_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameRoomChatReq.name)
+}
+
+// string msg = 3;
+inline void GameRoomChatReq::clear_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& GameRoomChatReq::msg() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatReq.msg)
+  return _internal_msg();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameRoomChatReq::set_msg(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatReq.msg)
+}
+inline std::string* GameRoomChatReq::mutable_msg() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:jw.GameRoomChatReq.msg)
+  return _s;
+}
+inline const std::string& GameRoomChatReq::_internal_msg() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.msg_.Get();
+}
+inline void GameRoomChatReq::_internal_set_msg(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.Set(value, GetArena());
+}
+inline std::string* GameRoomChatReq::_internal_mutable_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.msg_.Mutable( GetArena());
+}
+inline std::string* GameRoomChatReq::release_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameRoomChatReq.msg)
+  return _impl_.msg_.Release();
+}
+inline void GameRoomChatReq::set_allocated_msg(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.msg_.IsDefault()) {
+          _impl_.msg_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameRoomChatReq.msg)
+}
+
+// -------------------------------------------------------------------
+
+// GameRoomChatOk
+
+// int64 roomId = 1;
+inline void GameRoomChatOk::clear_roomid() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.roomid_ = ::int64_t{0};
+}
+inline ::int64_t GameRoomChatOk::roomid() const {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatOk.roomId)
+  return _internal_roomid();
+}
+inline void GameRoomChatOk::set_roomid(::int64_t value) {
+  _internal_set_roomid(value);
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatOk.roomId)
+}
+inline ::int64_t GameRoomChatOk::_internal_roomid() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.roomid_;
+}
+inline void GameRoomChatOk::_internal_set_roomid(::int64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.roomid_ = value;
+}
+
+// string name = 2;
+inline void GameRoomChatOk::clear_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& GameRoomChatOk::name() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatOk.name)
+  return _internal_name();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameRoomChatOk::set_name(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatOk.name)
+}
+inline std::string* GameRoomChatOk::mutable_name() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:jw.GameRoomChatOk.name)
+  return _s;
+}
+inline const std::string& GameRoomChatOk::_internal_name() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.name_.Get();
+}
+inline void GameRoomChatOk::_internal_set_name(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.Set(value, GetArena());
+}
+inline std::string* GameRoomChatOk::_internal_mutable_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.name_.Mutable( GetArena());
+}
+inline std::string* GameRoomChatOk::release_name() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameRoomChatOk.name)
+  return _impl_.name_.Release();
+}
+inline void GameRoomChatOk::set_allocated_name(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.name_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.name_.IsDefault()) {
+          _impl_.name_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameRoomChatOk.name)
+}
+
+// string msg = 3;
+inline void GameRoomChatOk::clear_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.ClearToEmpty();
+}
+inline const std::string& GameRoomChatOk::msg() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:jw.GameRoomChatOk.msg)
+  return _internal_msg();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void GameRoomChatOk::set_msg(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:jw.GameRoomChatOk.msg)
+}
+inline std::string* GameRoomChatOk::mutable_msg() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_msg();
+  // @@protoc_insertion_point(field_mutable:jw.GameRoomChatOk.msg)
+  return _s;
+}
+inline const std::string& GameRoomChatOk::_internal_msg() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.msg_.Get();
+}
+inline void GameRoomChatOk::_internal_set_msg(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.Set(value, GetArena());
+}
+inline std::string* GameRoomChatOk::_internal_mutable_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.msg_.Mutable( GetArena());
+}
+inline std::string* GameRoomChatOk::release_msg() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:jw.GameRoomChatOk.msg)
+  return _impl_.msg_.Release();
+}
+inline void GameRoomChatOk::set_allocated_msg(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.msg_.SetAllocated(value, GetArena());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.msg_.IsDefault()) {
+          _impl_.msg_.Set("", GetArena());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:jw.GameRoomChatOk.msg)
 }
 
 #ifdef __GNUC__

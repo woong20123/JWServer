@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SampleClient.Model
 {
-    class CreateRoomInfo : BindableBase
+    public class CreateRoomInfo : BindableBase
     {
         private string _name = "친목 방";
         public string Name

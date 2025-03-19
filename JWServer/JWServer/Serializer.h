@@ -50,6 +50,15 @@ namespace jw
         SerializerKey _serializerKey;
         std::shared_ptr<SerializerTimer>            _timer;
     };
+
+    // Serialize가 연결 되는 객체들의 부모 클래스
+    class AttachedSerializerObject
+    {
+    public:
+        AttachedSerializerObject() = default;
+        virtual ~AttachedSerializerObject() = default;
+        virtual SerializerKey GetSerializerKey() const = 0;
+    };
 }
 
 #endif // __JW_SERIALIZER_H__

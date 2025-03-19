@@ -37,6 +37,8 @@ enum GamePacketCmd
 	GAME_PACKET_CMD_ROOM_ENTER_FAIL = 14;
 	GAME_PACKET_CMD_CHAT_REQ = 15;
 	GAME_PACKET_CMD_CHAT_OK = 16;
+	GAME_PACKET_CMD_ROOM_CHAT_REQ = 17;
+	GAME_PACKET_CMD_ROOM_CHAT_OK = 18;
 }
 
 enum ErrorCode
@@ -143,12 +145,24 @@ message GameRoomEnterFail
 
 message GameChatReq
 {
+	string name = 1;
+	string msg = 2;
+}
+
+message GameChatOk
+{
+	string name = 1;
+	string msg = 2;
+}
+
+message GameRoomChatReq
+{
 	int64 roomId = 1;
 	string name = 2;
 	string msg = 3;
 }
 
-message GameChatOk
+message GameRoomChatOk
 {
 	int64 roomId = 1;
 	string name = 2;

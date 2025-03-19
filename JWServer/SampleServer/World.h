@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <queue>
 #include <shared_mutex>
-#include "Singleton.hpp"
+#include "Serializer.h"
 
 namespace jw
 {
@@ -13,12 +13,13 @@ namespace jw
     {
         SERIALIZER_TYPE_NONE = 0,
         SERIALIZER_TYPE_WORLD,
+        SERIALIZER_TYPE_ROOM,
         SERIALIZER_TYPE_MAX
     };
 
     enum REGITER_USER_RESULT
     {
-        REGITER_USER_RESULT_NONE = 0, 
+        REGITER_USER_RESULT_NONE = 0,
         REGITER_USER_RESULT_SUCCESS,
         REGITER_USER_RESULT_DUPLICATE_NAME,
         REGITER_USER_RESULT_NOT_FIND_ISSUE_KEY,
@@ -30,7 +31,7 @@ namespace jw
     struct SerializerKey;
     class SerializeObject;
     class Packet;
-    class World
+    class World : public AttachedSerializerObject
     {
     public:
         static constexpr size_t USER_LIST_MAX_SIZE = 5000;
@@ -43,7 +44,7 @@ namespace jw
         std::shared_ptr<User> FindUser(const int64_t userKey);
         void BroadcastPacket(Packet& packet);
         bool PostSO(std::shared_ptr<SerializeObject>& so);
-        SerializerKey GetSerializerKey() const;
+        SerializerKey GetSerializerKey() const override;
     private:
 
         std::shared_mutex	_userList_mutex;

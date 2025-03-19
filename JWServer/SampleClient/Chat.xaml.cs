@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SampleClient.Model;
 using SampleClient.ViewModel;
 
 namespace SampleClient
@@ -35,6 +37,11 @@ namespace SampleClient
             };
         }
 
+        public void SetRoomId(long roomId)
+        {
+            cvm.RoomId = roomId;
+        }
+
         private void inputTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (Key.Enter == e.Key)
@@ -46,6 +53,13 @@ namespace SampleClient
         public void ViewText(string name, string str)
         {
             cvm.SetViewText(name, str);
+        }
+
+        public void UpdateCreateRoomInfo(Room roomInfo)
+        {
+            cvm.ClearMemberName();
+            var hostName = roomInfo.HostName is null ? "empty" : roomInfo.HostName;
+            cvm.AddMemberName(new Model.MemberInfo { Name = hostName, Id = roomInfo.HostId });
         }
     }
 }

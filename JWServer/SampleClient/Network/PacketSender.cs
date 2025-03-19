@@ -90,6 +90,19 @@ namespace SampleClient.Network
             Network.Instance.AsyncSend(sendBuffer);
         }
 
+        public void SendRoomChatReq(long roomId, string name, string msg)
+        {
+            GameRoomChatReq chatReq = new GameRoomChatReq
+            {
+                RoomId = roomId,
+                Name = name,
+                Msg = msg
+            };
+
+            byte[] sendBuffer = PacketToSendBuffer(chatReq, (uint)GamePacketCmd.RoomChatReq);
+            Network.Instance.AsyncSend(sendBuffer);
+        }
+
         public void SendEnterRoom(long roomId)
         {
             GameRoomEnterReq enterRoomReq = new GameRoomEnterReq

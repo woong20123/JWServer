@@ -1,5 +1,7 @@
+using SampleClient.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,12 @@ namespace SampleClient.ViewModel
     {
         public ICommand SendCommand => new DelegateCommand(send);
 
+        public ObservableCollection<MemberInfo> MemberList
+        {
+            get; set;
+        } = new ObservableCollection<MemberInfo> { };
+
+        private long _roomId;
         private string _inputString = string.Empty;
         private string _viewText = string.Empty;
         public string InputString
@@ -28,6 +36,16 @@ namespace SampleClient.ViewModel
             }
         }
 
+        public long RoomId
+        {
+            get => _roomId;
+            set => SetProperty(ref _roomId, value);
+        }
+
+        public ChatViewModel()
+        {
+        }
+
         private void send()
         {
             if (string.IsNullOrEmpty(InputString))
@@ -38,12 +56,22 @@ namespace SampleClient.ViewModel
 
             InputString = string.Empty;
 
-            Network.Network.Instance.GetPacketSender()?.SendChatReq(LoginInfo.UserName, inputMsg);
+            Network.Network.Instance.GetPacketSender()?.SendRoomChatReq(_roomId, LoginInfo.UserName, inputMsg);
         }
 
         public void SetViewText(string name, string str)
         {
             ViewText += string.Format($"{name} : {str} {Environment.NewLine}");
+        }
+
+        public void ClearMemberName()
+        {
+            MemberList.Clear();
+        }
+
+        public void AddMemberName(MemberInfo memberInfo)
+        {
+            MemberList.Add(memberInfo);
         }
     }
 }

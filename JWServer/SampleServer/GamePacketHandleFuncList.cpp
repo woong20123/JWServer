@@ -10,7 +10,10 @@
 #include "../Packet/GamePacket/Cpp/GamaPacket.pb.h"
 #include <codecvt>
 #include "StopWatch.h"
+#include "RoomSerializeObject.h"
 #include "WorldSerializeObject.h"
+#include "Room.h"
+#include "RoomManager.h"
 #include "SerializerManager.h"
 
 #define REGIST_HANDLE(cmd, handleFun) _packetHandler->RegistHandler(cmd, std::bind(&handleFun, this, std::placeholders::_1, std::placeholders::_2));
@@ -27,12 +30,11 @@ LOG_FETAL(L"fail req parser, sessionId:{}, req-typeid:{}, protoBufferSize:{}", s
 SAMPLE_SERVER().GetWorld()->FindUser(session->GetChannelKey());\
 if (!user){\
     LOG_ERROR(L"Fail FindUser, sessionId:{}", session->GetId());\
-    return true;}
+    return true;\
+}
 
 namespace jw
 {
-
-
     void GamePacketHandleFuncList::Initialize(std::shared_ptr<PacketHandler>& packetHandler)
     {
         GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -49,6 +51,7 @@ namespace jw
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_LIST_REQ, GamePacketHandleFuncList::HandleGameRoomListReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_ENTER_REQ, GamePacketHandleFuncList::HandleGameRoomEnterReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CHAT_REQ, GamePacketHandleFuncList::HandleGameChatReq);
+        REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_CHAT_REQ, GamePacketHandleFuncList::HandleGameRoomChatReq);
     }
 
     void* GamePacketHandleFuncList::getPacketData(const Packet& packet)
@@ -168,4 +171,25 @@ namespace jw
         return true;
     }
 
+    bool GamePacketHandleFuncList::HandleGameRoomChatReq(Session* session, const Packet& packet)
+    {
+        PARSER_PROTO_PACKET_DATA(GameRoomChatReq, req, packet);
+        std::shared_ptr<RoomChatTask> roomChatTask = std::make_shared<RoomChatTask>();
+        const auto user = FIND_AND_INVALID_CHECK_USER(session);
+        roomChatTask->Initialize(req.roomid(), user, req.msg());
+        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
+
+        if (!room)
+        {
+            LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
+            return true;
+        }
+
+        auto roomSerializerKey = room->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomChatTask))
+        {
+            LOG_ERROR(L"Fail RoomChatTask Post");
+        }
+        return true;
+    }
 }

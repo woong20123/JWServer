@@ -39,7 +39,9 @@ namespace jw
         virtual ~RoomManager();
 
         CreatRoomResult CreateRoom(const std::string& roomName, const HostInfo& hostInfo);
-        std::vector<RoomInfo> GetRoomList();
+        std::shared_ptr<Room> FindRoom(const RoomID roomId) const;
+        std::vector<RoomInfo> GetRoomList() const;
+        std::vector<RoomID> GetRoomMemberIds(RoomID roomId) const;
 
     private:
         std::atomic<RoomID> _roomIdIssuer;

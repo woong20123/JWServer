@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace SampleClient.Network
 {
@@ -41,6 +42,7 @@ namespace SampleClient.Network
             packetHandler.Add((int)GamePacketCmd.RoomListOk, handleGameRoomListOk);
             packetHandler.Add((int)GamePacketCmd.RoomListFail, handleGameRoomListFail);
             packetHandler.Add((int)GamePacketCmd.ChatOk, handleGameChatOk);
+            packetHandler.Add((int)GamePacketCmd.RoomChatOk, handleGameRoomChatOk);
         }
 
         public void SetDispatcher(Dispatcher mainDispacher)
@@ -113,6 +115,14 @@ namespace SampleClient.Network
 
                 // Room 관련 윈도우 띄우기
                 Network.Instance.GetPacketSender()?.SendRoomList();
+
+                var Room = new Model.Room { Name = createRoomOk.RoomInfo.Name, Id = createRoomOk.RoomInfo.RoomId, HostId = createRoomOk.RoomInfo.HostUserId, HostName = createRoomOk.RoomInfo.HostUserName };
+
+                Chat chatWindow = new Chat();
+                chatWindow.SetRoomId(Room.Id);
+                chatWindow.UpdateCreateRoomInfo(Room);
+                chatWindow.Show();
+
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -162,6 +172,18 @@ namespace SampleClient.Network
                 chatPage?.ViewText(chatOk.Name, chatOk.Msg);
             };
 
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomChatOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomChatOk = ToPacket<GameRoomChatOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+                var chatWindow = Application.Current.Windows.OfType<Window>().Where(window => window is Chat).FirstOrDefault() as Chat;
+                chatWindow?.ViewText(roomChatOk.Name, roomChatOk.Msg);
+            };
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
         }

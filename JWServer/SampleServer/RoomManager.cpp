@@ -20,6 +20,7 @@ namespace jw
 
         std::shared_ptr<Room> room = std::make_shared<Room>();
         room->Initialize(roomId, roomName, hostInfo._userId, hostInfo._name);
+        room->AddUser(hostInfo._userId, hostInfo._name);
 
         if (!_roomList.insert({ roomId, room }).second)
         {
@@ -30,7 +31,17 @@ namespace jw
         return CreatRoomResult{ true, roomId };
     }
 
-    std::vector<RoomInfo> RoomManager::GetRoomList()
+    std::shared_ptr<Room> RoomManager::FindRoom(const RoomID roomId) const
+    {
+        auto roomIter = _roomList.find(roomId);
+        if (_roomList.end() == roomIter)
+        {
+            return std::shared_ptr<Room>{};
+        }
+        return roomIter->second;
+    }
+
+    std::vector<RoomInfo> RoomManager::GetRoomList() const
     {
         std::vector<RoomInfo> roomList;
 
@@ -40,5 +51,15 @@ namespace jw
             roomList.push_back({ roomInfo.first, room->GetRoomName().data(), room->getHostUserName().data(), room->GetHostUserId() });
         }
         return roomList;
+    }
+
+    std::vector<RoomManager::RoomID> RoomManager::GetRoomMemberIds(RoomID roomId) const
+    {
+        auto roomIter = _roomList.find(roomId);
+        if (_roomList.end() == roomIter)
+        {
+            return {};
+        }
+        return roomIter->second->GetMemberIds();
     }
 }

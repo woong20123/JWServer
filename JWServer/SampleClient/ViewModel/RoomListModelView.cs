@@ -30,10 +30,11 @@ namespace SampleClient.ViewModel
             createWindow.Show();
         }
 
-        private void onEnterRoom(Room enterRoom)
+        private void onEnterRoom(Room? enterRoom)
         {
-            MessageBox.Show("Enter Room : " + enterRoom.Name);
-            Network.Network.Instance.GetPacketSender()?.SendEnterRoom(enterRoom.Id);
+            MessageBox.Show("Enter Room : " + enterRoom?.Name);
+            long roomId = enterRoom?.Id ?? 0;
+            Network.Network.Instance.GetPacketSender()?.SendEnterRoom(roomId);
         }
 
         public void ClearRooms()

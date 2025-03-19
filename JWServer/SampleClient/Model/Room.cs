@@ -13,4 +13,10 @@ namespace SampleClient.Model
         public long HostId { get; set; }
         public string? HostName { get; set; }
     }
+
+    public class MemberInfo
+    {
+        public long Id { get; set; }
+        public string? Name { get; set; }
+    }
 }
