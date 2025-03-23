@@ -161,6 +161,7 @@
     <ClCompile Include="GamePacketHandler.cpp" />
     <ClCompile Include="GameSessionHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RoomCommon.h" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomSerializeObject.cpp" />

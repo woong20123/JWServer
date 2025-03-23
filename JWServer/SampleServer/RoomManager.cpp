@@ -62,4 +62,60 @@ namespace jw
         }
         return roomIter->second->GetMemberIds();
     }
+
+    std::vector<RoomUserInfo> RoomManager::GetRoomMemberInfoList(RoomID roomId) const
+    {
+        auto roomIter = _roomList.find(roomId);
+        if (_roomList.end() == roomIter)
+        {
+            return {};
+        }
+        return roomIter->second->GetMemberInfoList();
+    }
+
+    RoomInfo RoomManager::GetRoomInfo(const RoomID roomId) const
+    {
+        auto roomIter = _roomList.find(roomId);
+        if (_roomList.end() == roomIter)
+        {
+            return {};
+        }
+        const auto& room = roomIter->second;
+        return { room->GetRoomInfo() };
+    }
+
+    RoomResult RoomManager::EnterRoom(const RoomID roomId, const int64_t userKey, const std::string& userName)
+    {
+        const auto room = FindRoom(roomId);
+        if (!room)
+        {
+            return ROOM_RESULT_NOT_FIND_ROOM;
+        }
+
+        if (room->IsExistUser(userKey))
+        {
+            return ROOM_RESULT_EXIST_USER;
+        }
+
+        room->AddUser(userKey, userName);
+        return ROOM_RESULT_SUCCESS;
+    }
+    RoomResult RoomManager::LeaveRoom(const RoomID roomId, const int64_t userKey)
+    {
+
+        const auto room = FindRoom(roomId);
+        if (!room)
+        {
+            return ROOM_RESULT_NOT_FIND_ROOM;
+        }
+
+        if (!room->IsExistUser(userKey))
+        {
+            return ROOM_RESULT_EXIST_USER;
+        }
+
+        room->RemoveUser(userKey);
+
+        return ROOM_RESULT_SUCCESS;
+    }
 }

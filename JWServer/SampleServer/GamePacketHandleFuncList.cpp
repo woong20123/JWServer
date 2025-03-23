@@ -153,6 +153,26 @@ namespace jw
     bool GamePacketHandleFuncList::HandleGameRoomEnterReq(Session* session, const Packet& packet)
     {
         PARSER_PROTO_PACKET_DATA(GameRoomEnterReq, req, packet);
+
+        std::shared_ptr<RoomEnterTask> roomEnterTask = std::make_shared<RoomEnterTask>();
+        const auto user = FIND_AND_INVALID_CHECK_USER(session);
+        roomEnterTask->Initialize(req.roomid(), user);
+        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
+
+        if (!room)
+        {
+            LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
+            return true;
+        }
+
+        auto roomSerializerKey = room->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomEnterTask))
+        {
+            LOG_ERROR(L"Fail RoomChatTask Post");
+        }
+
+        LOG_DEBUG(L"call HandleGameRoomEnterReq, roomId:{}, userKey:{}", req.roomid(), user->GetUserKey());
+
         return true;
     }
 
@@ -168,6 +188,8 @@ namespace jw
         {
             LOG_ERROR(L"Fail WorldChatTask Post");
         }
+
+        LOG_DEBUG(L"call HandleGameChatReq");
         return true;
     }
 
@@ -190,6 +212,8 @@ namespace jw
         {
             LOG_ERROR(L"Fail RoomChatTask Post");
         }
+
+        LOG_DEBUG(L"call HandleGameRoomChatReq, roomId:{}, userKey:{}", req.roomid(), user->GetUserKey());
         return true;
     }
 }

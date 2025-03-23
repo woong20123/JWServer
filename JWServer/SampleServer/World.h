@@ -40,7 +40,7 @@ namespace jw
 
         void Initialize(size_t userListSize);
         REGITER_USER_RESULT RegistUser(std::shared_ptr<User> user);
-        void UnregistUser(std::shared_ptr<User> user, const int64_t key);
+        void UnregistUser(const int64_t key);
         std::shared_ptr<User> FindUser(const int64_t userKey);
         void BroadcastPacket(Packet& packet);
         bool PostSO(std::shared_ptr<SerializeObject>& so);

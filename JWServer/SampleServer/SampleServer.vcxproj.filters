@@ -51,6 +51,9 @@
     <ClCompile Include="RoomManager.cpp">
       <Filter>Logic</Filter>
     </ClCompile>
+    <ClCompile Include="RoomCommon.h">
+      <Filter>Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />

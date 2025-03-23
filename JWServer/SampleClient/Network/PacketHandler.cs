@@ -43,6 +43,8 @@ namespace SampleClient.Network
             packetHandler.Add((int)GamePacketCmd.RoomListFail, handleGameRoomListFail);
             packetHandler.Add((int)GamePacketCmd.ChatOk, handleGameChatOk);
             packetHandler.Add((int)GamePacketCmd.RoomChatOk, handleGameRoomChatOk);
+            packetHandler.Add((int)GamePacketCmd.RoomEnterOk, handleGameRoomEnterOk);
+            packetHandler.Add((int)GamePacketCmd.RoomEnterNotify, handleGameRoomEnterNotify);
         }
 
         public void SetDispatcher(Dispatcher mainDispacher)
@@ -69,6 +71,17 @@ namespace SampleClient.Network
             return Application.Current.Windows.OfType<Window>().Where(window => window is CreateRoomWindow).FirstOrDefault() as CreateRoomWindow;
         }
 
+        private Chat? GetChatWindow(long roomId)
+        {
+            return Application.Current.Windows.OfType<Window>().Where((Window window) =>
+            {
+                if (window is Chat chat)
+                {
+                    return chat.GetRoomId() == roomId;
+                }
+                return false;
+            }).FirstOrDefault() as Chat;
+        }
 
         private void handleGameLoginOk(Session session, byte[] packetData, int packetBodySize)
         {
@@ -76,7 +89,7 @@ namespace SampleClient.Network
 
             var callBackAction = () =>
             {
-
+                Network.IsLogin = true;
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -121,6 +134,7 @@ namespace SampleClient.Network
                 Chat chatWindow = new Chat();
                 chatWindow.SetRoomId(Room.Id);
                 chatWindow.UpdateCreateRoomInfo(Room);
+                chatWindow.AddMemberName(new Model.MemberInfo { Id = createRoomOk.RoomInfo.HostUserId, Name = createRoomOk.RoomInfo.HostUserName });
                 chatWindow.Show();
 
             };
@@ -183,6 +197,51 @@ namespace SampleClient.Network
             {
                 var chatWindow = Application.Current.Windows.OfType<Window>().Where(window => window is Chat).FirstOrDefault() as Chat;
                 chatWindow?.ViewText(roomChatOk.Name, roomChatOk.Msg);
+            };
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomEnterOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomEnterOk = ToPacket<GameRoomEnterOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+                // CreateRoomWindow 닫기
+                var createRoomWindow = GetCreateRoomWindow();
+                createRoomWindow?.Close();
+
+                // Room 관련 윈도우 띄우기
+                Network.Instance.GetPacketSender()?.SendRoomList();
+
+                var Room = new Model.Room { Name = roomEnterOk.RoomInfo.Name, Id = roomEnterOk.RoomInfo.RoomId, HostId = roomEnterOk.RoomInfo.HostUserId, HostName = roomEnterOk.RoomInfo.HostUserName };
+
+                Chat chatWindow = new Chat();
+                chatWindow.SetRoomId(Room.Id);
+                chatWindow.UpdateCreateRoomInfo(Room);
+
+                roomEnterOk.MemberUserInfos.ToList().ForEach(m => chatWindow.AddMemberName(new Model.MemberInfo { Name = m.UserName, Id = m.UserId }));
+                chatWindow.Show();
+
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomEnterNotify(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomEnterNotify = ToPacket<GameRoomEnterNotify>(packetData, 0, packetBodySize);
+
+            var callBackAction = () =>
+            {
+                // CreateRoomWindow 닫기
+                var chatWindow = GetChatWindow(roomEnterNotify.RoomId);
+                var userInfo = roomEnterNotify?.EnterUserInfo;
+                if (chatWindow != null && userInfo != null)
+                {
+                    chatWindow.AddMemberName(new Model.MemberInfo { Name = userInfo.UserName, Id = userInfo.UserId });
+                }
             };
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);

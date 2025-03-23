@@ -48,11 +48,20 @@ namespace jw
 
         return REGITER_USER_RESULT_SUCCESS;
     }
-    void World::UnregistUser(std::shared_ptr<User> user, const int64_t key)
+    void World::UnregistUser(const int64_t key)
     {
         WRITE_LOCK(_userList_mutex);
-        _userList.erase(key);
+
+        if (!_userList.contains(key))
+        {
+            LOG_ERROR(L"UnregistUser not found user, key:{}", key);
+            return;
+        }
+
+        std::shared_ptr<User> user = _userList[key];
+
         _userListByName.erase(user->GetName().data());
+        _userList.erase(key);
         _issueBaseKey.push(key);
     }
 

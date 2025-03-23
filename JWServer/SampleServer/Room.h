@@ -5,14 +5,10 @@
 #include <unordered_map>
 #include <string>
 #include "Serializer.h"
+#include "RoomCommon.h"
 
 namespace jw
 {
-    struct RoomUserInfo
-    {
-        std::string _name;
-    };
-
     class Room : AttachedSerializerObject
     {
     public:
@@ -22,14 +18,17 @@ namespace jw
         Room();
         ~Room();
 
-        void Initialize(RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName);
-        void AddUser(userID userId, const std::string& name);
+        void Initialize(const RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName);
+        bool AddUser(const userID userId, const std::string& name);
+        bool RemoveUser(const userID userId);
+        bool IsExistUser(const userID userId) const { return _userList.contains(userId); }
         SerializerKey GetSerializerKey() const override;
-        const std::string_view GetRoomName() const { return _name; }
-        const std::string_view getHostUserName() const { return _hostUserName; }
-        const int64_t GetHostUserId() const { return _hostUserId; }
-        const std::vector<userID> GetMemberIds() const;
-
+        std::string_view GetRoomName() const { return _name; }
+        std::string_view getHostUserName() const { return _hostUserName; }
+        int64_t GetHostUserId() const { return _hostUserId; }
+        std::vector<userID> GetMemberIds() const;
+        std::vector<RoomUserInfo> GetMemberInfoList() const;
+        RoomInfo GetRoomInfo() const { return { _id, _name, _hostUserName, _hostUserId }; }
     private:
         RoomID _id;
         std::string _name;

@@ -19,6 +19,8 @@ namespace SampleClient.Network
     {
         public static readonly object NetworkLock = new object();
         private static Network? instance = null;
+        public static bool IsLogin { get; set; }
+
         public static Network Instance
         {
             get
@@ -38,6 +40,7 @@ namespace SampleClient.Network
         }
 
         private Dispatcher? _mainDispacher = null;
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
 
         public EventQueue EventQuene
         {
@@ -54,6 +57,7 @@ namespace SampleClient.Network
         private PacketHandler _packetHandler;
         private PacketSender _packetSender;
         public LoginInfo LoginInfo { get; set; }
+        private long _tick = 0;
 
         public Network()
         {
@@ -63,6 +67,7 @@ namespace SampleClient.Network
             _thread = new Thread(() => run(_cts.Token));
             _packetHandler = new PacketHandler();
             _packetSender = new PacketSender();
+
         }
 
         public void Initialize()
@@ -72,6 +77,33 @@ namespace SampleClient.Network
             _packetHandler.Initialize();
             _packetSender.Initialize();
 
+            InitializeTimer();
+        }
+
+        void InitializeTimer()
+        {
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            dispatcherTimer.Start();
+        }
+
+        private void dispatcherTimer_Tick(object? sender, EventArgs e)
+        {
+            // 로그인 되었을 때 수행할 로직들
+            if (IsLogin)
+            {
+                if (_tick % 300 == 0)  // 30초 마다
+                {
+                    _packetSender.SendPingReq();
+                }
+
+                if (_tick % 50 == 0) // 5초 마다
+                {
+                    _packetSender.SendRoomList();
+                }
+            }
+
+            _tick++;
         }
 
         public void Close()

@@ -9,6 +9,7 @@ class Session
 #include "AsyncObject.h"
 #include "SessionBuffer.h"
 #include <shared_mutex>
+#include <functional>
 
 namespace jw
 {
@@ -94,7 +95,11 @@ namespace jw
     class Session : public AsyncObject
     {
     public:
+
+        using OnCloseFunc = std::function<void(int)>;
+
         Session();
+        virtual ~Session();
 
         bool Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler, std::shared_ptr<PacketBufferHandler>& packetBufferHandelr);
         bool SetSocketInfo(SOCKET socket, sockaddr_in* remoteAddr);
@@ -106,6 +111,8 @@ namespace jw
         uint32_t GetAsyncObjectId() const override { return ASYNC_OBJ_SESSION; }
         bool HandleEvent(AsyncContext* context, paramType bytes) override;
         void HandleFailedEvent(AsyncContext* context, paramType param) override;
+
+        void RegisterOnClose(OnCloseFunc onClose) { _onCloseList.push_back(onClose); }
 
 
         bool OnAccept();
@@ -150,6 +157,7 @@ namespace jw
         SessionState                            _state;
         std::shared_ptr<PacketBufferHandler>    _packetBufferHandler;
         uint64_t                                _channelKey;
+        std::vector<OnCloseFunc>                _onCloseList;
     };
 }
 

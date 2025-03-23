@@ -14,7 +14,7 @@ namespace jw
     {
     }
 
-    void Room::Initialize(RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName)
+    void Room::Initialize(const RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName)
     {
         _id = id;
         _name = name;
@@ -33,14 +33,23 @@ namespace jw
         return *_serializerKey;
     }
 
-    void Room::AddUser(userID userId, const std::string& name)
+    bool Room::AddUser(const userID userId, const std::string& name)
     {
+        if (_userList.contains(userId)) return false;
+
         RoomUserInfo userInfo;
+        userInfo._userId = userId;
         userInfo._name = name;
         _userList[userId] = userInfo;
+        return true;
     }
 
-    const std::vector<Room::userID> Room::GetMemberIds() const
+    bool Room::RemoveUser(const userID userId)
+    {
+        return _userList.erase(userId) == 1 ? true : false;
+    }
+
+    std::vector<Room::userID> Room::GetMemberIds() const
     {
         std::vector<userID> memberIds;
         for (const auto& user : _userList)
@@ -48,5 +57,15 @@ namespace jw
             memberIds.push_back(user.first);
         }
         return memberIds;
+    }
+
+    std::vector<RoomUserInfo> Room::GetMemberInfoList() const
+    {
+        std::vector<RoomUserInfo> memberInfoList;
+        for (const auto& user : _userList)
+        {
+            memberInfoList.push_back(user.second);
+        }
+        return memberInfoList;
     }
 }

@@ -22,6 +22,11 @@ namespace jw
     {
     }
 
+    Session::~Session()
+    {
+        LOG_DEBUG(L"Session Destroy, id:{}", GetId());
+    }
+
     bool Session::Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler, std::shared_ptr<PacketBufferHandler>& packetBufferHandelr)
     {
         if (INVALID_VALUE == sessionId.id || !sessionHandler)
@@ -190,6 +195,9 @@ namespace jw
         setState(SessionState::SESSION_STATE_CLOSED);
 
         _sessionHandler->OnClosed(this);
+
+        for (auto& onClose : _onCloseList)
+            onClose(iReason);
 
         // 이곳까지 왔다면 session은 반납 상태입니다. 
         LOG_INFO(L"Session is Close, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);

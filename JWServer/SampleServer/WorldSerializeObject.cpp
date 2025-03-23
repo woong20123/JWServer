@@ -15,7 +15,7 @@ namespace jw
 
     }
 
-    WorldChatTask::WorldChatTask() : WorldSerializeObject(SERIALIZE_OBJECT_WORLD_ID_CHAT)
+    WorldChatTask::WorldChatTask() : WorldSerializeObject(WORLD_SERIALIZE_OBJECT_ID_CHAT)
     {}
 
     WorldChatTask::~WorldChatTask()
@@ -44,7 +44,7 @@ namespace jw
         LOG_DEBUG(L"WorldChatTask::Execute() called");
     }
 
-    CreateRoomTask::CreateRoomTask() : WorldSerializeObject(SERIALIZE_OBJECT_WORLD_ID_CREATE_ROOM)
+    CreateRoomTask::CreateRoomTask() : WorldSerializeObject(WORLD_SERIALIZE_OBJECT_ID_CREATE_ROOM)
     {
     }
 
@@ -71,6 +71,8 @@ namespace jw
             sendFail(ERROR_CODE_CREATE_ROOM_FAIL);
             return;
         }
+
+        _user->SetEnterRoomId(result._roomId);
 
         RoomListInfo* roomListInfo = new RoomListInfo();
         roomListInfo->set_roomid(result._roomId);
@@ -100,7 +102,7 @@ namespace jw
         _user->Send(sendPacket);
     }
 
-    GameRoomListTask::GameRoomListTask() : WorldSerializeObject(SERIALIZE_OBJECT_WORLD_ID_ROOM_LIST)
+    GameRoomListTask::GameRoomListTask() : WorldSerializeObject(WORLD_SERIALIZE_OBJECT_ID_ROOM_LIST)
     {
     }
 

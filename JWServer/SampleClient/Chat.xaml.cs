@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,6 +41,11 @@ namespace SampleClient
             cvm.RoomId = roomId;
         }
 
+        public long GetRoomId()
+        {
+            return cvm.RoomId;
+        }
+
         private void inputTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (Key.Enter == e.Key)
@@ -59,7 +63,12 @@ namespace SampleClient
         {
             cvm.ClearMemberName();
             var hostName = roomInfo.HostName is null ? "empty" : roomInfo.HostName;
-            cvm.AddMemberName(new Model.MemberInfo { Name = hostName, Id = roomInfo.HostId });
+            cvm.AddMemberName(new MemberInfo { Name = hostName, Id = roomInfo.HostId });
+        }
+
+        public void AddMemberName(MemberInfo memberInfo)
+        {
+            cvm.AddMemberName(memberInfo);
         }
     }
 }
