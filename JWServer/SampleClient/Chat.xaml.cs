@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,6 +35,16 @@ namespace SampleClient
             {
                 viewTextBox.ScrollToEnd();
             };
+
+            this.Closing += (s, e) =>
+            {
+                cvm.OnClose();
+            };
+        }
+
+        public ChatViewModel GetChatViewModel()
+        {
+            return cvm;
         }
 
         public void SetRoomId(long roomId)
@@ -59,16 +70,6 @@ namespace SampleClient
             cvm.SetViewText(name, str);
         }
 
-        public void UpdateCreateRoomInfo(Room roomInfo)
-        {
-            cvm.ClearMemberName();
-            var hostName = roomInfo.HostName is null ? "empty" : roomInfo.HostName;
-            cvm.AddMemberName(new MemberInfo { Name = hostName, Id = roomInfo.HostId });
-        }
 
-        public void AddMemberName(MemberInfo memberInfo)
-        {
-            cvm.AddMemberName(memberInfo);
-        }
     }
 }

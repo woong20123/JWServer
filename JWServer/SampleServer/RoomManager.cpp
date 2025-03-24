@@ -53,24 +53,31 @@ namespace jw
         return roomList;
     }
 
+    bool RoomManager::HasMembers(const RoomID roomId) const
+    {
+        auto roomIter = _roomList.find(roomId);
+        if (_roomList.end() == roomIter) return false;
+        const auto& room = roomIter->second;
+
+        return room->HasMembers();
+    }
+
     std::vector<RoomManager::RoomID> RoomManager::GetRoomMemberIds(RoomID roomId) const
     {
         auto roomIter = _roomList.find(roomId);
-        if (_roomList.end() == roomIter)
-        {
-            return {};
-        }
-        return roomIter->second->GetMemberIds();
+        if (_roomList.end() == roomIter) return {};
+        const auto& room = roomIter->second;
+
+        return room->GetMemberIds();
     }
 
     std::vector<RoomUserInfo> RoomManager::GetRoomMemberInfoList(RoomID roomId) const
     {
         auto roomIter = _roomList.find(roomId);
-        if (_roomList.end() == roomIter)
-        {
-            return {};
-        }
-        return roomIter->second->GetMemberInfoList();
+        if (_roomList.end() == roomIter) return {};
+        const auto& room = roomIter->second;
+
+        return room->GetMemberInfoList();
     }
 
     RoomInfo RoomManager::GetRoomInfo(const RoomID roomId) const

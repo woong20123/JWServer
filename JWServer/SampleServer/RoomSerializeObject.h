@@ -43,6 +43,21 @@ namespace jw
         int64_t _roomId;
         std::shared_ptr<User> _user;
     };
+
+    class RoomLeaveTask : public RoomSerializeObject
+    {
+    public:
+        RoomLeaveTask();
+        virtual ~RoomLeaveTask();
+        void Initialize(const int64_t roomId, const std::shared_ptr<User>& user);
+        void Execute() override;
+    private:
+        void sendOk();
+        void sendNotifyLeaveUserInfo();
+        void sendFail(int32_t errCode);
+        int64_t _roomId;
+        std::shared_ptr<User> _user;
+    };
 }
 #endif // !__JW_ROOM_SERIALIZE_OBJECT_H__
 

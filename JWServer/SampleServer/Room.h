@@ -27,6 +27,7 @@ namespace jw
         std::string_view getHostUserName() const { return _hostUserName; }
         int64_t GetHostUserId() const { return _hostUserId; }
         std::vector<userID> GetMemberIds() const;
+        bool HasMembers() const { return !_userList.empty(); }
         std::vector<RoomUserInfo> GetMemberInfoList() const;
         RoomInfo GetRoomInfo() const { return { _id, _name, _hostUserName, _hostUserId }; }
     private:

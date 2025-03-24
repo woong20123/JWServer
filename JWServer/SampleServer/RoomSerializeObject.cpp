@@ -10,6 +10,37 @@
 
 namespace jw
 {
+
+    // ignoreUserKey가 없을 경우 0으로 설정
+    class RoomSerializeObjectCommon
+    {
+    public:
+        static constexpr int64_t NONE_IGNORE_USER_KEY = 0;
+        static void SendPacketBroadCastInRoomUser(const int64_t roomId, Packet& sendPackets, const int64_t ignoreUserKey)
+        {
+            const auto memberIdList = SAMPLE_SERVER().GetRoomManager()->GetRoomMemberIds(roomId);
+            for (const auto& memberId : memberIdList)
+            {
+                if (ignoreUserKey == memberId) continue;
+                const auto& memberUser = SAMPLE_SERVER().GetWorld()->FindUser(memberId);
+                if (memberUser) memberUser->Send(sendPackets);
+            }
+        }
+
+        template<typename PacketType>
+        static void SendFail(const int errCode, const int packetCommand, const std::shared_ptr<User>& user)
+        {
+            PacketType failPacketType;
+            failPacketType.set_errcode(static_cast<ErrorCode>(errCode));
+
+            Packet sendPacket;
+            sendPacket.Allocate();
+            PacketHelper::ComposeProtoPacket(sendPacket, packetCommand, failPacketType);
+
+            user->Send(sendPacket);
+        }
+    };
+
     RoomSerializeObject::RoomSerializeObject(int32_t id) : SerializeObject(EXPAND_SERAILIZE_OBJECT_TYPE_ROOM, id)
     {
     }
@@ -33,8 +64,7 @@ namespace jw
 
     void RoomChatTask::Execute()
     {
-        const auto memberIdList = SAMPLE_SERVER().GetRoomManager()->GetRoomMemberIds(_roomId);
-        if (memberIdList.empty())
+        if (!SAMPLE_SERVER().GetRoomManager()->HasMembers(_roomId))
         {
             LOG_ERROR(L"empty memberIdList, roomId:{}", _roomId);
             return;
@@ -48,19 +78,15 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
         PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_CHAT_OK, roomChatOk);
-        for (const auto& memberId : memberIdList)
-        {
-            const auto& memberUser = SAMPLE_SERVER().GetWorld()->FindUser(memberId);
-            if (memberUser) memberUser->Send(sendPacket);
-        }
 
+        RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, sendPacket, RoomSerializeObjectCommon::NONE_IGNORE_USER_KEY);
     }
 
     RoomEnterTask::RoomEnterTask() : RoomSerializeObject(ROOM_SERIALIZE_OBJECT_ID_ROOM_CHAT)
     {}
 
     RoomEnterTask::~RoomEnterTask()
-    { }
+    {}
 
     void RoomEnterTask::Initialize(const int64_t roomId, const std::shared_ptr<User>& user)
     {
@@ -98,9 +124,9 @@ namespace jw
 
     void RoomEnterTask::sendNotifyEnterUserInfo()
     {
-        const auto memberIdList = SAMPLE_SERVER().GetRoomManager()->GetRoomMemberIds(_roomId);
-        if (memberIdList.empty())
+        if (!SAMPLE_SERVER().GetRoomManager()->HasMembers(_roomId))
         {
+            LOG_ERROR(L"empty memberIdList, roomId:{}", _roomId);
             return;
         }
 
@@ -115,12 +141,7 @@ namespace jw
         notifyPacket.Allocate();
         PacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_ENTER_NOTIFY, roomEnterNotify);
 
-        for (const auto& memberId : memberIdList)
-        {
-            if (_user->GetUserKey() == memberId) continue;
-            const auto& memberUser = SAMPLE_SERVER().GetWorld()->FindUser(memberId);
-            if (memberUser) memberUser->Send(notifyPacket);
-        }
+        RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, notifyPacket, _user->GetUserKey());
     }
 
     void RoomEnterTask::sendOk()
@@ -150,13 +171,86 @@ namespace jw
 
     void RoomEnterTask::sendFail(int32_t errcode)
     {
-        GameRoomEnterFail gameRoomEnterFail;
-        gameRoomEnterFail.set_errcode(static_cast<ErrorCode>(errcode));
+        RoomSerializeObjectCommon::SendFail<GameRoomEnterFail>(errcode, GAME_PACKET_CMD_ROOM_ENTER_FAIL, _user);
+    }
+
+    RoomLeaveTask::RoomLeaveTask() : RoomSerializeObject(ROOM_SERIALIZE_OBJECT_ID_ROOM_LEAVE)
+    {}
+
+    RoomLeaveTask::~RoomLeaveTask()
+    {}
+
+    void RoomLeaveTask::Initialize(const int64_t roomId, const std::shared_ptr<User>& user)
+    {
+        _roomId = roomId;
+        _user = user;
+    }
+
+    void RoomLeaveTask::Execute()
+    {
+        const auto result = SAMPLE_SERVER().GetRoomManager()->LeaveRoom(_roomId, _user->GetUserKey());
+        if (ROOM_RESULT_SUCCESS != result)
+        {
+            switch (result)
+            {
+            case ROOM_RESULT_NOT_FIND_ROOM:
+                LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
+                sendFail(ERROR_CODE_ENTER_ROOM_NOT_FIND_ROOM);
+                break;
+            case ROOM_RESULT_EXIST_USER:
+                LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
+                sendFail(ERROR_CODE_ENTER_ROOM_EXIST_USER);
+                return;
+            default:
+                sendFail(ERROR_CODE_UNKNOWN_FAIL);
+                return;
+            }
+        }
+        _user->SetEnterRoomId(_roomId);
+
+        // RoomEnterOk 패킷 전송
+        sendOk();
+        // 방안에 인원에게 Notify 패킷 전송
+        sendNotifyLeaveUserInfo();
+    }
+
+    void RoomLeaveTask::sendOk()
+    {
+        GameRoomLeaveOk roomLeaveOk;
+        roomLeaveOk.set_roomid(_roomId);
 
         Packet sendPacket;
         sendPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_ENTER_FAIL, gameRoomEnterFail);
+        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LEAVE_OK, roomLeaveOk);
 
         _user->Send(sendPacket);
     }
+
+    void RoomLeaveTask::sendNotifyLeaveUserInfo()
+    {
+        if (!SAMPLE_SERVER().GetRoomManager()->HasMembers(_roomId))
+        {
+            LOG_ERROR(L"empty memberIdList, roomId:{}", _roomId);
+            return;
+        }
+
+        GameRoomLeaveNotify roomLeaveNotify;
+        UserInfo* userInfo = new UserInfo();
+        userInfo->set_userid(_user->GetUserKey());
+        userInfo->set_username(_user->GetName().data());
+        roomLeaveNotify.set_allocated_leaveuserinfo(userInfo);
+        roomLeaveNotify.set_roomid(_roomId);
+
+        Packet notifyPacket;
+        notifyPacket.Allocate();
+        PacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_LEAVE_NOTIFY, roomLeaveNotify);
+
+        RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, notifyPacket, _user->GetUserKey());
+    }
+
+    void RoomLeaveTask::sendFail(int32_t errcode)
+    {
+        RoomSerializeObjectCommon::SendFail<GameRoomLeaveFail>(errcode, GAME_PACKET_CMD_ROOM_LEAVE_FAIL, _user);
+    }
+
 }

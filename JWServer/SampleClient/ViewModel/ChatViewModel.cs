@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SampleClient.ViewModel
 {
-    internal class ChatViewModel : BindableBase
+    public class ChatViewModel : BindableBase
     {
         public ICommand SendCommand => new DelegateCommand(send);
 
@@ -72,6 +73,11 @@ namespace SampleClient.ViewModel
         public void AddMemberName(MemberInfo memberInfo)
         {
             MemberList.Add(memberInfo);
+        }
+
+        public void OnClose()
+        {
+            Network.Network.Instance.GetPacketSender()?.SendLeaveRoom(_roomId);
         }
     }
 }

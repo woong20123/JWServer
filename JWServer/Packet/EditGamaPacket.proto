@@ -40,6 +40,10 @@ enum GamePacketCmd
 	GAME_PACKET_CMD_CHAT_OK;
 	GAME_PACKET_CMD_ROOM_CHAT_REQ;
 	GAME_PACKET_CMD_ROOM_CHAT_OK;
+	GAME_PACKET_CMD_ROOM_LEAVE_REQ;
+	GAME_PACKET_CMD_ROOM_LEAVE_OK;
+	GAME_PACKET_CMD_ROOM_LEAVE_FAIL;
+	GAME_PACKET_CMD_ROOM_LEAVE_NOTIFY;
 }
 
 enum ErrorCode
@@ -179,5 +183,26 @@ message GameRoomChatOk
 	int64 roomId = 1;
 	string name = 2;
 	string msg = 3;
+}
+
+message GameRoomLeaveReq
+{
+	int64 roomId = 1;
+}
+
+message GameRoomLeaveOk
+{
+	int64 roomId = 1;
+}
+
+message GameRoomLeaveFail
+{
+	ErrorCode errCode = 1;
+}
+
+message GameRoomLeaveNotify
+{
+	int64 roomId = 1;
+	UserInfo leaveUserInfo = 2;
 }
 

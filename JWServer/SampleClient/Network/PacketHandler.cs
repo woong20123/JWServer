@@ -45,6 +45,7 @@ namespace SampleClient.Network
             packetHandler.Add((int)GamePacketCmd.RoomChatOk, handleGameRoomChatOk);
             packetHandler.Add((int)GamePacketCmd.RoomEnterOk, handleGameRoomEnterOk);
             packetHandler.Add((int)GamePacketCmd.RoomEnterNotify, handleGameRoomEnterNotify);
+            packetHandler.Add((int)GamePacketCmd.RoomEnterFail, handleGameRoomEnterFail);
         }
 
         public void SetDispatcher(Dispatcher mainDispacher)
@@ -132,9 +133,10 @@ namespace SampleClient.Network
                 var Room = new Model.Room { Name = createRoomOk.RoomInfo.Name, Id = createRoomOk.RoomInfo.RoomId, HostId = createRoomOk.RoomInfo.HostUserId, HostName = createRoomOk.RoomInfo.HostUserName };
 
                 Chat chatWindow = new Chat();
-                chatWindow.SetRoomId(Room.Id);
-                chatWindow.UpdateCreateRoomInfo(Room);
-                chatWindow.AddMemberName(new Model.MemberInfo { Id = createRoomOk.RoomInfo.HostUserId, Name = createRoomOk.RoomInfo.HostUserName });
+                var cvm = chatWindow.GetChatViewModel();
+                cvm.RoomId = Room.Id;
+                cvm.ClearMemberName();
+                cvm.AddMemberName(new Model.MemberInfo { Id = createRoomOk.RoomInfo.HostUserId, Name = createRoomOk.RoomInfo.HostUserName });
                 chatWindow.Show();
 
             };
@@ -146,8 +148,17 @@ namespace SampleClient.Network
         private void handleGameCreateRoomFail(Session session, byte[] packetData, int packetBodySize)
         {
             var createRoomFail = ToPacket<GameCreateRoomFail>(packetData, 0, packetBodySize);
+
+            string errMsg = "Unknown Error";
+            switch (createRoomFail.ErrCode)
+            {
+                case ErrorCode.CreateRoomFail:
+                    break;
+            }
+
             var callBackAction = () =>
             {
+                MessageBox.Show($"방 생성 실패. Error : {errMsg}");
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -217,10 +228,12 @@ namespace SampleClient.Network
                 var Room = new Model.Room { Name = roomEnterOk.RoomInfo.Name, Id = roomEnterOk.RoomInfo.RoomId, HostId = roomEnterOk.RoomInfo.HostUserId, HostName = roomEnterOk.RoomInfo.HostUserName };
 
                 Chat chatWindow = new Chat();
-                chatWindow.SetRoomId(Room.Id);
-                chatWindow.UpdateCreateRoomInfo(Room);
 
-                roomEnterOk.MemberUserInfos.ToList().ForEach(m => chatWindow.AddMemberName(new Model.MemberInfo { Name = m.UserName, Id = m.UserId }));
+                var cvm = chatWindow.GetChatViewModel();
+                cvm.RoomId = Room.Id;
+                cvm.ClearMemberName();
+                roomEnterOk.MemberUserInfos.ToList().ForEach(m => cvm.AddMemberName(new Model.MemberInfo { Name = m.UserName, Id = m.UserId }));
+
                 chatWindow.Show();
 
             };
@@ -240,9 +253,33 @@ namespace SampleClient.Network
                 var userInfo = roomEnterNotify?.EnterUserInfo;
                 if (chatWindow != null && userInfo != null)
                 {
-                    chatWindow.AddMemberName(new Model.MemberInfo { Name = userInfo.UserName, Id = userInfo.UserId });
+                    chatWindow.GetChatViewModel().AddMemberName(new Model.MemberInfo { Name = userInfo.UserName, Id = userInfo.UserId });
                 }
             };
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomEnterFail(Session session, byte[] packetData, int packetBodySize)
+        {
+            var createRoomFail = ToPacket<GameCreateRoomFail>(packetData, 0, packetBodySize);
+
+            string errMsg = "Unknown Error";
+            switch (createRoomFail.ErrCode)
+            {
+                case ErrorCode.EnterRoomNotFindRoom:
+                    errMsg = "입장하려는 방을 찾을 수 없습니다.";
+                    break;
+                case ErrorCode.EnterRoomExistUser:
+                    errMsg = "이미 입장한 방입니다.";
+                    break;
+            }
+
+            var callBackAction = () =>
+            {
+                MessageBox.Show($"방 입장 실패. Error : {errMsg}");
+            };
+
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
         }

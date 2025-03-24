@@ -13,6 +13,42 @@
         <vm:RoomListViewModel />
     </Page.DataContext>
 
+    <Page.Resources>
+        <!-- 리프레시 버튼 스타일 정의 -->
+        <Style x:Key="RefreshButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Width="30" Height="30" Fill="LightSkyBlue" />
+                            <TextBlock Text="🔄"
+                                       FontSize="15"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.8" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="45" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+    </Page.Resources>
+
     <Grid Margin="6,0,10,0" Height="400" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="463*"/>
@@ -38,5 +74,6 @@
             </ListView.View>
         </ListView>
         <Button x:Name="CreateRoomButton" Content="방 생성" Command="{Binding CreateRoomCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="48" Width="90" Grid.Column="1" FontSize="18" FontWeight="Bold"/>
+        <Button Style="{StaticResource RefreshButtonStyle}" Command="{Binding RefreshRoomListCommand}" Grid.ColumnSpan="2" Margin="450,260,119,33" Grid.Row="1" />
     </Grid>
 </Page>

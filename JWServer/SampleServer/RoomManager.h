@@ -22,6 +22,7 @@ namespace jw
         CreatRoomResult CreateRoom(const std::string& roomName, const HostInfo& hostInfo);
         std::shared_ptr<Room> FindRoom(const RoomID roomId) const;
         std::vector<RoomInfo> GetRoomList() const;
+        bool HasMembers(const RoomID roomId) const;
         std::vector<RoomID> GetRoomMemberIds(RoomID roomId) const;
         std::vector<RoomUserInfo> GetRoomMemberInfoList(RoomID roomId) const;
         RoomInfo GetRoomInfo(const RoomID roomId) const;

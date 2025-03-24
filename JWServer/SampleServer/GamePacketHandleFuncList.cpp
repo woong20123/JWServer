@@ -52,6 +52,7 @@ namespace jw
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_ENTER_REQ, GamePacketHandleFuncList::HandleGameRoomEnterReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_CHAT_REQ, GamePacketHandleFuncList::HandleGameChatReq);
         REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_CHAT_REQ, GamePacketHandleFuncList::HandleGameRoomChatReq);
+        REGIST_HANDLE(GamePacketCmd::GAME_PACKET_CMD_ROOM_LEAVE_REQ, GamePacketHandleFuncList::HandleGameRoomLeaveReq);
     }
 
     void* GamePacketHandleFuncList::getPacketData(const Packet& packet)
@@ -157,8 +158,8 @@ namespace jw
         std::shared_ptr<RoomEnterTask> roomEnterTask = std::make_shared<RoomEnterTask>();
         const auto user = FIND_AND_INVALID_CHECK_USER(session);
         roomEnterTask->Initialize(req.roomid(), user);
-        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
 
+        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
         if (!room)
         {
             LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
@@ -168,7 +169,7 @@ namespace jw
         auto roomSerializerKey = room->GetSerializerKey();
         if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomEnterTask))
         {
-            LOG_ERROR(L"Fail RoomChatTask Post");
+            LOG_ERROR(L"Fail RoomEnterTask Post, userKey:{}, roomId:{}", user->GetUserKey(), req.roomid());
         }
 
         LOG_DEBUG(L"call HandleGameRoomEnterReq, roomId:{}, userKey:{}", req.roomid(), user->GetUserKey());
@@ -214,6 +215,32 @@ namespace jw
         }
 
         LOG_DEBUG(L"call HandleGameRoomChatReq, roomId:{}, userKey:{}", req.roomid(), user->GetUserKey());
+        return true;
+    }
+
+    bool GamePacketHandleFuncList::HandleGameRoomLeaveReq(Session* session, const Packet& packet)
+    {
+        PARSER_PROTO_PACKET_DATA(GameRoomLeaveReq, req, packet);
+        std::shared_ptr<RoomLeaveTask> roomLeaveTask = std::make_shared<RoomLeaveTask>();
+
+        const auto user = FIND_AND_INVALID_CHECK_USER(session);
+        roomLeaveTask->Initialize(req.roomid(), user);
+        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
+
+        if (!room)
+        {
+            LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
+            return true;
+        }
+
+        auto roomSerializerKey = room->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomLeaveTask))
+        {
+            LOG_ERROR(L"Fail roomLeaveTask Post, userKey:{}, roomId:{}", user->GetUserKey(), req.roomid());
+        }
+
+        LOG_DEBUG(L"call HandleGameRoomLeaveReq, roomId:{}, userKey:{}", req.roomid(), user->GetUserKey());
+
         return true;
     }
 }
