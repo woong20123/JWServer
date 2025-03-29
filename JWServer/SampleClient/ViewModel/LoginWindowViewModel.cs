@@ -21,7 +21,7 @@ namespace SampleClient.ViewModel
         public ICommand ExitCommand => new DelegateCommand(Exit);
         public event EventHandler? OnRequestWindowClose;
 
-        private string _name = "woong20123";
+        private string _name = "guest";
         private string _addressInfo = "127.0.0.1:13211";
 
         public string Name
@@ -33,6 +33,11 @@ namespace SampleClient.ViewModel
         {
             get => _addressInfo;
             set => SetProperty(ref _addressInfo, value);
+        }
+
+        public LoginWindowViewModel()
+        {
+            _name += (Random.Shared.NextInt64() % 1000).ToString();
         }
 
         private void Login()

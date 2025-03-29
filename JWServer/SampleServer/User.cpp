@@ -7,9 +7,9 @@
 
 namespace jw
 {
-    User::User() : _userKey{ 0 }, _enterRoomId{ 0 }
+    User::User() : _userKey{ INVALID_USER_KEY }, _enterRoomId{ INVALID_ROOM_ID }
     {}
-    User::User(std::shared_ptr<Session>& session) : Channel(session), _userKey{ 0 }
+    User::User(std::shared_ptr<Session>& session) : Channel(session), _userKey{ INVALID_USER_KEY }, _enterRoomId{ INVALID_ROOM_ID }
     {}
     User::~User()
     {
@@ -44,12 +44,17 @@ namespace jw
 
     void User::SetEnterRoomId(const int64_t roomId)
     {
-
+        _enterRoomId = roomId;
     }
 
-    void User::GetEnterRoomId() const
+    int64_t User::GetEnterRoomId() const
     {
+        return _enterRoomId;
+    }
 
+    bool User::IsEnterRoom() const
+    {
+        return _enterRoomId != INVALID_ROOM_ID;
     }
 
     void User::setName(const std::string& name)

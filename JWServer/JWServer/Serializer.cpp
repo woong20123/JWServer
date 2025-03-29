@@ -13,12 +13,26 @@ namespace jw
 
     void SerializerTimer::OnTimer()
     {
-        for (auto& serializeObject : _postObjects)
+        std::list<std::shared_ptr<SerializeObject>> executePostObjects;
+        bool isExecute = false;
         {
-            serializeObject->Execute();
+            WRITE_LOCK(_postObjectsMutex);
+            if (!_postObjects.empty())
+            {
+                isExecute = true;
+                // 처리할 객체가 있다면 executePostObjects에 복사하여 lock 구간을 최소화 합니다.
+                // list의 splice를 사용하면 상수 시간 복잡도로 처리할 수 있습니다. 
+                executePostObjects.splice(std::begin(executePostObjects), _postObjects);
+            }
         }
 
-        _postObjects.clear();
+        if (isExecute)
+        {
+            for (auto& serializeObject : executePostObjects)
+            {
+                serializeObject->Execute();
+            }
+        }
 
         TIMER_LAUNCHER().RegistTimer(this);
 

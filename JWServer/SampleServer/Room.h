@@ -21,6 +21,7 @@ namespace jw
         void Initialize(const RoomID id, const std::string& name, const int64_t hostUserId, const std::string& hostUserName);
         bool AddUser(const userID userId, const std::string& name);
         bool RemoveUser(const userID userId);
+        bool IsEmpty() const;
         bool IsExistUser(const userID userId) const { return _userList.contains(userId); }
         SerializerKey GetSerializerKey() const override;
         std::string_view GetRoomName() const { return _name; }
@@ -30,6 +31,9 @@ namespace jw
         bool HasMembers() const { return !_userList.empty(); }
         std::vector<RoomUserInfo> GetMemberInfoList() const;
         RoomInfo GetRoomInfo() const { return { _id, _name, _hostUserName, _hostUserId }; }
+
+        void OnCreate();
+        void OnDestoroy();
     private:
         RoomID _id;
         std::string _name;

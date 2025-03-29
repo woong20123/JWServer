@@ -61,8 +61,18 @@ namespace jw
 
     void CreateRoomTask::Execute()
     {
+        if (!_user) return;
+
+        if (_user->IsEnterRoom())
+        {
+            LOG_ERROR(L"Already EnterRoom, userId:{}", _user->GetUserKey());
+            sendFail(ERROR_CODE_ALREADY_ENTERED_ROOM);
+            return;
+        }
+
         const auto userKey = _user->GetUserKey();
         const auto userName = _user->GetName();
+
         const auto result = SAMPLE_SERVER().GetRoomManager()->CreateRoom(_roomName, { userName.data(), userKey });
 
         if (!result._isSuccess)
@@ -133,4 +143,71 @@ namespace jw
         PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LIST_OK, gameRoomListOk);
         _user->Send(sendPacket);
     }
+
+    CreateRoomNotifyTask::CreateRoomNotifyTask() : WorldSerializeObject(WORLD_SERIALIZE_OBJECT_ID_CREATE_ROOM_NOTIFY)
+    {
+    }
+
+    CreateRoomNotifyTask::~CreateRoomNotifyTask()
+    {
+        LOG_DEBUG(L"CreateRoomNotifyTask::~CreateRoomNotifyTask() called");
+    }
+
+    void CreateRoomNotifyTask::Initialize(int64_t roomId, std::string& roomName, int64_t hostUserId, std::string& hostName)
+    {
+        _roomId = roomId;
+        _roomName = roomName;
+        _hostUserId = hostUserId;
+        _hostUserName = hostName;
+    }
+
+    void CreateRoomNotifyTask::Execute()
+    {
+        RoomListInfo* roomListInfo = new RoomListInfo();
+        roomListInfo->set_roomid(_roomId);
+        roomListInfo->set_name(_roomName);
+        roomListInfo->set_hostuserid(_hostUserId);
+        roomListInfo->set_hostusername(_hostUserName);
+
+        GameCreateRoomNotify gameCreateRoomNotify;
+        gameCreateRoomNotify.set_allocated_roominfo(roomListInfo);
+
+
+        Packet sendPacket;
+        sendPacket.Allocate();
+
+        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_NOTIFY, gameCreateRoomNotify);
+        SAMPLE_SERVER().GetWorld()->BroadcastPacket(sendPacket);
+
+        LOG_DEBUG(L"CreateRoomNotifyTask::Execute() called, roomId:{}", _roomId);
+    }
+
+    DestoroyRoomNotifyTask::DestoroyRoomNotifyTask() : WorldSerializeObject(WORLD_SERIALIZE_OBJECT_ID_DESTOROY_ROOM_NOTIFY)
+    {
+    }
+
+    DestoroyRoomNotifyTask::~DestoroyRoomNotifyTask()
+    {
+        LOG_DEBUG(L"DestoroyRoomTask::~DestoroyRoomTask() called");
+    }
+
+    void DestoroyRoomNotifyTask::Initialize(int64_t roomId)
+    {
+        _roomId = roomId;
+    }
+
+    void DestoroyRoomNotifyTask::Execute()
+    {
+        GameDestroyRoomNotify gameDestroyRoomNotify;
+        gameDestroyRoomNotify.set_roomid(_roomId);
+
+        Packet sendPacket;
+        sendPacket.Allocate();
+
+        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_DESTROY_ROOM_NOTIFY, gameDestroyRoomNotify);
+        SAMPLE_SERVER().GetWorld()->BroadcastPacket(sendPacket);
+
+        LOG_DEBUG(L"DestoroyRoomNotifyTask::Execute() called, roomId:{}", _roomId);
+    }
+
 }

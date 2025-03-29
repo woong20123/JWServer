@@ -52,6 +52,31 @@ namespace jw
     private:
         std::shared_ptr<User> _user;
     };
+
+    class CreateRoomNotifyTask : public WorldSerializeObject
+    {
+    public:
+        CreateRoomNotifyTask();
+        virtual ~CreateRoomNotifyTask();
+        void Initialize(int64_t roomId, std::string& roomName, int64_t hostUserId, std::string& hostName);
+        void Execute() override;
+    private:
+        int64_t _roomId;
+        std::string _roomName;
+        int64_t _hostUserId;
+        std::string _hostUserName;
+    };
+
+    class DestoroyRoomNotifyTask : public WorldSerializeObject
+    {
+    public:
+        DestoroyRoomNotifyTask();
+        virtual ~DestoroyRoomNotifyTask();
+        void Initialize(const int64_t roomId);
+        void Execute() override;
+    private:
+        int64_t _roomId;
+    };
 }
 
 #endif

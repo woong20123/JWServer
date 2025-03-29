@@ -36,6 +36,11 @@ namespace SampleClient
 
         }
 
+        public RoomListViewModel getRoomListViewModel()
+        {
+            return rlvm;
+        }
+
         public void UpdateRoomList(List<Room> rooms)
         {
             rlvm.ClearRooms();

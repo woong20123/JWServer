@@ -10,6 +10,8 @@ namespace jw
     class User : public Channel
     {
     public:
+        static constexpr int64_t INVALID_USER_KEY = -1;
+
         User();
         User(std::shared_ptr<Session>& session);
         virtual ~User();
@@ -22,7 +24,8 @@ namespace jw
         int64_t GetUserKey() const;
 
         void SetEnterRoomId(const int64_t roomId);
-        void GetEnterRoomId() const;
+        int64_t GetEnterRoomId() const;
+        bool IsEnterRoom() const;
 
     private:
         // 세션 종료시 호출되는 함수 

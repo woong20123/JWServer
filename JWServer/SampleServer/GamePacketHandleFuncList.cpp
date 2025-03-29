@@ -159,14 +159,13 @@ namespace jw
         const auto user = FIND_AND_INVALID_CHECK_USER(session);
         roomEnterTask->Initialize(req.roomid(), user);
 
-        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
-        if (!room)
+        auto roomSerializerKey = SAMPLE_SERVER().GetRoomManager()->GetRoomSerializerKey(req.roomid());
+        if (roomSerializerKey == SerializerKey::INVALID_KEY())
         {
             LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
             return true;
         }
 
-        auto roomSerializerKey = room->GetSerializerKey();
         if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomEnterTask))
         {
             LOG_ERROR(L"Fail RoomEnterTask Post, userKey:{}, roomId:{}", user->GetUserKey(), req.roomid());
@@ -200,15 +199,13 @@ namespace jw
         std::shared_ptr<RoomChatTask> roomChatTask = std::make_shared<RoomChatTask>();
         const auto user = FIND_AND_INVALID_CHECK_USER(session);
         roomChatTask->Initialize(req.roomid(), user, req.msg());
-        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
 
-        if (!room)
+        auto roomSerializerKey = SAMPLE_SERVER().GetRoomManager()->GetRoomSerializerKey(req.roomid());
+        if (roomSerializerKey == SerializerKey::INVALID_KEY())
         {
             LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
             return true;
         }
-
-        auto roomSerializerKey = room->GetSerializerKey();
         if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomChatTask))
         {
             LOG_ERROR(L"Fail RoomChatTask Post");
@@ -225,15 +222,13 @@ namespace jw
 
         const auto user = FIND_AND_INVALID_CHECK_USER(session);
         roomLeaveTask->Initialize(req.roomid(), user);
-        const auto room = SAMPLE_SERVER().GetRoomManager()->FindRoom(req.roomid());
 
-        if (!room)
-        {
+        auto roomSerializerKey = SAMPLE_SERVER().GetRoomManager()->GetRoomSerializerKey(req.roomid());
+        if (roomSerializerKey == SerializerKey::INVALID_KEY()) {
             LOG_ERROR(L"Fail FindRoom, roomId:{}", req.roomid());
             return true;
         }
 
-        auto roomSerializerKey = room->GetSerializerKey();
         if (!SERIALIZER_MANAGER().Post(roomSerializerKey, roomLeaveTask))
         {
             LOG_ERROR(L"Fail roomLeaveTask Post, userKey:{}, roomId:{}", user->GetUserKey(), req.roomid());

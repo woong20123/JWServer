@@ -39,5 +39,8 @@ namespace jw
         ROOM_RESULT_EXIST_USER,
     };
 
+    static constexpr int64_t INVALID_ROOM_ID = -1;
+    static constexpr int64_t INVALID_SERIALIZER_KEY = -1;
+
 }
 #endif // !__JW_ROOM_COMMON_H__

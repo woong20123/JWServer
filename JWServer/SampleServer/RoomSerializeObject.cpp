@@ -96,6 +96,13 @@ namespace jw
 
     void RoomEnterTask::Execute()
     {
+        if (_user->IsEnterRoom())
+        {
+            LOG_ERROR(L"Already EnterRoom, roomId:{}", _roomId);
+            sendFail(ERROR_CODE_ALREADY_ENTERED_ROOM);
+            return;
+        }
+
         const auto result = SAMPLE_SERVER().GetRoomManager()->EnterRoom(_roomId, _user->GetUserKey(), _user->GetName().data());
         if (ROOM_RESULT_SUCCESS != result)
         {
@@ -103,11 +110,11 @@ namespace jw
             {
             case ROOM_RESULT_NOT_FIND_ROOM:
                 LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
-                sendFail(ERROR_CODE_ENTER_ROOM_NOT_FIND_ROOM);
-                break;
+                sendFail(ERROR_CODE_ROOM_NOT_FIND_ROOM);
+                return;
             case ROOM_RESULT_EXIST_USER:
                 LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
-                sendFail(ERROR_CODE_ENTER_ROOM_EXIST_USER);
+                sendFail(ERROR_CODE_ROOM_EXIST_USER);
                 return;
             default:
                 sendFail(ERROR_CODE_UNKNOWN_FAIL);
@@ -195,18 +202,18 @@ namespace jw
             {
             case ROOM_RESULT_NOT_FIND_ROOM:
                 LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
-                sendFail(ERROR_CODE_ENTER_ROOM_NOT_FIND_ROOM);
+                sendFail(ERROR_CODE_ROOM_NOT_FIND_ROOM);
                 break;
             case ROOM_RESULT_EXIST_USER:
                 LOG_ERROR(L"Fail FindRoom, roomId:{}", _roomId);
-                sendFail(ERROR_CODE_ENTER_ROOM_EXIST_USER);
+                sendFail(ERROR_CODE_ROOM_EXIST_USER);
                 return;
             default:
                 sendFail(ERROR_CODE_UNKNOWN_FAIL);
                 return;
             }
         }
-        _user->SetEnterRoomId(_roomId);
+        _user->SetEnterRoomId(INVALID_ROOM_ID);
 
         // RoomEnterOk 패킷 전송
         sendOk();

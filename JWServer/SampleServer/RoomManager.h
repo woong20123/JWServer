@@ -7,7 +7,9 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <shared_mutex>
 #include "RoomCommon.h"
+#include "Serializer.h"
 
 namespace jw
 {
@@ -20,7 +22,9 @@ namespace jw
         virtual ~RoomManager();
 
         CreatRoomResult CreateRoom(const std::string& roomName, const HostInfo& hostInfo);
-        std::shared_ptr<Room> FindRoom(const RoomID roomId) const;
+
+        bool IsExistRoom(const RoomID roomId) const;
+        SerializerKey GetRoomSerializerKey(const RoomID roomId) const;
         std::vector<RoomInfo> GetRoomList() const;
         bool HasMembers(const RoomID roomId) const;
         std::vector<RoomID> GetRoomMemberIds(RoomID roomId) const;
@@ -31,8 +35,12 @@ namespace jw
         RoomResult LeaveRoom(const RoomID roomId, const int64_t userKey);
 
     private:
-        std::atomic<RoomID> _roomIdIssuer;
-        std::map<RoomID, std::shared_ptr<Room> > _roomList;
+        bool destoryRoom(const int64_t roomId);
+        std::shared_ptr<Room> findRoom(const RoomID roomId) const;
+        std::atomic<RoomID>                         _roomIdIssuer;
+        mutable std::shared_mutex                   _roomListMutex;
+        std::map<RoomID, std::shared_ptr<Room> >    _roomList;
+
     };
 }
 

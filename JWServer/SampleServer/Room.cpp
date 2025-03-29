@@ -1,6 +1,7 @@
 #include "Room.h"
 #include "SampleServer.h"
 #include "SerializerManager.h"
+#include "WorldSerializeObject.h"
 #include "User.h"
 
 namespace jw
@@ -49,6 +50,11 @@ namespace jw
         return _userList.erase(userId) == 1 ? true : false;
     }
 
+    bool Room::IsEmpty() const
+    {
+        return _userList.empty();
+    }
+
     std::vector<Room::userID> Room::GetMemberIds() const
     {
         std::vector<userID> memberIds;
@@ -67,5 +73,28 @@ namespace jw
             memberInfoList.push_back(user.second);
         }
         return memberInfoList;
+    }
+
+    void Room::OnCreate()
+    {
+        std::shared_ptr<CreateRoomNotifyTask> createRoomNotifyTask = std::make_shared<CreateRoomNotifyTask>();
+        createRoomNotifyTask->Initialize(_id, _name, _hostUserId, _hostUserName);
+
+        auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(worldSerializerKey, createRoomNotifyTask))
+        {
+            LOG_ERROR(L"Fail DestoroyRoomTask Post");
+        }
+    }
+    void Room::OnDestoroy()
+    {
+        std::shared_ptr<DestoroyRoomNotifyTask> destoroyRoomTask = std::make_shared<DestoroyRoomNotifyTask>();
+        destoroyRoomTask->Initialize(_id);
+
+        auto worldSerializerKey = SAMPLE_SERVER().GetWorld()->GetSerializerKey();
+        if (!SERIALIZER_MANAGER().Post(worldSerializerKey, destoroyRoomTask))
+        {
+            LOG_ERROR(L"Fail DestoroyRoomTask Post");
+        }
     }
 }

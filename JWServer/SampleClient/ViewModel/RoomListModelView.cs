@@ -10,10 +10,12 @@ using System.Windows.Input;
 
 namespace SampleClient.ViewModel
 {
-    internal class RoomListViewModel
+    public class RoomListViewModel
     {
         public ICommand CreateRoomCommand => new DelegateCommand(openCreateRoomWindow);
         public ICommand EnterRoomCommand => new RelayCommand<Room>(onEnterRoom);
+
+        public ICommand RefreshRoomListCommand => new DelegateCommand(onRefreshRoomList);
 
         public ObservableCollection<Room> Rooms { get; set; }
 
@@ -32,9 +34,13 @@ namespace SampleClient.ViewModel
 
         private void onEnterRoom(Room? enterRoom)
         {
-            MessageBox.Show("Enter Room : " + enterRoom?.Name);
             long roomId = enterRoom?.Id ?? 0;
             Network.Network.Instance.GetPacketSender()?.SendEnterRoom(roomId);
+        }
+
+        private void onRefreshRoomList()
+        {
+            Network.Network.Instance.GetPacketSender()?.SendRoomList();
         }
 
         public void ClearRooms()
@@ -44,7 +50,19 @@ namespace SampleClient.ViewModel
 
         public void AddRoom(Room room)
         {
-            Rooms.Add(room);
+            if (0 == Rooms.Where(x => x.Id == room.Id).Count())
+            {
+                Rooms.Add(room);
+            }
+        }
+
+        public void DeleteRoom(long roomId)
+        {
+            var room = Rooms.FirstOrDefault(x => x.Id == roomId);
+            if (room != null)
+            {
+                Rooms.Remove(room);
+            }
         }
 
     }

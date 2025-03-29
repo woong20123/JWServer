@@ -75,6 +75,13 @@ namespace SampleClient.ViewModel
             MemberList.Add(memberInfo);
         }
 
+        public void RemoveMemberName(MemberInfo memberInfo)
+        {
+            var removeidx = MemberList.Select((value, idx) => new { value, idx }).Where(x => x.value.Id == memberInfo.Id).Select(x => x.idx).FirstOrDefault(-1);
+            if (0 <= removeidx)
+                MemberList.RemoveAt(removeidx);
+        }
+
         public void OnClose()
         {
             Network.Network.Instance.GetPacketSender()?.SendLeaveRoom(_roomId);

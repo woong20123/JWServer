@@ -54,38 +54,41 @@ namespace Jw {
             "AyIhCg9HYW1lUm9vbUxlYXZlT2sSDgoGcm9vbUlkGAEgASgDIjMKEUdhbWVS",
             "b29tTGVhdmVGYWlsEh4KB2VyckNvZGUYASABKA4yDS5qdy5FcnJvckNvZGUi",
             "SgoTR2FtZVJvb21MZWF2ZU5vdGlmeRIOCgZyb29tSWQYASABKAMSIwoNbGVh",
-            "dmVVc2VySW5mbxgCIAEoCzIMLmp3LlVzZXJJbmZvKmoKDkdhbWVQYWNrZXRJ",
-            "bmZvEiAKHEdBTUVfUEFDS0VUX0lORk9fVU5TUEVDSUZJRUQQABIcChhHQU1F",
-            "X1BBQ0tFVF9JTkZPX1ZFUlNJT04QAhIYChRHQU1FX1BBQ0tFVF9BVVRIX0tF",
-            "WRByKsYGCg1HYW1lUGFja2V0Q21kEh8KG0dBTUVfUEFDS0VUX0NNRF9VTlNQ",
-            "RUNJRklFRBAAEhwKGEdBTUVfUEFDS0VUX0NNRF9QSU5HX1JFURABEhsKF0dB",
-            "TUVfUEFDS0VUX0NNRF9QSU5HX09LEAISHQoZR0FNRV9QQUNLRVRfQ01EX0xP",
-            "R0lOX1JFURADEhwKGEdBTUVfUEFDS0VUX0NNRF9MT0dJTl9PSxAEEh4KGkdB",
-            "TUVfUEFDS0VUX0NNRF9MT0dJTl9GQUlMEAUSIwofR0FNRV9QQUNLRVRfQ01E",
-            "X0NSRUFURV9ST09NX1JFURAGEiIKHkdBTUVfUEFDS0VUX0NNRF9DUkVBVEVf",
-            "Uk9PTV9PSxAHEiQKIEdBTUVfUEFDS0VUX0NNRF9DUkVBVEVfUk9PTV9GQUlM",
-            "EAgSIQodR0FNRV9QQUNLRVRfQ01EX1JPT01fTElTVF9SRVEQCRIgChxHQU1F",
-            "X1BBQ0tFVF9DTURfUk9PTV9MSVNUX09LEAoSIgoeR0FNRV9QQUNLRVRfQ01E",
-            "X1JPT01fTElTVF9GQUlMEAsSIgoeR0FNRV9QQUNLRVRfQ01EX1JPT01fRU5U",
-            "RVJfUkVREAwSIQodR0FNRV9QQUNLRVRfQ01EX1JPT01fRU5URVJfT0sQDRIj",
-            "Ch9HQU1FX1BBQ0tFVF9DTURfUk9PTV9FTlRFUl9GQUlMEA4SJQohR0FNRV9Q",
-            "QUNLRVRfQ01EX1JPT01fRU5URVJfTk9USUZZEA8SHAoYR0FNRV9QQUNLRVRf",
-            "Q01EX0NIQVRfUkVREBASGwoXR0FNRV9QQUNLRVRfQ01EX0NIQVRfT0sQERIh",
-            "Ch1HQU1FX1BBQ0tFVF9DTURfUk9PTV9DSEFUX1JFURASEiAKHEdBTUVfUEFD",
-            "S0VUX0NNRF9ST09NX0NIQVRfT0sQExIiCh5HQU1FX1BBQ0tFVF9DTURfUk9P",
-            "TV9MRUFWRV9SRVEQFBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9MRUFWRV9P",
-            "SxAVEiMKH0dBTUVfUEFDS0VUX0NNRF9ST09NX0xFQVZFX0ZBSUwQFhIlCiFH",
-            "QU1FX1BBQ0tFVF9DTURfUk9PTV9MRUFWRV9OT1RJRlkQFyqZAwoJRXJyb3JD",
-            "b2RlEhoKFkVSUk9SX0NPREVfVU5TUEVDSUZJRUQQABIWChJFUlJPUl9DT0RF",
-            "X1NVQ0NFU1MQARIbChdFUlJPUl9DT0RFX1VOS05PV05fRkFJTBACEigKJEVS",
-            "Uk9SX0NPREVfTE9HSU5fRkFJTF9EVVBMSUNBVEVfTkFNRRADEiYKIkVSUk9S",
-            "X0NPREVfTE9HSU5fRkFJTF9JTlZBTElEX05BTUUQBBImCiJFUlJPUl9DT0RF",
-            "X0xPR0lOX0ZBSUxfSU5WQUxJRF9BVVRIEAUSHwobRVJST1JfQ09ERV9DUkVB",
-            "VEVfUk9PTV9GQUlMEAYSJwojRVJST1JfQ09ERV9FTlRFUl9ST09NX05PVF9G",
-            "SU5EX1JPT00QBxIkCiBFUlJPUl9DT0RFX0VOVEVSX1JPT01fRVhJU1RfVVNF",
-            "UhAIEicKI0VSUk9SX0NPREVfTEVBVkVfUk9PTV9OT1RfRklORF9ST09NEAkS",
-            "KAokRVJST1JfQ09ERV9MRUFWRV9ST09NX05PVF9FWElTVF9VU0VSEApiBnBy",
-            "b3RvMw=="));
+            "dmVVc2VySW5mbxgCIAEoCzIMLmp3LlVzZXJJbmZvIjoKFEdhbWVDcmVhdGVS",
+            "b29tTm90aWZ5EiIKCHJvb21JbmZvGAEgASgLMhAuancuUm9vbUxpc3RJbmZv",
+            "IicKFUdhbWVEZXN0cm95Um9vbU5vdGlmeRIOCgZyb29tSWQYASABKAMqagoO",
+            "R2FtZVBhY2tldEluZm8SIAocR0FNRV9QQUNLRVRfSU5GT19VTlNQRUNJRklF",
+            "RBAAEhwKGEdBTUVfUEFDS0VUX0lORk9fVkVSU0lPThACEhgKFEdBTUVfUEFD",
+            "S0VUX0FVVEhfS0VZEHIqlwcKDUdhbWVQYWNrZXRDbWQSHwobR0FNRV9QQUNL",
+            "RVRfQ01EX1VOU1BFQ0lGSUVEEAASHAoYR0FNRV9QQUNLRVRfQ01EX1BJTkdf",
+            "UkVREAESGwoXR0FNRV9QQUNLRVRfQ01EX1BJTkdfT0sQAhIdChlHQU1FX1BB",
+            "Q0tFVF9DTURfTE9HSU5fUkVREAMSHAoYR0FNRV9QQUNLRVRfQ01EX0xPR0lO",
+            "X09LEAQSHgoaR0FNRV9QQUNLRVRfQ01EX0xPR0lOX0ZBSUwQBRIjCh9HQU1F",
+            "X1BBQ0tFVF9DTURfQ1JFQVRFX1JPT01fUkVREAYSIgoeR0FNRV9QQUNLRVRf",
+            "Q01EX0NSRUFURV9ST09NX09LEAcSJAogR0FNRV9QQUNLRVRfQ01EX0NSRUFU",
+            "RV9ST09NX0ZBSUwQCBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9MSVNUX1JF",
+            "URAJEiAKHEdBTUVfUEFDS0VUX0NNRF9ST09NX0xJU1RfT0sQChIiCh5HQU1F",
+            "X1BBQ0tFVF9DTURfUk9PTV9MSVNUX0ZBSUwQCxIiCh5HQU1FX1BBQ0tFVF9D",
+            "TURfUk9PTV9FTlRFUl9SRVEQDBIhCh1HQU1FX1BBQ0tFVF9DTURfUk9PTV9F",
+            "TlRFUl9PSxANEiMKH0dBTUVfUEFDS0VUX0NNRF9ST09NX0VOVEVSX0ZBSUwQ",
+            "DhIlCiFHQU1FX1BBQ0tFVF9DTURfUk9PTV9FTlRFUl9OT1RJRlkQDxIcChhH",
+            "QU1FX1BBQ0tFVF9DTURfQ0hBVF9SRVEQEBIbChdHQU1FX1BBQ0tFVF9DTURf",
+            "Q0hBVF9PSxAREiEKHUdBTUVfUEFDS0VUX0NNRF9ST09NX0NIQVRfUkVREBIS",
+            "IAocR0FNRV9QQUNLRVRfQ01EX1JPT01fQ0hBVF9PSxATEiIKHkdBTUVfUEFD",
+            "S0VUX0NNRF9ST09NX0xFQVZFX1JFURAUEiEKHUdBTUVfUEFDS0VUX0NNRF9S",
+            "T09NX0xFQVZFX09LEBUSIwofR0FNRV9QQUNLRVRfQ01EX1JPT01fTEVBVkVf",
+            "RkFJTBAWEiUKIUdBTUVfUEFDS0VUX0NNRF9ST09NX0xFQVZFX05PVElGWRAX",
+            "EiYKIkdBTUVfUEFDS0VUX0NNRF9DUkVBVEVfUk9PTV9OT1RJRlkQGBInCiNH",
+            "QU1FX1BBQ0tFVF9DTURfREVTVFJPWV9ST09NX05PVElGWRAZKoMDCglFcnJv",
+            "ckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhYKEkVSUk9SX0NP",
+            "REVfU1VDQ0VTUxABEhsKF0VSUk9SX0NPREVfVU5LTk9XTl9GQUlMEAISKAok",
+            "RVJST1JfQ09ERV9MT0dJTl9GQUlMX0RVUExJQ0FURV9OQU1FEAMSJgoiRVJS",
+            "T1JfQ09ERV9MT0dJTl9GQUlMX0lOVkFMSURfTkFNRRAEEiYKIkVSUk9SX0NP",
+            "REVfTE9HSU5fRkFJTF9JTlZBTElEX0FVVEgQBRIfChtFUlJPUl9DT0RFX0NS",
+            "RUFURV9ST09NX0ZBSUwQBhIhCh1FUlJPUl9DT0RFX1JPT01fTk9UX0ZJTkRf",
+            "Uk9PTRAHEh4KGkVSUk9SX0NPREVfUk9PTV9FWElTVF9VU0VSEAgSIgoeRVJS",
+            "T1JfQ09ERV9ST09NX05PVF9FWElTVF9VU0VSEAkSIwofRVJST1JfQ09ERV9B",
+            "TFJFQURZX0VOVEVSRURfUk9PTRAKYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Jw.GamePacketInfo), typeof(global::Jw.GamePacketCmd), typeof(global::Jw.ErrorCode), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -113,7 +116,9 @@ namespace Jw {
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameRoomLeaveReq), global::Jw.GameRoomLeaveReq.Parser, new[]{ "RoomId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameRoomLeaveOk), global::Jw.GameRoomLeaveOk.Parser, new[]{ "RoomId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameRoomLeaveFail), global::Jw.GameRoomLeaveFail.Parser, new[]{ "ErrCode" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameRoomLeaveNotify), global::Jw.GameRoomLeaveNotify.Parser, new[]{ "RoomId", "LeaveUserInfo" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameRoomLeaveNotify), global::Jw.GameRoomLeaveNotify.Parser, new[]{ "RoomId", "LeaveUserInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameCreateRoomNotify), global::Jw.GameCreateRoomNotify.Parser, new[]{ "RoomInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Jw.GameDestroyRoomNotify), global::Jw.GameDestroyRoomNotify.Parser, new[]{ "RoomId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -158,6 +163,8 @@ namespace Jw {
     [pbr::OriginalName("GAME_PACKET_CMD_ROOM_LEAVE_OK")] RoomLeaveOk = 21,
     [pbr::OriginalName("GAME_PACKET_CMD_ROOM_LEAVE_FAIL")] RoomLeaveFail = 22,
     [pbr::OriginalName("GAME_PACKET_CMD_ROOM_LEAVE_NOTIFY")] RoomLeaveNotify = 23,
+    [pbr::OriginalName("GAME_PACKET_CMD_CREATE_ROOM_NOTIFY")] CreateRoomNotify = 24,
+    [pbr::OriginalName("GAME_PACKET_CMD_DESTROY_ROOM_NOTIFY")] DestroyRoomNotify = 25,
   }
 
   public enum ErrorCode {
@@ -168,10 +175,10 @@ namespace Jw {
     [pbr::OriginalName("ERROR_CODE_LOGIN_FAIL_INVALID_NAME")] LoginFailInvalidName = 4,
     [pbr::OriginalName("ERROR_CODE_LOGIN_FAIL_INVALID_AUTH")] LoginFailInvalidAuth = 5,
     [pbr::OriginalName("ERROR_CODE_CREATE_ROOM_FAIL")] CreateRoomFail = 6,
-    [pbr::OriginalName("ERROR_CODE_ENTER_ROOM_NOT_FIND_ROOM")] EnterRoomNotFindRoom = 7,
-    [pbr::OriginalName("ERROR_CODE_ENTER_ROOM_EXIST_USER")] EnterRoomExistUser = 8,
-    [pbr::OriginalName("ERROR_CODE_LEAVE_ROOM_NOT_FIND_ROOM")] LeaveRoomNotFindRoom = 9,
-    [pbr::OriginalName("ERROR_CODE_LEAVE_ROOM_NOT_EXIST_USER")] LeaveRoomNotExistUser = 10,
+    [pbr::OriginalName("ERROR_CODE_ROOM_NOT_FIND_ROOM")] RoomNotFindRoom = 7,
+    [pbr::OriginalName("ERROR_CODE_ROOM_EXIST_USER")] RoomExistUser = 8,
+    [pbr::OriginalName("ERROR_CODE_ROOM_NOT_EXIST_USER")] RoomNotExistUser = 9,
+    [pbr::OriginalName("ERROR_CODE_ALREADY_ENTERED_ROOM")] AlreadyEnteredRoom = 10,
   }
 
   #endregion
@@ -5790,6 +5797,411 @@ namespace Jw {
               LeaveUserInfo = new global::Jw.UserInfo();
             }
             input.ReadMessage(LeaveUserInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GameCreateRoomNotify : pb::IMessage<GameCreateRoomNotify>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GameCreateRoomNotify> _parser = new pb::MessageParser<GameCreateRoomNotify>(() => new GameCreateRoomNotify());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GameCreateRoomNotify> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Jw.GamaPacketReflection.Descriptor.MessageTypes[25]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameCreateRoomNotify() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameCreateRoomNotify(GameCreateRoomNotify other) : this() {
+      roomInfo_ = other.roomInfo_ != null ? other.roomInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameCreateRoomNotify Clone() {
+      return new GameCreateRoomNotify(this);
+    }
+
+    /// <summary>Field number for the "roomInfo" field.</summary>
+    public const int RoomInfoFieldNumber = 1;
+    private global::Jw.RoomListInfo roomInfo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Jw.RoomListInfo RoomInfo {
+      get { return roomInfo_; }
+      set {
+        roomInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GameCreateRoomNotify);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GameCreateRoomNotify other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(RoomInfo, other.RoomInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (roomInfo_ != null) hash ^= RoomInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (roomInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (roomInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (roomInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GameCreateRoomNotify other) {
+      if (other == null) {
+        return;
+      }
+      if (other.roomInfo_ != null) {
+        if (roomInfo_ == null) {
+          RoomInfo = new global::Jw.RoomListInfo();
+        }
+        RoomInfo.MergeFrom(other.RoomInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (roomInfo_ == null) {
+              RoomInfo = new global::Jw.RoomListInfo();
+            }
+            input.ReadMessage(RoomInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (roomInfo_ == null) {
+              RoomInfo = new global::Jw.RoomListInfo();
+            }
+            input.ReadMessage(RoomInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GameDestroyRoomNotify : pb::IMessage<GameDestroyRoomNotify>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GameDestroyRoomNotify> _parser = new pb::MessageParser<GameDestroyRoomNotify>(() => new GameDestroyRoomNotify());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GameDestroyRoomNotify> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Jw.GamaPacketReflection.Descriptor.MessageTypes[26]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameDestroyRoomNotify() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameDestroyRoomNotify(GameDestroyRoomNotify other) : this() {
+      roomId_ = other.roomId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GameDestroyRoomNotify Clone() {
+      return new GameDestroyRoomNotify(this);
+    }
+
+    /// <summary>Field number for the "roomId" field.</summary>
+    public const int RoomIdFieldNumber = 1;
+    private long roomId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long RoomId {
+      get { return roomId_; }
+      set {
+        roomId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GameDestroyRoomNotify);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GameDestroyRoomNotify other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomId != other.RoomId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomId != 0L) hash ^= RoomId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(RoomId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(RoomId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(RoomId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GameDestroyRoomNotify other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomId != 0L) {
+        RoomId = other.RoomId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomId = input.ReadInt64();
             break;
           }
         }

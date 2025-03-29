@@ -97,7 +97,7 @@ namespace SampleClient.Network
                     _packetSender.SendPingReq();
                 }
 
-                if (_tick % 50 == 0) // 5초 마다
+                if (_tick % 600 == 0) // 60초 마다
                 {
                     _packetSender.SendRoomList();
                 }

@@ -46,6 +46,11 @@ namespace SampleClient.Network
             packetHandler.Add((int)GamePacketCmd.RoomEnterOk, handleGameRoomEnterOk);
             packetHandler.Add((int)GamePacketCmd.RoomEnterNotify, handleGameRoomEnterNotify);
             packetHandler.Add((int)GamePacketCmd.RoomEnterFail, handleGameRoomEnterFail);
+            packetHandler.Add((int)GamePacketCmd.RoomLeaveOk, handleGameRoomLeaveOk);
+            packetHandler.Add((int)GamePacketCmd.RoomLeaveFail, handleGameRoomLeaveFail);
+            packetHandler.Add((int)GamePacketCmd.RoomLeaveNotify, handleGameRoomLeaveNotify);
+            packetHandler.Add((int)GamePacketCmd.CreateRoomNotify, handleCreateRoomNotify);
+            packetHandler.Add((int)GamePacketCmd.DestroyRoomNotify, handleDestroyRoomNotify);
         }
 
         public void SetDispatcher(Dispatcher mainDispacher)
@@ -267,10 +272,10 @@ namespace SampleClient.Network
             string errMsg = "Unknown Error";
             switch (createRoomFail.ErrCode)
             {
-                case ErrorCode.EnterRoomNotFindRoom:
+                case ErrorCode.RoomNotFindRoom:
                     errMsg = "입장하려는 방을 찾을 수 없습니다.";
                     break;
-                case ErrorCode.EnterRoomExistUser:
+                case ErrorCode.RoomExistUser:
                     errMsg = "이미 입장한 방입니다.";
                     break;
             }
@@ -283,5 +288,88 @@ namespace SampleClient.Network
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
         }
+
+        private void handleGameRoomLeaveOk(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomLeaveOk = ToPacket<GameRoomLeaveOk>(packetData, 0, packetBodySize);
+            var callBackAction = () =>
+            {
+                GetChatWindow(roomLeaveOk.RoomId)?.Close();
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomLeaveNotify(Session session, byte[] packetData, int packetBodySize)
+        {
+            var roomLeaveNotify = ToPacket<GameRoomLeaveNotify>(packetData, 0, packetBodySize);
+
+            var callBackAction = () =>
+            {
+                var ChatWindow = GetChatWindow(roomLeaveNotify.RoomId);
+
+                ChatWindow?.GetChatViewModel().RemoveMemberName(new Model.MemberInfo { Name = roomLeaveNotify.LeaveUserInfo.UserName, Id = roomLeaveNotify.LeaveUserInfo.UserId });
+            };
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleGameRoomLeaveFail(Session session, byte[] packetData, int packetBodySize)
+        {
+            var createRoomFail = ToPacket<GameCreateRoomFail>(packetData, 0, packetBodySize);
+
+            string errMsg = "Unknown Error";
+            switch (createRoomFail.ErrCode)
+            {
+                case ErrorCode.RoomNotFindRoom:
+                    errMsg = "방을 찾을 수 없습니다.";
+                    break;
+                case ErrorCode.RoomNotExistUser:
+                    errMsg = "방에서 유저 정보를 찾을 수 없습니다.";
+                    break;
+            }
+
+            var callBackAction = () =>
+            {
+                MessageBox.Show($"방 입장 실패. Error : {errMsg}");
+            };
+
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleCreateRoomNotify(Session session, byte[] packetData, int packetBodySize)
+        {
+            var destoroyRoomNotify = ToPacket<GameCreateRoomNotify>(packetData, 0, packetBodySize);
+
+            var callBackAction = () =>
+            {
+                var r = destoroyRoomNotify.RoomInfo;
+                var mainWindow = GetMainWindow();
+                mainWindow?.RoomList?.getRoomListViewModel().AddRoom(new Model.Room { Name = r.Name, Id = r.RoomId, HostId = r.HostUserId, HostName = r.HostUserName });
+
+            };
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+        private void handleDestroyRoomNotify(Session session, byte[] packetData, int packetBodySize)
+        {
+            var destoroyRoomNotify = ToPacket<GameDestroyRoomNotify>(packetData, 0, packetBodySize);
+
+            var callBackAction = () =>
+            {
+                var mainWindow = GetMainWindow();
+                mainWindow?.RoomList?.getRoomListViewModel().DeleteRoom(destoroyRoomNotify.RoomId);
+
+            };
+            // UI 로직이여서 메인 스레드에서 처리
+            _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
+        }
+
+
+
+
     }
 }

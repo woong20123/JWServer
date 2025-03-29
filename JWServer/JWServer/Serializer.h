@@ -12,12 +12,14 @@ namespace jw
 
     struct SerializerKey
     {
+        constexpr static int32_t INVALID_VALUE = -1;
         int16_t type;
         int32_t id;
 
         bool operator==(const SerializerKey& rhs) const = default;
         auto operator<=>(const SerializerKey&) const = default;
 
+        static SerializerKey INVALID_KEY() { return { INVALID_VALUE, INVALID_VALUE }; }
     };
 
 
