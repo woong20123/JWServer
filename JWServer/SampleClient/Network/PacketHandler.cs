@@ -158,6 +158,7 @@ namespace SampleClient.Network
             switch (createRoomFail.ErrCode)
             {
                 case ErrorCode.CreateRoomFail:
+                    errMsg = "입장하려는 방을 찾을 수 없습니다.";
                     break;
             }
 
@@ -197,9 +198,10 @@ namespace SampleClient.Network
 
             var callBackAction = () =>
             {
-                var mainWindow = GetMainWindow();
-                var chatPage = mainWindow?.GetChatPage();
-                chatPage?.ViewText(chatOk.Name, chatOk.Msg);
+                //var mainWindow = GetMainWindow();
+                //var chat = mainWindow?.GetChat();
+
+                //chat?.ViewText(chatOk.Name, chatOk.Msg);
             };
 
             // UI 로직이여서 메인 스레드에서 처리
@@ -211,8 +213,8 @@ namespace SampleClient.Network
             var roomChatOk = ToPacket<GameRoomChatOk>(packetData, 0, packetBodySize);
             var callBackAction = () =>
             {
-                var chatWindow = Application.Current.Windows.OfType<Window>().Where(window => window is Chat).FirstOrDefault() as Chat;
-                chatWindow?.ViewText(roomChatOk.Name, roomChatOk.Msg);
+                var chatWindow = GetChatWindow(roomChatOk.RoomId);
+                chatWindow?.GetChatViewModel().SetViewText(roomChatOk.Name, roomChatOk.Msg);
             };
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);
@@ -258,6 +260,7 @@ namespace SampleClient.Network
                 var userInfo = roomEnterNotify?.EnterUserInfo;
                 if (chatWindow != null && userInfo != null)
                 {
+                    chatWindow.GetChatViewModel().SetViewText("System", string.Format($"{userInfo.UserName}님이 입장하셨습니다."));
                     chatWindow.GetChatViewModel().AddMemberName(new Model.MemberInfo { Name = userInfo.UserName, Id = userInfo.UserId });
                 }
             };
@@ -308,8 +311,9 @@ namespace SampleClient.Network
             var callBackAction = () =>
             {
                 var ChatWindow = GetChatWindow(roomLeaveNotify.RoomId);
-
-                ChatWindow?.GetChatViewModel().RemoveMemberName(new Model.MemberInfo { Name = roomLeaveNotify.LeaveUserInfo.UserName, Id = roomLeaveNotify.LeaveUserInfo.UserId });
+                var leaveUserInfo = roomLeaveNotify.LeaveUserInfo;
+                ChatWindow?.GetChatViewModel().SetViewText("System",string.Format($"{leaveUserInfo.UserName}님이 퇴장 하셨습니다."));
+                ChatWindow?.GetChatViewModel().RemoveMemberName(new Model.MemberInfo { Name = leaveUserInfo.UserName, Id = leaveUserInfo.UserId });
             };
             // UI 로직이여서 메인 스레드에서 처리
             _mainDispatcher?.BeginInvoke(DispatcherPriority.Background, callBackAction);

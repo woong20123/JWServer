@@ -30,7 +30,7 @@ namespace SampleClient
             this.Closed += Window_Closed;
         }
 
-        public Chat? GetChatPage()
+        public Chat? GetChat()
         {
             return rightFrame.FindName("chatPage") as Chat;
         }

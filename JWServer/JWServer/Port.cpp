@@ -168,7 +168,7 @@ namespace jw
     {
         _sessionMaxCount = maxSessionCount;
 
-        for (uint16_t i = 0; i < maxSessionCount; ++i)
+        for (uint16_t i = 1; i <= maxSessionCount; ++i)
         {
             _availableSessionIndexCon.push(i);
         }
