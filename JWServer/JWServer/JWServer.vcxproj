@@ -107,6 +107,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\JWServer\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,7 @@ bootstrap.bat</Command>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\JWServer\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
