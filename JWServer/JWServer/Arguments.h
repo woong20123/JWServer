@@ -2,6 +2,7 @@
 #ifndef __JW_ARGUMENTS_H__
 #define __JW_ARGUMENTS_H__
 #include <memory>
+#include <filesystem>
 #include "Singleton.hpp"
 
 namespace jw
@@ -21,6 +22,9 @@ namespace jw
         void Initialize(int argc, ArgumentType* argv[]);
         void HandleArgument();
         void SetHandler(ArgumentsHandler* handler);
+        void SetPath(std::filesystem::path path);
+        std::filesystem::path GetPath() const;
+        std::wstring getProcessName() const;
     protected:
         Arguments();
         ~Arguments();

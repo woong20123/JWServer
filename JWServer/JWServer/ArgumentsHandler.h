@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef __JW_ARGUMENT_HANDLER_H__
 #define __JW_ARGUMENT_HANDLER_H__
 
@@ -17,7 +17,7 @@ namespace jw
     public:
         using ArgumentContainer = std::vector<std::wstring >;
         using HandlerKey = std::wstring;
-        using HandlerValue = std::function<void(uint16_t)>;
+        using HandlerValue = std::function<void(uint16_t, const ArgumentContainer&)>;
 
         ArgumentsHandler();
         virtual ~ArgumentsHandler();
@@ -40,7 +40,9 @@ namespace jw
     class DefaultArgumentHandler : public ArgumentsHandler
     {
     public:
-        static constexpr const wchar_t * HELP_OPTION = L"--help";
+        static constexpr const wchar_t* HELP_OPTION = L"--help";
+        static constexpr const wchar_t* VERSION_OPTION = L"--version";
+        static constexpr const wchar_t* PATH_OPTION = L"--path";
 
         virtual ~DefaultArgumentHandler();
     protected:

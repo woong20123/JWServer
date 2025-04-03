@@ -1,0 +1,4 @@
+{
+    "server-port": "13211",
+    "worker-thread": "0"
+}

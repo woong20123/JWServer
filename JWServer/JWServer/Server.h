@@ -127,6 +127,7 @@ namespace jw
     private:
         bool startLog();
         bool setArgument(int argc, char* argv[]);
+        bool setConfig();
         bool startNetwork();
         void startTimer();
         void waitEvent();

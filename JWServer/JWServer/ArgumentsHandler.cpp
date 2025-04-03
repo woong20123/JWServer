@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <unordered_map>
+#include "Arguments.h"
 #include "ArgumentsHandler.h"
 #include "Logger.h"
 
@@ -30,7 +31,7 @@ namespace jw
             if (_pImpl->handlerContainer->count(arg))
 #endif
             {
-                _pImpl->handlerContainer[arg](index);
+                _pImpl->handlerContainer[arg](index, arguments);
             }
 
             ++index;
@@ -57,9 +58,20 @@ namespace jw
 
     void DefaultArgumentHandler::registerHandler()
     {
-        addHandler(HELP_OPTION, [this](uint16_t index) {
+        addHandler(HELP_OPTION, [this](uint16_t index, const ArgumentContainer&) {
             printHelp();
             return;
+            });
+        addHandler(PATH_OPTION, [this](uint16_t index, const ArgumentContainer& arguments) {
+            if (index + 1 < arguments.size())
+            {
+                LOG_ERROR(L"경로 설정 성공, 경로:{}", arguments[index + 1].c_str());
+                ARGUMENT().SetPath(arguments[index + 1].c_str());
+            }
+            else
+            { 
+                LOG_ERROR(L"경로 설정 실패");
+            }
             });
     }
 
@@ -67,11 +79,12 @@ namespace jw
     {
         wprintf(L"%s 사용법\r\n", GetProcessName().c_str());
         wprintf(L"%s : 사용방법을 출력합니다.\r\n", HELP_OPTION);
+        wprintf(L"%s : 버전 정보를 입력 합니다.\r\n", VERSION_OPTION);
+        wprintf(L"%s : 경로를 설정합니다..\r\n", PATH_OPTION);
 
-        LOG_FETAL(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
-        LOG_ERROR(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
-        LOG_WARN(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
+        LOG_INFO(L"{:s} 사용법\r\n", GetProcessName().c_str());
         LOG_INFO(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
-        LOG_DEBUG(L"{:s} : 사용방법을 출력합니다.", HELP_OPTION);
+        LOG_INFO(L"{:s} : 버전 정보를 입력 합니다.\r\n", VERSION_OPTION);
+        LOG_INFO(L"{:s} : 경로를 설정합니다..\r\n", PATH_OPTION);
     }
 }

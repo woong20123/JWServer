@@ -12,6 +12,7 @@
 #include "TimerLauncher.h"
 #include <list>
 #include <chrono>
+#include "Config.h"
 
 namespace jw
 {
@@ -50,6 +51,8 @@ namespace jw
         startLog();
 
         setArgument(argc, argv);
+
+        setConfig();
 
         startNetwork();
 
@@ -174,6 +177,24 @@ namespace jw
     {
         ARGUMENT().Initialize(argc, argv);
         ARGUMENT().HandleArgument();
+        return true;
+    }
+
+    bool Server::setConfig()
+    {
+        // TODO : config를 설정합니다. 
+        // config를 설정하는 방법은 Config.h, Config.cpp를 참고하세요. 
+        // JsonConfig를 상속받아 구현하면 됩니다. 
+        std::locale::global(std::locale("ko_KR.UTF-8"));
+        Config config;
+        config.Initialize(std::make_shared<JsonConfigParser>());
+
+        const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
+        if (!config.Load(configPath))
+        {
+            //config.Dump(configPath);
+        }
+
         return true;
     }
 

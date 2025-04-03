@@ -150,6 +150,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="ArgumentsHandler.h" />
     <ClInclude Include="Channel.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="Consumer.hpp" />
     <ClInclude Include="IOWorker.h" />
     <ClInclude Include="Listener.h" />
@@ -186,6 +187,7 @@ bootstrap.bat</Command>
     <ClCompile Include="ArgumentsHandler.cpp" />
     <ClCompile Include="AsyncObject.h" />
     <ClCompile Include="Channel.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="LogBuffer.cpp" />
