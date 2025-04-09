@@ -10,26 +10,31 @@ namespace jw
 {
     class World;
     class RoomManager;
+    class SampleServerConfig;
     class SampleServer : public Server, public Singleton<SampleServer>
     {
     public:
         World* GetWorld();
         RoomManager* GetRoomManager();
+        SampleServerConfig* GetConfig();
     protected:
         SampleServer();
         virtual ~SampleServer();
 
         bool onStartLog() override;
-        bool onStartNetwork() override;
-        bool onStartTimer() override;
+        bool onStartConfig() override;
+        bool onStartingNetwork() override;
+        bool onStartedNetwork() override;
+        bool onStartingTimer() override;
         bool onInitialize() override;
         bool onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj) override;
         void onClosedServer() override;
 
     private:
 
-        std::unique_ptr<World> _world;
-        std::unique_ptr<RoomManager> _roomManager;
+        std::unique_ptr<World>              _world;
+        std::unique_ptr<RoomManager>        _roomManager;
+        std::unique_ptr<SampleServerConfig> _config;
         friend class Singleton<SampleServer>;
     };
 }

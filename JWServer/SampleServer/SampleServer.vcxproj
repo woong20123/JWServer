@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\JWServer\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\JWServer;$(ProjectDir)..\..\JWServer\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -166,6 +166,7 @@
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomSerializeObject.cpp" />
     <ClCompile Include="SampleServer.cpp" />
+    <ClCompile Include="SampleServerConfig.cpp" />
     <ClCompile Include="SerializerInfo.h" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="World.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="RoomSerializeObject.h" />
     <ClInclude Include="SampleServer.h" />
+    <ClInclude Include="SampleServerConfig.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="WorldSerializeObject.h" />

@@ -1,6 +1,8 @@
 #include "SampleServer.h"
 #include "Logger.h"
 #include "Port.h"
+#include "Arguments.h"
+#include "SampleServerConfig.h"
 #include "Network.h"
 #include "Serializer.h"
 #include "SerializerManager.h"
@@ -10,6 +12,7 @@
 #include "GamePacketHandleFuncList.h"
 #include "PacketBufferHandler.h"
 #include "RoomManager.h"
+#include <format>
 
 namespace jw
 {
@@ -17,6 +20,7 @@ namespace jw
     {
         _world = std::make_unique<World>();
         _roomManager = std::make_unique<RoomManager>();
+        _config = std::make_unique<SampleServerConfig>();
     }
     SampleServer::~SampleServer()
     {}
@@ -37,11 +41,41 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onStartNetwork()
+    bool SampleServer::onStartConfig()
+    {
+        // config를 설정합니다. 
+        // config를 설정하는 방법은 Config.h, Config.cpp를 참고하세요.         
+        std::locale::global(std::locale("ko_KR.UTF-8"));
+
+        _config->Initialize(std::make_shared<JsonConfigParser>());
+        const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
+
+        // config를 설정을 셋팅 합니다. 
+        _config->RegisterConfigDefinition("server-port", L"13211");
+        _config->RegisterConfigDefinition("worker-thread", L"0");
+        _config->RegisterConfigDefinition("max-client-session-count", L"5000");
+        _config->RegisterConfigDefinition("timer-interval-milliSecond", L"100");
+
+        if (!_config->Load(configPath))
+        {
+            //_config->Dump(configPath);
+            LOG_ERROR(L"failed to load config, path:{}", configPath.c_str());
+            return false;
+        }
+
+        return true;
+    }
+
+
+    bool SampleServer::onStartingNetwork()
     {
         // 워커 스레드 설정
-        setNetworkWorkerThread(Network::DEFAULT_WORKER_THREAD_COUNT);
+        setNetworkWorkerThread(_config->GetWorkerThreadCount());
+        return true;
+    }
 
+    bool SampleServer::onStartedNetwork()
+    {
         // GameSessionHandler 및 PacketHandler 설정 
         std::shared_ptr<SessionHandler> gameSessionHandler = std::make_shared<GameSessionHandler>();;
         std::shared_ptr<PacketHandler> gamePacketHandler = std::make_shared<GamePacketHandler>();
@@ -51,9 +85,9 @@ namespace jw
         // 클라이언트와 연동하는 포트 정보 입력
         PortInfo clientPort;
         clientPort._id = CLIENT_PORT_ID;
-        clientPort._portNumber = 13211;
+        clientPort._portNumber = _config->GetServerPort();
         clientPort._iocpHandle = NETWORK().GetIOCPHandle();
-        clientPort._sesionMaxCount = 5000;
+        clientPort._sesionMaxCount = _config->GetMaxClientSessionCount();
         clientPort._sessionHandler = gameSessionHandler;
         clientPort._packetBufferHandler = std::make_shared<TrustedPacketBufferHandler>();
 
@@ -62,8 +96,10 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onStartTimer()
+    bool SampleServer::onStartingTimer()
     {
+        setTimerIntervalMilliSecond(_config->GetTimerIntervalMilliSecond());
+
         return true;
     }
 
@@ -94,5 +130,10 @@ namespace jw
     RoomManager* SampleServer::GetRoomManager()
     {
         return _roomManager.get();
+    }
+
+    SampleServerConfig* SampleServer::GetConfig()
+    {
+        return _config.get();
     }
 }

@@ -69,14 +69,11 @@ namespace jw
         static constexpr int32_t   DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND = 100;
         // 관리되는 최대 타이머 틱
         // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
-        // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다. 
-        static constexpr int32_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
-        static constexpr int32_t   LONGTERM_CHECK_TIME_MILLISECOND = DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND * DEFAULT_TIMER_MANAGE_MAX_TICK;
-        static constexpr int32_t   SERVER_CLOSE_WAIT_SECOND = 5;
+        // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다.         
+        static constexpr int32_t   SERVER_CLOSE_WAIT_SECOND = 10;
 
         using ServerEventProducerCon = ProducerContainer<std::shared_ptr<ServerEvent>>;
         using TimerList = std::list<Timer*>;
-        using TimerListArray = std::array<TimerList, DEFAULT_TIMER_MANAGE_MAX_TICK>;
 
         Server();
         virtual ~Server();
@@ -100,13 +97,16 @@ namespace jw
         // - LogStream 등록
         virtual bool onStartLog() = 0;
 
+        virtual bool onStartConfig() = 0;
+
         // 서버 구동시 사용자가 설정할 Network 작업을 등록 합니다. 
         // - Port 등록 
         // - SessionHandler 등록
         // - PacketHandler 등록 
-        virtual bool onStartNetwork() = 0;
+        virtual bool onStartingNetwork() = 0;
+        virtual bool onStartedNetwork() = 0;
 
-        virtual bool onStartTimer() = 0;
+        virtual bool onStartingTimer() = 0;
 
         virtual bool onInitialize() = 0;
 
@@ -120,7 +120,8 @@ namespace jw
         void registFileLogStream(const std::span<LogType> logFlags);
         void registLogStream(const std::shared_ptr<LogStream>& logStream);
 
-        void setNetworkWorkerThread(uint16_t);
+        void setNetworkWorkerThread(const uint16_t);
+        void setTimerIntervalMilliSecond(const int32_t intervalMilliSecond);
         void reigstPort(const PortInfo& portInfo);
 
         void setState(ServerState state);
@@ -136,6 +137,7 @@ namespace jw
 
         std::wstring                            _name;
         std::unique_ptr<LogWorker>              _logWorker;
+        int32_t                                 _intervalMilliSecond;
         uint16_t                                _workerThreadCount;
         std::unique_ptr<ServerEventProducerCon> _serverEventContainer;
         std::atomic<ServerState>                _state;

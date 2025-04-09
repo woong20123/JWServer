@@ -11,11 +11,11 @@ namespace jw
     void Config::Initialize(std::shared_ptr<ConfigParser> parser)
     {
         _parser = parser;
-        makeDefintion();
     }
 
     bool Config::Load(std::filesystem::path filePath)
     {
+        OnLoading();
         const auto currentPath = std::filesystem::current_path();
 
         if (!std::filesystem::is_regular_file(filePath))
@@ -42,6 +42,8 @@ namespace jw
             _parser->Write(filePath, _configMap);
         }
 
+        OnLoaded();
+
         return true;
     }
 
@@ -67,8 +69,8 @@ namespace jw
     void Config::makeDefintion()
     {
         // { key, defaultValue }를 정의 해주세요.
-        _configDefinition.emplace_back("server-port", L"13211");
-        _configDefinition.emplace_back("worker-thread", L"0");
+        RegisterConfigDefinition("server-port", L"13211");
+        RegisterConfigDefinition("worker-thread", L"0");
 
     }
 
@@ -141,5 +143,37 @@ namespace jw
         configFile.close();
 
         return true;
+    }
+
+    int16_t Config::GetInt16(const std::string& key)
+    {
+        return static_cast<int32_t>(GetInt64(key));
+    }
+
+    int32_t Config::GetInt32(const std::string& key)
+    {
+
+        return static_cast<int32_t>(GetInt64(key));
+    }
+
+    int64_t Config::GetInt64(const std::string& key)
+    {
+        auto it = _configMap.find(key);
+        if (it != _configMap.end())
+        {
+            return std::stoll(it->second);
+        }
+        return 0L;
+    }
+
+
+    std::wstring Config::GetString(const std::string& key)
+    {
+        auto it = _configMap.find(key);
+        if (it != _configMap.end())
+        {
+            return it->second;
+        }
+        return L"";
     }
 }

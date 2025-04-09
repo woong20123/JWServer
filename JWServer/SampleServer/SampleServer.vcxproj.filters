@@ -54,6 +54,7 @@
     <ClCompile Include="RoomCommon.h">
       <Filter>Logic</Filter>
     </ClCompile>
+    <ClCompile Include="SampleServerConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleServer.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="RoomManager.h">
       <Filter>Logic</Filter>
     </ClInclude>
+    <ClInclude Include="SampleServerConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Packet\GamaPacket.proto">

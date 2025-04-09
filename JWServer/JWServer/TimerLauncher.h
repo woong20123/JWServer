@@ -15,16 +15,16 @@ namespace jw
     {
     public:
         static constexpr int32_t   DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND = 100;
+
+
         // 관리되는 최대 타이머 틱
-        // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
-        // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다. 
         static constexpr int32_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
-        static constexpr int32_t   LONGTERM_CHECK_TIME_MILLISECOND = DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND * DEFAULT_TIMER_MANAGE_MAX_TICK;
 
         using TimerList = std::list<Timer*>;
         using TimerListArray = std::array<TimerList, DEFAULT_TIMER_MANAGE_MAX_TICK>;
 
-        void Initialize();
+
+        void Initialize(const int32_t intervalMilliSecond);
         void Run();
         void Stop();
 
@@ -36,6 +36,8 @@ namespace jw
         virtual int32_t GetNextTimerTickToIndex(int32_t intervalIndex);
         virtual int32_t GetCurrentTimerTickToIndex();
         virtual int32_t GetLastTimerTickToIndex();
+        int32_t GetIntervalMilliSecond() const { return _intervalMilliSecond; }
+        int32_t GetLongTermCheckTimeMilliSecond() const { return _intervalMilliSecond * DEFAULT_TIMER_MANAGE_MAX_TICK; }
     protected:
         TimerLauncher();
         ~TimerLauncher();
@@ -53,6 +55,7 @@ namespace jw
         TimerListArray                          _timerEventArray;
         std::list<Timer*>                       _longTermTimerList;
         std::thread                             _timerLogicThread;
+        int32_t                                 _intervalMilliSecond;
     };
 }
 

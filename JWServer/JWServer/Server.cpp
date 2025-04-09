@@ -21,8 +21,10 @@ namespace jw
         _logWorker{ nullptr },
         _workerThreadCount{ 0 },
         _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
-        _state{ ServerState::SERVER_STATE_NONE }
-    {}
+        _state{ ServerState::SERVER_STATE_NONE },
+        _intervalMilliSecond{ DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND }
+    {
+    }
 
     Server::~Server() {}
 
@@ -149,9 +151,14 @@ namespace jw
         _logWorker->RegisterLogStream(logStream);
     }
 
-    void Server::setNetworkWorkerThread(uint16_t workerThreadCount)
+    void Server::setNetworkWorkerThread(const uint16_t workerThreadCount)
     {
         _workerThreadCount = workerThreadCount;
+    }
+
+    void Server::setTimerIntervalMilliSecond(const int32_t intervalMilliSecond)
+    {
+        _intervalMilliSecond = intervalMilliSecond;
     }
 
     void Server::reigstPort(const PortInfo& portInfo)
@@ -183,28 +190,20 @@ namespace jw
     bool Server::setConfig()
     {
         // TODO : config를 설정합니다. 
-        // config를 설정하는 방법은 Config.h, Config.cpp를 참고하세요. 
-        // JsonConfig를 상속받아 구현하면 됩니다. 
-        std::locale::global(std::locale("ko_KR.UTF-8"));
-        Config config;
-        config.Initialize(std::make_shared<JsonConfigParser>());
-
-        const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
-        if (!config.Load(configPath))
-        {
-            //config.Dump(configPath);
-        }
+        onStartConfig();
 
         return true;
     }
 
     bool Server::startNetwork()
     {
+        onStartingNetwork();
+
         NETWORK().Initialize();
 
-        onStartNetwork();
-
         NETWORK().Start(_workerThreadCount);
+
+        onStartedNetwork();
 
         LOG_INFO(L"initialize Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
 
@@ -213,10 +212,10 @@ namespace jw
 
     void Server::startTimer()
     {
-        TIMER_LAUNCHER().Initialize();
-        TIMER_LAUNCHER().Run();
+        onStartingTimer();
 
-        onStartTimer();
+        TIMER_LAUNCHER().Initialize(_intervalMilliSecond);
+        TIMER_LAUNCHER().Run();
     }
 
     void Server::waitEvent()

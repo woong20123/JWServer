@@ -31,7 +31,7 @@ namespace jw
     struct SerializerKey;
     class SerializeObject;
     class Packet;
-    class World : public AttachedSerializerObject
+    class World 
     {
     public:
         static constexpr size_t USER_LIST_MAX_SIZE = 5000;
@@ -44,7 +44,7 @@ namespace jw
         std::shared_ptr<User> FindUser(const int64_t userKey);
         void BroadcastPacket(Packet& packet);
         bool PostSO(std::shared_ptr<SerializeObject>& so);
-        SerializerKey GetSerializerKey() const override;
+        SerializerKey GetSerializerKey() const;
     private:
 
         std::shared_mutex	_userList_mutex;

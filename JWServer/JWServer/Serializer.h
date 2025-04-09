@@ -13,6 +13,11 @@ namespace jw
     struct SerializerKey
     {
         constexpr static int32_t INVALID_VALUE = -1;
+
+        SerializerKey() = default;
+        ~SerializerKey() = default;
+        SerializerKey(int16_t type, int32_t id) : type{ type }, id{ id } {}
+
         int16_t type;
         int32_t id;
 
@@ -30,9 +35,9 @@ namespace jw
         void OnTimer() override;
         bool Post(const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds);
     private:
-        SerializerKey _serializerKey;
-        std::list<std::shared_ptr<SerializeObject>> _postObjects;
-        std::shared_mutex		                    _postObjectsMutex;
+        SerializerKey                                   _serializerKey;
+        std::list<std::shared_ptr<SerializeObject>>     _postObjects;
+        std::shared_mutex		                        _postObjectsMutex;
     };
 
     class Serializer
@@ -49,17 +54,8 @@ namespace jw
         void SpliceAll(std::list<std::shared_ptr<SerializeObject>>& toList);
         std::shared_ptr<SerializerTimer> GetTimer() const { return _timer; }
     private:
-        SerializerKey _serializerKey;
-        std::shared_ptr<SerializerTimer>            _timer;
-    };
-
-    // Serialize가 연결 되는 객체들의 부모 클래스
-    class AttachedSerializerObject
-    {
-    public:
-        AttachedSerializerObject() = default;
-        virtual ~AttachedSerializerObject() = default;
-        virtual SerializerKey GetSerializerKey() const = 0;
+        SerializerKey                                   _serializerKey;
+        std::shared_ptr<SerializerTimer>                _timer;
     };
 }
 

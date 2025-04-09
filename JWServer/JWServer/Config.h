@@ -21,17 +21,31 @@ namespace jw
         using ConfigMap = std::unordered_map<std::string, std::wstring>;
         Config() = default;
         virtual ~Config() = default;
-        void Initialize(std::shared_ptr<ConfigParser> parser);
+        virtual void Initialize(std::shared_ptr<ConfigParser> parser);
         bool Load(std::filesystem::path filePath);
         void WriteFromDefaultDefinition(std::filesystem::path filePath);
 
+        virtual void OnLoading() = 0;
+        virtual void OnLoaded() = 0;
+
+        void RegisterConfigDefinition(const std::string& key, const std::wstring& defaultValue)
+        {
+            _configDefinition.emplace_back(key, defaultValue);
+        }
+
     protected:
         std::shared_ptr<ConfigParser> _parser;
-        ConfigMap _configMap;
+
+        int16_t GetInt16(const std::string& key);
+        int32_t GetInt32(const std::string& key);
+        int64_t GetInt64(const std::string& key);
+        std::wstring GetString(const std::string& key);
+
     private:
         void makeDefintion();
         void checkDefinition(bool& isChanged, ConfigMap& configMap);
         std::vector<ConfigDefinition> _configDefinition;
+        ConfigMap _configMap;
     };
 
     class ConfigParser
@@ -56,9 +70,8 @@ namespace jw
     private:
         std::filesystem::path _filePath;
     };
-
-
 }
+
 
 
 #endif // __JW_CONFIG_H__

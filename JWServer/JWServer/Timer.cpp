@@ -4,7 +4,7 @@
 
 namespace jw
 {
-    Timer::Timer() : _expireTick(0), _expireMs(0)
+    Timer::Timer() : _expireTick{ 0 }, _expireMs{ 0 }, _executeTick{ 0 }
     {}
 
     uint32_t Timer::GetAsyncObjectId() const
@@ -16,7 +16,7 @@ namespace jw
         if (_executeTick != _expireTick)
         {
             // 틱에 오차가 있습니다. 
-            LOG_WARN(L"currentTick != _expireTick, _executeTick:{}, expireTick:{}", _executeTick, _expireTick);
+            LOG_ERROR(L"currentTick != _expireTick, _executeTick:{}, expireTick:{}", _executeTick, _expireTick);
         }
 
         OnTimer();

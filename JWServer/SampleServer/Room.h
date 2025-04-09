@@ -9,7 +9,7 @@
 
 namespace jw
 {
-    class Room : AttachedSerializerObject
+    class Room
     {
     public:
         using userID = int64_t;
@@ -23,7 +23,7 @@ namespace jw
         bool RemoveUser(const userID userId);
         bool IsEmpty() const;
         bool IsExistUser(const userID userId) const { return _userList.contains(userId); }
-        SerializerKey GetSerializerKey() const override;
+        SerializerKey GetSerializerKey() const;
         std::string_view GetRoomName() const { return _name; }
         std::string_view getHostUserName() const { return _hostUserName; }
         int64_t GetHostUserId() const { return _hostUserId; }
