@@ -101,6 +101,9 @@
     <ClInclude Include="ArgumentsHandler.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="TimeUtil.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">

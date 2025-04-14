@@ -28,8 +28,8 @@ namespace jw
         return GetInt64("max-client-session-count");
     }
 
-    int32_t SampleServerConfig::GetTimerIntervalMilliSecond()
+    int32_t SampleServerConfig::GetTimerTickIntervalMilliSecond()
     {
-        return GetInt32("timer-interval-milliSecond");
+        return GetInt32("timer-tick-interval-milliSecond");
     }
 }

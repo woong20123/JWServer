@@ -1,5 +1,6 @@
 ﻿#include "SerializeObject.h"
 #include <ctime>
+#include "TimeUtil.h"
 
 namespace jw
 {
@@ -12,11 +13,12 @@ namespace jw
     {
     }
 
-    void SerializeObject::Initialize(int32_t delayMilliSeconds)
+    void SerializeObject::Initialize(const int32_t delayMilliSeconds, const time_t tickIntervalMilliSecond)
     {
+        auto now = std::chrono::system_clock::now();
         _delayMilliSeconds = delayMilliSeconds;
-        _registMilliSeconds = std::time(nullptr);
-        _executeTick = delayMilliSeconds / 100;
+        _registMilliSeconds = TimeUtil::GetCurrentTimeMilliSecond();
+        _executeTick = delayMilliSeconds / tickIntervalMilliSecond;
     }
 
 }

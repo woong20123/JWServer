@@ -66,7 +66,7 @@ namespace jw
         static constexpr int32_t   CLIENT_PORT_ID = 1;
         static constexpr int32_t   INTERNAL_PORT_ID = 2;
 
-        static constexpr int32_t   DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND = 100;
+        static constexpr int32_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND = 100;
         // 관리되는 최대 타이머 틱
         // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
         // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다.         
@@ -121,7 +121,7 @@ namespace jw
         void registLogStream(const std::shared_ptr<LogStream>& logStream);
 
         void setNetworkWorkerThread(const uint16_t);
-        void setTimerIntervalMilliSecond(const int32_t intervalMilliSecond);
+        void setTimerTickIntervalMilliSecond(const int32_t intervalMilliSecond);
         void reigstPort(const PortInfo& portInfo);
 
         void setState(ServerState state);
@@ -137,7 +137,7 @@ namespace jw
 
         std::wstring                            _name;
         std::unique_ptr<LogWorker>              _logWorker;
-        int32_t                                 _intervalMilliSecond;
+        int32_t                                 _tickIntervalMilliSecond;
         uint16_t                                _workerThreadCount;
         std::unique_ptr<ServerEventProducerCon> _serverEventContainer;
         std::atomic<ServerState>                _state;

@@ -22,7 +22,7 @@ namespace jw
         _workerThreadCount{ 0 },
         _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
         _state{ ServerState::SERVER_STATE_NONE },
-        _intervalMilliSecond{ DEFAULT_TIMER_LOGIC_INTERVAL_MILLISECOND }
+        _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
     {
     }
 
@@ -156,9 +156,9 @@ namespace jw
         _workerThreadCount = workerThreadCount;
     }
 
-    void Server::setTimerIntervalMilliSecond(const int32_t intervalMilliSecond)
+    void Server::setTimerTickIntervalMilliSecond(const int32_t intervalMilliSecond)
     {
-        _intervalMilliSecond = intervalMilliSecond;
+        _tickIntervalMilliSecond = intervalMilliSecond;
     }
 
     void Server::reigstPort(const PortInfo& portInfo)
@@ -214,7 +214,7 @@ namespace jw
     {
         onStartingTimer();
 
-        TIMER_LAUNCHER().Initialize(_intervalMilliSecond);
+        TIMER_LAUNCHER().Initialize(_tickIntervalMilliSecond);
         TIMER_LAUNCHER().Run();
     }
 

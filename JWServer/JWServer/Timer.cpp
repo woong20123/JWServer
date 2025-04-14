@@ -4,7 +4,8 @@
 
 namespace jw
 {
-    Timer::Timer() : _expireTick{ 0 }, _expireMs{ 0 }, _executeTick{ 0 }
+    Timer::Timer() : _expireTick{ 0 }, _executeTick{ 0 }, _intervalMs{ 0 }
+
     {}
 
     uint32_t Timer::GetAsyncObjectId() const
@@ -24,23 +25,14 @@ namespace jw
         return true;
     }
 
-    time_t Timer::GetExpireMs() const
+    time_t Timer::GetIntervalMs() const
     {
-        return _expireMs;
+        return _intervalMs;
     }
-
-    void Timer::SetExpireMs(const time_t expireMs)
+    void Timer::SetIntervalMs(const time_t intervalMs)
     {
-        _expireMs = expireMs;
-    }
-
-    void Timer::AddExpireMs(const time_t expireMs)
-    {
-        _expireMs += expireMs;
-        if (_expireMs < 0)
-        {
-            _expireMs = 0;
-        }
+        _intervalMs = intervalMs;
+        if (_intervalMs < 0) _intervalMs = 0;
     }
 
     time_t Timer::GetExcuteTick() const

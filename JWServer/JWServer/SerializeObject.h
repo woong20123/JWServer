@@ -20,7 +20,7 @@ namespace jw
         SerializeObject(int32_t type, int32_t id);
         ~SerializeObject();
 
-        void Initialize(int32_t delayMilliSeconds);
+        void Initialize(const int32_t delayMilliSeconds, const time_t intervalMilliSeconds);
         virtual void Execute() = 0;
 
         int32_t GetType() const { return _type; }

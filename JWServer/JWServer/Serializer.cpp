@@ -36,13 +36,11 @@ namespace jw
         }
 
         TIMER_LAUNCHER().RegistTimer(this);
-
-        //LOG_DEBUG(L"SerializerTimer::OnTimer()");
     }
 
     bool SerializerTimer::Post(const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds)
     {
-        so->Initialize(delayMilliSeconds);
+        so->Initialize(delayMilliSeconds, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
         {
             WRITE_LOCK(_postObjectsMutex);
             _postObjects.push_back(so);
@@ -53,7 +51,7 @@ namespace jw
     Serializer::Serializer(SerializerKey serializerKey) : _serializerKey{ serializerKey }
     {
         _timer = std::make_shared<SerializerTimer>(_serializerKey);
-        _timer->SetExpireMs(100);
+        _timer->SetIntervalMs(TIMER_LAUNCHER().GetTickIntervalMilliSecond());
         TIMER_LAUNCHER().RegistTimer(_timer.get());
     }
 

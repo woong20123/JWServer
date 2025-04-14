@@ -181,6 +181,7 @@ bootstrap.bat</Command>
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerLauncher.h" />
+    <ClInclude Include="TimeUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arguments.cpp" />

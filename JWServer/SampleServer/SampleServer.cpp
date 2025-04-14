@@ -54,7 +54,7 @@ namespace jw
         _config->RegisterConfigDefinition("server-port", L"13211");
         _config->RegisterConfigDefinition("worker-thread", L"0");
         _config->RegisterConfigDefinition("max-client-session-count", L"5000");
-        _config->RegisterConfigDefinition("timer-interval-milliSecond", L"100");
+        _config->RegisterConfigDefinition("timer-tick-interval-milliSecond", L"100");
 
         if (!_config->Load(configPath))
         {
@@ -98,7 +98,7 @@ namespace jw
 
     bool SampleServer::onStartingTimer()
     {
-        setTimerIntervalMilliSecond(_config->GetTimerIntervalMilliSecond());
+        setTimerTickIntervalMilliSecond(_config->GetTimerTickIntervalMilliSecond());
 
         return true;
     }
