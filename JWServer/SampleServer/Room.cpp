@@ -2,6 +2,7 @@
 #include "SampleServer.h"
 #include "SerializerManager.h"
 #include "WorldSerializeObject.h"
+#include "TimerLauncher.h"
 #include "User.h"
 
 namespace jw
@@ -25,7 +26,7 @@ namespace jw
         // WorldSerializer µî·Ï 
         SerializerKey serializerKey{ SERIALIZER_TYPE_ROOM, SERIALIZER_MANAGER().MakeSerializeId(SERIALIZER_TYPE_ROOM) };
         _serializerKey = std::make_unique<SerializerKey>(serializerKey);
-        _serializer = std::make_shared<Serializer>(serializerKey);
+        _serializer = std::make_shared<Serializer>(serializerKey, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
         SERIALIZER_MANAGER().RegistSerializer(serializerKey, _serializer);
     }
 

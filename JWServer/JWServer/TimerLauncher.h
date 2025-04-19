@@ -14,8 +14,8 @@ namespace jw
     class TimerLauncher : public Singleton<TimerLauncher>
     {
     public:
+        // 한 틱이 가지는 기본 시간 값( 100ms )
         static constexpr int32_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND = 100;
-
 
         // 관리되는 최대 타이머 틱
         static constexpr int32_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
@@ -52,7 +52,6 @@ namespace jw
 
         bool                                    _isRun;
         uint64_t                                _timerTick;
-        uint64_t                                _lastTimerTick;
         std::shared_mutex                       _timerMutex;
         TimerListArray                          _timerEventArray;
         std::list<Timer*>                       _longTermTimerList;

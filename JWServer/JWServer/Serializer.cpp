@@ -7,33 +7,57 @@
 
 namespace jw
 {
-    SerializerTimer::SerializerTimer(SerializerKey serializerKey) : _serializerKey{ serializerKey }
+    SerializerTimer::SerializerTimer(SerializerKey serializerKey) : _serializerKey{ serializerKey }, _executeTick{}
     {
     }
 
     void SerializerTimer::OnTimer()
     {
-        std::list<std::shared_ptr<SerializeObject>> executePostObjects;
         bool isExecute = false;
-        {
-            WRITE_LOCK(_postObjectsMutex);
-            if (!_postObjects.empty())
-            {
-                isExecute = true;
+        bool isCheckLongTerm{ false };
 
-                // 처리할 객체가 있다면 executePostObjects에 복사하여 lock 구간을 최소화 합니다.
-                // list의 splice를 사용하면 상수 시간 복잡도로 처리할 수 있습니다. 
-                executePostObjects.splice(std::begin(executePostObjects), _postObjects);
+        std::list<std::shared_ptr<SerializeObject>> executeObjects;
+        {
+            // _executeTick는 _shortTermObjectsMutex lock을 선언한 곳에서만 사용해야 합니다.
+            WRITE_LOCK(_shortTermObjectsMutex);
+            isCheckLongTerm = _executeTick % SHORT_TERM_MAX_TICK == SHORT_TERM_MAX_TICK - 1;
+            auto& currentTickObjects = _shortTermObjects[_executeTick];
+            if (!currentTickObjects.empty())
+            {
+                // list의 splice를 사용하면 상수 시간 복잡도로 처리합니다. 
+                executeObjects.splice(std::begin(executeObjects), currentTickObjects);
+            }
+
+            updateExecuteTick();
+        }
+
+        std::list<std::shared_ptr<SerializeObject>> longtermPostObjects;
+        {
+            WRITE_LOCK(_longTermObjectsMutex);
+            if (isCheckLongTerm && !_longTermObjects.empty())
+            {
+                longtermPostObjects.splice(std::begin(longtermPostObjects), _longTermObjects);
             }
         }
 
-        if (isExecute)
+        if (!executeObjects.empty())
         {
-            for (auto& serializeObject : executePostObjects)
+            for (auto& serializeObject : executeObjects)
             {
                 serializeObject->Execute();
             }
         }
+
+        if (!longtermPostObjects.empty())
+        {
+            for (auto& serializeObject : longtermPostObjects)
+            {
+                serializeObject->ReCalculateTick();
+                post(serializeObject);
+            }
+            longtermPostObjects.clear();
+        }
+
 
         TIMER_LAUNCHER().RegistTimer(this);
     }
@@ -42,16 +66,49 @@ namespace jw
     {
         so->Initialize(delayMilliSeconds, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
         {
-            WRITE_LOCK(_postObjectsMutex);
-            _postObjects.push_back(so);
+            post(so);
         }
         return true;
     }
 
-    Serializer::Serializer(SerializerKey serializerKey) : _serializerKey{ serializerKey }
+    bool SerializerTimer::post(const std::shared_ptr<SerializeObject>& so)
+    {
+        const auto& delayTick = so->GetDelayTick();
+        if (delayTick < SHORT_TERM_MAX_TICK)
+        {
+            WRITE_LOCK(_shortTermObjectsMutex);
+            const auto nextTick = getNextTick(delayTick);
+            if (nextTick == INVALID_TICK)
+            {
+                LOG_ERROR(L"SerializerTimer::Post invalid delayTick:{}", delayTick);
+                return false;
+            }
+            _shortTermObjects[nextTick].push_back(so);
+        }
+        else
+        {
+            WRITE_LOCK(_longTermObjectsMutex);
+            // long term timer
+            _longTermObjects.push_back(so);
+        }
+        return true;
+    }
+
+    void SerializerTimer::updateExecuteTick()
+    {
+        _executeTick = (_executeTick + 1) % SHORT_TERM_MAX_TICK;
+    }
+
+    int64_t SerializerTimer::getNextTick(int64_t nextTick) const
+    {
+        if (nextTick < 0 || SHORT_TERM_MAX_TICK <= nextTick) return INVALID_TICK;
+        return (_executeTick + nextTick) % SHORT_TERM_MAX_TICK;
+    }
+
+    Serializer::Serializer(SerializerKey serializerKey, const time_t tickIntervalMs) : _serializerKey{ serializerKey }
     {
         _timer = std::make_shared<SerializerTimer>(_serializerKey);
-        _timer->SetIntervalMs(TIMER_LAUNCHER().GetTickIntervalMilliSecond());
+        _timer->SetIntervalMs(tickIntervalMs);
         TIMER_LAUNCHER().RegistTimer(_timer.get());
     }
 
@@ -69,9 +126,4 @@ namespace jw
         return _timer->Post(so, delayMilliSeconds);
     }
 
-    void Serializer::SpliceAll(std::list<std::shared_ptr<SerializeObject>>& toList)
-    {
-        /*WRITE_LOCK(_postObjectsMutex);
-        _postObjects.splice(_postObjects.begin(), toList);*/
-    }
 }

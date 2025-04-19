@@ -6,11 +6,11 @@
 
 namespace jw
 {
-    LogFileStream::LogFileStream(const wchar_t* path, const wchar_t* processName, size_t bufferSize) : 
-        _path{ path }, 
+    LogFileStream::LogFileStream(const wchar_t* path, const wchar_t* processName, size_t bufferSize) :
+        _path{ path },
         _processname{ processName },
-        _bufferPos{ 0 }, 
-        _fileNameTick{ 0 }, 
+        _bufferPos{ 0 },
+        _fileNameTick{ 0 },
         _bufferSize{ bufferSize }
     {
         _logBuffer = new LogBuffer::BufferType[bufferSize];
@@ -91,27 +91,33 @@ namespace jw
 
     void LogFileStream::makeFileName()
     {
-        constexpr int YEAR_DIGIT = 1000000;
-        constexpr int MONTH_DIGIT = 10000;
-        constexpr int DAY_DIGIT = 100;
-
-        time_t now = time(NULL);
-        struct tm tmNow;
-        localtime_s(&tmNow, &now);
-        const auto timeTick = (tmNow.tm_year + 1900) * YEAR_DIGIT + (tmNow.tm_mon + 1) * MONTH_DIGIT + tmNow.tm_mday * DAY_DIGIT + tmNow.tm_hour;
-
-        if (_fileNameTick != timeTick)
+        if (!_fileNameTick)
         {
+            const auto timeTick = makeNowTick();
             const auto year = timeTick / YEAR_DIGIT;
             const auto month = (timeTick % YEAR_DIGIT) / MONTH_DIGIT;
             const auto day = (timeTick % MONTH_DIGIT) / DAY_DIGIT;
             const auto hour = timeTick % DAY_DIGIT;
+            const auto min = timeTick % HOUR_DIGIT;
+
             _fullFileName.clear();
             _fullFileName.append(_path);
             _fullFileName.append(_processname);
-            _fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour));
+            _fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour, min));
             _fileNameTick = timeTick;
         }
+    }
+
+    int64_t LogFileStream::makeNowTick() const
+    {
+        time_t now = time(NULL);
+        struct tm tmNow;
+        localtime_s(&tmNow, &now);
+        return static_cast<int64_t>((tmNow.tm_year + 1900)) * YEAR_DIGIT +
+            static_cast<int64_t>((tmNow.tm_mon + 1) * MONTH_DIGIT) +
+            static_cast<int64_t>(tmNow.tm_mday * DAY_DIGIT) +
+            static_cast<int64_t>(tmNow.tm_hour * HOUR_DIGIT) +
+            tmNow.tm_min;
     }
 
     void LogFileStream::makeFolder(std::wstring_view path)

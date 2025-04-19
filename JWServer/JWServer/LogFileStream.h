@@ -10,6 +10,11 @@ namespace jw
     class LogFileStream : public LogStream
     {
     public:
+        static constexpr int64_t YEAR_DIGIT = 100000000L;
+        static constexpr int64_t MONTH_DIGIT = 1000000L;
+        static constexpr int64_t DAY_DIGIT = 10000L;
+        static constexpr int64_t HOUR_DIGIT = 100L;
+
         static constexpr size_t DEFUALT_BUFFER_SIZE = 204800;
 
         LogFileStream(const wchar_t* path, const wchar_t* filename, size_t bufferSize = DEFUALT_BUFFER_SIZE);
@@ -22,9 +27,11 @@ namespace jw
         void initBuffer();
         inline const size_t remainBuffer() { return _bufferSize - _bufferPos; }
         void makeFileName();
+        int64_t makeNowTick() const;
+
         void makeFolder(std::wstring_view path);
 
-        LogBuffer::BufferType * _logBuffer{ nullptr };
+        LogBuffer::BufferType* _logBuffer{ nullptr };
         size_t                  _bufferPos;
         size_t                  _bufferSize;
         std::wstring            _processname;

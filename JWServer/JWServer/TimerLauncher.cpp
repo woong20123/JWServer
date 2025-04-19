@@ -6,7 +6,7 @@
 
 namespace jw
 {
-    TimerLauncher::TimerLauncher() : _isRun{ false }, _timerTick{ 0 }, _lastTimerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _timerLogicThread{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
+    TimerLauncher::TimerLauncher() : _isRun{ false }, _timerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _timerLogicThread{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
     {
 
     }
@@ -25,16 +25,20 @@ namespace jw
     void TimerLauncher::Run()
     {
         _timerLogicThread = std::thread([this]() {
-            time_t runTimeMs{ 0 };
-            time_t remainIntervalMs{ 0 };
+            time_t diffTimeMs{ 0 };
+            time_t adjustedIntervalMs{ 0 };
+            uint64_t lastTimerTick{ 0 };
+
+            const auto tickIntervalMilliSecond = _tickIntervalMilliSecond;
             _isRun = true;
 
             LOG_INFO(L"TimerLauncher Run");
 
-            auto startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-
+            auto baseTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
+            int64_t startTimeMs{ 0 }, endTimeMs{ 0 };
             while (true)
             {
+                startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
                 if (!_isRun)
                 {
                     LOG_INFO(L"StopSignal send to Server");
@@ -42,25 +46,25 @@ namespace jw
                 }
 
                 // 현재 틱에 해당하는 타이머 목록을 가져옵니다. 
-                std::list<Timer*> timerList;
+                std::list<Timer*> postTimerList;
                 {
                     std::unique_lock<std::shared_mutex> lk(_timerMutex);
                     const auto currentIndex = getCurrentTimerTickToIndex();
                     TimerList& currentList = _timerEventArray[currentIndex];
-                    timerList.splice(timerList.begin(), currentList);
-                    _lastTimerTick = _timerTick++;
+                    postTimerList.splice(postTimerList.begin(), currentList);
+                    lastTimerTick = _timerTick++;
                 }
 
 
                 // 가져온 타이머들을 IOCP에 Post합니다. 
-                if (!timerList.empty())
+                if (!postTimerList.empty())
                 {
-                    for (auto& timer : timerList)
+                    for (auto& timer : postTimerList)
                     {
-                        timer->SetExcuteTick(_lastTimerTick);
+                        timer->SetExcuteTick(lastTimerTick);
                         ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
                     }
-                    timerList.clear();
+                    postTimerList.clear();
                 }
 
                 // DEFAULT_TIMER_MANAGE_MAX_TICK를 기준으로 순회를 마쳤다면 
@@ -69,28 +73,28 @@ namespace jw
                 {
                     {
                         std::unique_lock<std::shared_mutex> lk(_timerMutex);
-                        timerList.splice(std::begin(timerList), _longTermTimerList);
+                        postTimerList.splice(std::begin(postTimerList), _longTermTimerList);
                     }
 
-                    for (auto& timer : timerList)
+                    for (auto& timer : postTimerList)
                     {
                         registLongTermTimer(timer);
                     }
 
-                    if (!timerList.empty()) timerList.clear();
+                    if (!postTimerList.empty()) postTimerList.clear();
                 }
 
-                // runTimeMs : 현재 틱의 timer 등록 수행 시간 
-                // remainIntervalMs : 다음 틱까지 대기해야 하는 시간
-                runTimeMs = TimeUtil::GetCurrentTimeMilliSecond() - startTimeMs;
-                remainIntervalMs = GetTickIntervalMillisecond() - runTimeMs;
+                endTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
+                diffTimeMs = endTimeMs - baseTimeMs;
+                adjustedIntervalMs = tickIntervalMilliSecond - diffTimeMs;
 
-                startTimeMs += GetTickIntervalMillisecond();
+                // baseTimeMs는 틱마다 tickIntervalMilliSecond만큼 증가 시켜 고정 기준 값을 유지 합니다. 
+                baseTimeMs += tickIntervalMilliSecond;
 
-                if (remainIntervalMs > 0)
-                    std::this_thread::sleep_for(std::chrono::milliseconds(remainIntervalMs));
+                if (adjustedIntervalMs > 0)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(adjustedIntervalMs));
                 else
-                    LOG_WARN(L"timerEvent runTimeMs:{}, remainIntervalMs:{}, startTimeMs:{}", runTimeMs, remainIntervalMs, startTimeMs);
+                    LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, startTimeMs:{}, endTimeMs:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, startTimeMs, endTimeMs);
             }
             LOG_INFO(L"TimerLauncher Stop");
             });
@@ -161,19 +165,16 @@ namespace jw
 
     void TimerLauncher::registLongTermTimer(Timer* timer)
     {
+        std::unique_lock<std::shared_mutex> lk(_timerMutex);
         const auto tickOfRemainUntilExpire = timer->GetExpireTick() - _timerTick;
         if (tickOfRemainUntilExpire < DEFAULT_TIMER_MANAGE_MAX_TICK)
         {
-            std::unique_lock<std::shared_mutex> lk(_timerMutex);
             const auto currentIndex = getNextTimerTickToIndex(static_cast<int32_t>(tickOfRemainUntilExpire));
             _timerEventArray[currentIndex].push_back(timer);
         }
         else
         {
-            std::unique_lock<std::shared_mutex> lk(_timerMutex);
             _longTermTimerList.push_back(timer);
         }
     }
 }
-
-

@@ -4,7 +4,7 @@
 
 namespace jw
 {
-    SerializeObject::SerializeObject(int32_t type, int32_t id) : _type{ type }, _id{ id }, _registMilliSeconds{ 0 }, _executeTick{ 0 }, _serializerId{ 0 }, _delayMilliSeconds{ 0 }
+    SerializeObject::SerializeObject(int32_t type, int32_t id) : _type{ type }, _id{ id }, _registMilliSeconds{ 0 }, _delayTick{ 0 }, _serializerId{ 0 }, _delayMilliSeconds{ 0 }
 
     {
     }
@@ -13,12 +13,27 @@ namespace jw
     {
     }
 
-    void SerializeObject::Initialize(const int32_t delayMilliSeconds, const time_t tickIntervalMilliSecond)
+    void SerializeObject::Initialize(const int64_t delayMilliSeconds, const time_t tickIntervalMilliSecond)
     {
-        auto now = std::chrono::system_clock::now();
+        _intervalMilliSeconds = tickIntervalMilliSecond;
         _delayMilliSeconds = delayMilliSeconds;
         _registMilliSeconds = TimeUtil::GetCurrentTimeMilliSecond();
-        _executeTick = delayMilliSeconds / tickIntervalMilliSecond;
+        _delayTick = _delayMilliSeconds / _intervalMilliSeconds;
+    }
+
+    void SerializeObject::ReCalculateTick()
+    {
+        const auto currentMilliSecond = TimeUtil::GetCurrentTimeMilliSecond();
+        const auto diffMilliSecond = currentMilliSecond - _registMilliSeconds;
+
+        _registMilliSeconds = currentMilliSecond;
+        _delayMilliSeconds -= diffMilliSecond;
+        if (_delayMilliSeconds < 0) {
+            _delayMilliSeconds = 0;
+            _delayTick = 0;
+            return;
+        }
+        _delayTick = _delayMilliSeconds / _intervalMilliSeconds;
     }
 
 }

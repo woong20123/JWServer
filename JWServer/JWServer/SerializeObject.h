@@ -20,19 +20,22 @@ namespace jw
         SerializeObject(int32_t type, int32_t id);
         ~SerializeObject();
 
-        void Initialize(const int32_t delayMilliSeconds, const time_t intervalMilliSeconds);
+        void Initialize(const int64_t delayMilliSeconds, const time_t intervalMilliSeconds);
         virtual void Execute() = 0;
 
         int32_t GetType() const { return _type; }
         int32_t GetID() const { return _id; }
+        int64_t GetDelayTick() const { return _delayTick; }
+        void ReCalculateTick();
 
     private:
         int32_t _type;
         int32_t _id;
-        int32_t _delayMilliSeconds;
+        int64_t _delayMilliSeconds;
         int64_t _registMilliSeconds;
-        int64_t _executeTick;
+        int64_t _delayTick;
         int32_t _serializerId;
+        time_t _intervalMilliSeconds;
     };
 }
 
