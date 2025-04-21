@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "Network.h"
 #include "TimeUtil.h"
+#include <algorithm>
 
 namespace jw
 {
@@ -17,7 +18,7 @@ namespace jw
         _timerLogicThread.join();
     }
 
-    void TimerLauncher::Initialize(const int32_t tickIntervalMilliSecond)
+    void TimerLauncher::Initialize(const int64_t tickIntervalMilliSecond)
     {
         _tickIntervalMilliSecond = tickIntervalMilliSecond;
     }
@@ -25,14 +26,10 @@ namespace jw
     void TimerLauncher::Run()
     {
         _timerLogicThread = std::thread([this]() {
-            time_t diffTimeMs{ 0 };
-            time_t adjustedIntervalMs{ 0 };
             uint64_t lastTimerTick{ 0 };
-
-            const auto tickIntervalMilliSecond = _tickIntervalMilliSecond;
             _isRun = true;
 
-            LOG_INFO(L"TimerLauncher Run");
+            LOG_INFO(L"TimerLauncher Thread Run");
 
             auto baseTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
             int64_t startTimeMs{ 0 }, endTimeMs{ 0 };
@@ -46,57 +43,21 @@ namespace jw
                 }
 
                 // 현재 틱에 해당하는 타이머 목록을 가져옵니다. 
-                std::list<Timer*> postTimerList;
+                std::list<Timer*> tempCurrentTimerList;
                 {
                     std::unique_lock<std::shared_mutex> lk(_timerMutex);
-                    const auto currentIndex = getCurrentTimerTickToIndex();
-                    TimerList& currentList = _timerEventArray[currentIndex];
-                    postTimerList.splice(postTimerList.begin(), currentList);
+                    auto& currentList = getCurrentTimerList();
+                    tempCurrentTimerList.splice(tempCurrentTimerList.begin(), currentList);
                     lastTimerTick = _timerTick++;
                 }
 
+                postTimerList(tempCurrentTimerList);
 
-                // 가져온 타이머들을 IOCP에 Post합니다. 
-                if (!postTimerList.empty())
-                {
-                    for (auto& timer : postTimerList)
-                    {
-                        timer->SetExcuteTick(lastTimerTick);
-                        ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
-                    }
-                    postTimerList.clear();
-                }
+                processLongTermTimerList();
 
-                // DEFAULT_TIMER_MANAGE_MAX_TICK를 기준으로 순회를 마쳤다면 
-                // longTermTimerList의 tick을 DEFAULT_TIMER_MANAGE_MAX_TICK만큼 차감하여 다시 등록합니다. 
-                if (_timerTick >= DEFAULT_TIMER_MANAGE_MAX_TICK && _timerTick % DEFAULT_TIMER_MANAGE_MAX_TICK == 0)
-                {
-                    {
-                        std::unique_lock<std::shared_mutex> lk(_timerMutex);
-                        postTimerList.splice(std::begin(postTimerList), _longTermTimerList);
-                    }
-
-                    for (auto& timer : postTimerList)
-                    {
-                        registLongTermTimer(timer);
-                    }
-
-                    if (!postTimerList.empty()) postTimerList.clear();
-                }
-
-                endTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-                diffTimeMs = endTimeMs - baseTimeMs;
-                adjustedIntervalMs = tickIntervalMilliSecond - diffTimeMs;
-
-                // baseTimeMs는 틱마다 tickIntervalMilliSecond만큼 증가 시켜 고정 기준 값을 유지 합니다. 
-                baseTimeMs += tickIntervalMilliSecond;
-
-                if (adjustedIntervalMs > 0)
-                    std::this_thread::sleep_for(std::chrono::milliseconds(adjustedIntervalMs));
-                else
-                    LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, startTimeMs:{}, endTimeMs:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, startTimeMs, endTimeMs);
+                rumTimeCheckAndWait(baseTimeMs);
             }
-            LOG_INFO(L"TimerLauncher Stop");
+            LOG_INFO(L"TimerLauncher Thread Stop");
             });
     }
 
@@ -106,7 +67,7 @@ namespace jw
         _isRun = false;
     }
 
-    int32_t TimerLauncher::GetTickIntervalMillisecond()
+    int64_t TimerLauncher::GetTickIntervalMillisecond()
     {
         return _tickIntervalMilliSecond;
     }
@@ -116,7 +77,7 @@ namespace jw
         return _timerTick;
     }
 
-    int32_t TimerLauncher::getNextTimerTickToIndex(int32_t intervalTick)
+    int64_t TimerLauncher::getNextTimerTickToIndex(int64_t intervalTick)
     {
         if (intervalTick < 0 || DEFAULT_TIMER_MANAGE_MAX_TICK <= intervalTick)
         {
@@ -126,13 +87,9 @@ namespace jw
         return (_timerTick + intervalTick) % DEFAULT_TIMER_MANAGE_MAX_TICK;
     }
 
-    int32_t TimerLauncher::getCurrentTimerTickToIndex()
+    TimerLauncher::TimerList& TimerLauncher::getCurrentTimerList()
     {
-        return _timerTick % DEFAULT_TIMER_MANAGE_MAX_TICK;
-    }
-    int32_t TimerLauncher::getLastTimerTickToIndex()
-    {
-        return getNextTimerTickToIndex(DEFAULT_TIMER_MANAGE_MAX_TICK - 1);
+        return _timerEventArray[_timerTick % DEFAULT_TIMER_MANAGE_MAX_TICK];
     }
 
     void TimerLauncher::RegistTimer(Timer* timer)
@@ -169,12 +126,63 @@ namespace jw
         const auto tickOfRemainUntilExpire = timer->GetExpireTick() - _timerTick;
         if (tickOfRemainUntilExpire < DEFAULT_TIMER_MANAGE_MAX_TICK)
         {
-            const auto currentIndex = getNextTimerTickToIndex(static_cast<int32_t>(tickOfRemainUntilExpire));
+            const auto currentIndex = getNextTimerTickToIndex(tickOfRemainUntilExpire);
             _timerEventArray[currentIndex].push_back(timer);
         }
         else
         {
             _longTermTimerList.push_back(timer);
         }
+    }
+
+    void TimerLauncher::postTimerList(std::list<Timer*>& timerList)
+    {
+        // 가져온 타이머들을 IOCP에 Post합니다. 
+        if (!timerList.empty())
+        {
+            std::for_each(std::begin(timerList), std::end(timerList), [](Timer* timer) {
+                timer->SetExcuteTick(timer->GetExpireTick());
+                ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
+                });
+            timerList.clear();
+        }
+    }
+
+    void TimerLauncher::processLongTermTimerList()
+    {
+        // DEFAULT_TIMER_MANAGE_MAX_TICK를 기준으로 순회를 마쳤다면 
+        // longTermTimerList의 tick을 DEFAULT_TIMER_MANAGE_MAX_TICK만큼 차감하여 다시 등록합니다. 
+        if (_timerTick >= DEFAULT_TIMER_MANAGE_MAX_TICK && _timerTick % DEFAULT_TIMER_MANAGE_MAX_TICK == 0)
+        {
+            std::list<Timer*> tempTimerList;
+            {
+                std::unique_lock<std::shared_mutex> lk(_timerMutex);
+                tempTimerList.splice(std::begin(tempTimerList), _longTermTimerList);
+            }
+
+            if (!tempTimerList.empty())
+            {
+                std::for_each(std::begin(tempTimerList), std::end(tempTimerList), [this](Timer* timer) {
+                    registLongTermTimer(timer);
+                    });
+                tempTimerList.clear();
+            }
+
+        }
+    }
+
+    void TimerLauncher::rumTimeCheckAndWait(int64_t& baseTimeMs)
+    {
+        int64_t endTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
+        int64_t diffTimeMs = endTimeMs - baseTimeMs;
+        int64_t adjustedIntervalMs = _tickIntervalMilliSecond - diffTimeMs;
+
+        // baseTimeMs는 틱마다 tickIntervalMilliSecond만큼 증가 시켜 고정 기준 값을 유지 합니다. 
+        baseTimeMs += _tickIntervalMilliSecond;
+
+        if (adjustedIntervalMs > 0)
+            std::this_thread::sleep_for(std::chrono::milliseconds(adjustedIntervalMs));
+        else
+            LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, endTimeMs:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, endTimeMs);
     }
 }

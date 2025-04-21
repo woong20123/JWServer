@@ -5,7 +5,6 @@
 namespace jw
 {
     Timer::Timer() : _expireTick{ 0 }, _executeTick{ 0 }, _intervalMs{ 0 }
-
     {}
 
     uint32_t Timer::GetAsyncObjectId() const
@@ -23,6 +22,11 @@ namespace jw
         OnTimer();
 
         return true;
+    }
+
+    void Timer::HandleFailedEvent(AsyncContext* context, paramType param)
+    {
+        LOG_ERROR(L"failed event, timerId:{} _executeTick:{}, expireTick:{}", context->_id, _executeTick, _expireTick);
     }
 
     time_t Timer::GetIntervalMs() const

@@ -156,7 +156,7 @@ namespace jw
         _workerThreadCount = workerThreadCount;
     }
 
-    void Server::setTimerTickIntervalMilliSecond(const int32_t intervalMilliSecond)
+    void Server::setTimerTickIntervalMilliSecond(const int64_t intervalMilliSecond)
     {
         _tickIntervalMilliSecond = intervalMilliSecond;
     }

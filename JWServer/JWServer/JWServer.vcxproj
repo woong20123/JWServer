@@ -173,6 +173,7 @@ bootstrap.bat</Command>
     <ClInclude Include="SerializeObject.h" />
     <ClInclude Include="Serializer.h" />
     <ClInclude Include="SerializerManager.h" />
+    <ClInclude Include="SerializerTimer.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionBuffer.h" />
@@ -210,6 +211,7 @@ bootstrap.bat</Command>
     <ClCompile Include="SerializeObject.cpp" />
     <ClCompile Include="Serializer.cpp" />
     <ClCompile Include="SerializerManager.cpp" />
+    <ClCompile Include="SerializerTimer.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionBuffer.cpp" />

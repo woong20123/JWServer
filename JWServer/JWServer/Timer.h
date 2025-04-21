@@ -11,6 +11,7 @@ namespace jw
         Timer();
         uint32_t GetAsyncObjectId() const override;
         bool HandleEvent(AsyncContext* context, paramType nonValue) override;
+        void HandleFailedEvent(AsyncContext* context, paramType param) override;
 
         virtual void OnTimer() = 0;
 

@@ -15,26 +15,26 @@ namespace jw
     {
     public:
         // 한 틱이 가지는 기본 시간 값( 100ms )
-        static constexpr int32_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND = 100;
+        static constexpr int64_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND = 100;
 
         // 관리되는 최대 타이머 틱
-        static constexpr int32_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
+        static constexpr int64_t   DEFAULT_TIMER_MANAGE_MAX_TICK = 600;
 
         using TimerList = std::list<Timer*>;
         using TimerListArray = std::array<TimerList, DEFAULT_TIMER_MANAGE_MAX_TICK>;
 
 
-        void Initialize(const int32_t tickIntervalMilliSecond);
+        void Initialize(const int64_t tickIntervalMilliSecond);
         void Run();
         void Stop();
 
         void RegistTimer(Timer* timer);
 
-        virtual int32_t GetTickIntervalMillisecond();
+        virtual int64_t GetTickIntervalMillisecond();
 
         virtual int64_t GetCurrentTimerTick();
-        int32_t GetTickIntervalMilliSecond() const { return _tickIntervalMilliSecond; }
-        int32_t GetLongTermCheckTimeMilliSecond() const { return _tickIntervalMilliSecond * DEFAULT_TIMER_MANAGE_MAX_TICK; }
+        int64_t GetTickIntervalMilliSecond() const { return _tickIntervalMilliSecond; }
+        int64_t GetLongTermCheckTimeMilliSecond() const { return _tickIntervalMilliSecond * DEFAULT_TIMER_MANAGE_MAX_TICK; }
     protected:
         TimerLauncher();
         ~TimerLauncher();
@@ -44,19 +44,25 @@ namespace jw
         void registTimer(Timer* timer);
         void registLongTermTimer(Timer* timer);
 
-        int32_t getNextTimerTickToIndex(int32_t intervalIndex);
-        int32_t getLastTimerTickToIndex();
-        int32_t getCurrentTimerTickToIndex();
+        void postTimerList(std::list<Timer*>& timerList);
+        void processLongTermTimerList();
+        void rumTimeCheckAndWait(int64_t& baseTimeMs);
+
+        int64_t getNextTimerTickToIndex(int64_t intervalIndex);
+        TimerList& getCurrentTimerList();
 
         friend class Singleton<TimerLauncher>;
 
         bool                                    _isRun;
+        std::thread                             _timerLogicThread;
+
         uint64_t                                _timerTick;
+
         std::shared_mutex                       _timerMutex;
         TimerListArray                          _timerEventArray;
         std::list<Timer*>                       _longTermTimerList;
-        std::thread                             _timerLogicThread;
-        int32_t                                 _tickIntervalMilliSecond;
+
+        int64_t                                 _tickIntervalMilliSecond;
     };
 }
 

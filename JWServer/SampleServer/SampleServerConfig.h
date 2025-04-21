@@ -19,7 +19,7 @@ namespace jw
         int16_t GetServerPort();
         int16_t GetWorkerThreadCount();
         int64_t GetMaxClientSessionCount();
-        int32_t GetTimerTickIntervalMilliSecond();
+        int64_t GetTimerTickIntervalMilliSecond();
 
     };
 }
