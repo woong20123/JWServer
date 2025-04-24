@@ -13,6 +13,8 @@ namespace jw
     class IOWorker;
     class Port;
     class Session;
+    class SessionInspector;
+    class SessionInspectorInfoTable;
     class Network : public Singleton<Network>
     {
     public:
@@ -37,7 +39,9 @@ namespace jw
         bool                            RegistPort(const PortId_t portId, std::shared_ptr<Port>& port);
         Session* CreateSession(const PortId_t portId);
         bool                            DestroySession(const PortId_t portId, Session* session);
+        std::shared_ptr<Session>        GetSession(uint64_t sessionId);
         std::shared_ptr<Session>        GetSession(const PortId_t portId, const int32_t sessionIndex);
+        bool                            RegisterSessionInspectorInfoTable(const PortId_t portId, std::shared_ptr<SessionInspectorInfoTable>& table);
 
 
     protected:
@@ -60,8 +64,9 @@ namespace jw
         uint16_t                            _workerThreadCount;
         std::unique_ptr<IOWorker>           _ioWorker;
         PortContainer                       _portContainer;
+        std::unique_ptr<SessionInspector>   _sessionInspector;
 
-        std::shared_ptr<Port>               _NullPort;
+        static std::shared_ptr<Port>               _NullPort;
         friend class Singleton<Network>;
     };
 }

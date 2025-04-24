@@ -15,6 +15,7 @@ namespace jw
     class Session;
     class SessionHandler;
     class PacketBufferHandler;
+    class SessionInspectorInfoTable;
 
     struct PortInfo
     {
@@ -22,6 +23,7 @@ namespace jw
         uint16_t _portNumber{ 0 };
         HANDLE _iocpHandle{ nullptr };
         size_t _sesionMaxCount{ 0 };
+        time_t _recvCheckTimeSecond{ 0 };
         std::shared_ptr<SessionHandler> _sessionHandler;
         std::shared_ptr<PacketBufferHandler> _packetBufferHandler;
     };
@@ -53,6 +55,7 @@ namespace jw
         uint16_t                                _portNumber;
         HANDLE                                  _ipcpHandle;
         std::unique_ptr<Listener>               _listerner;
+        std::shared_ptr<SessionInspectorInfoTable> _sessionInspectorStatusTable;
         std::shared_ptr<Session>* _sessionList;
         SessionIndexCon                         _availableSessionIndexCon;     // 사용가능한 세션 인덱스
         size_t                                  _sessionMaxCount;

@@ -178,6 +178,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionBuffer.h" />
     <ClInclude Include="SessionHandler.h" />
+    <ClInclude Include="SessionInspector.h" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Timer.h" />
@@ -215,6 +216,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SessionBuffer.cpp" />
+    <ClCompile Include="SessionInspector.cpp" />
     <ClCompile Include="StopWatch.h" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Timer.cpp" />

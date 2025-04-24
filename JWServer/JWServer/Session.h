@@ -90,6 +90,7 @@ namespace jw
         CLOSE_REASON_RECV_FAIL,
         CLOSE_REASON_SEND_FAIL,
         CLOSE_REASON_CLIENT_DISCONNECTED,
+        CLOSE_REASON_INSPECTOR_TIMEOUT,
     };
 
     class Session : public AsyncObject
@@ -122,7 +123,7 @@ namespace jw
         bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
         void Dispose();
 
-        static SessionID MakeSessionID(uint32_t index, uint16_t portId);
+        static SessionID MakeSessionID(const uint32_t index, const uint16_t portId);
 
         SessionState GetState() const { return _state; }
         bool IsConnected() const;
@@ -132,7 +133,8 @@ namespace jw
 
         void SetChannelKey(const int64_t channelKey);
         int64_t GetChannelKey() const;
-
+        time_t GetLastRecvTime() const { return _lastRecvTime; }
+        void UpdateRecvTime();
     private:
         bool asyncRecv();
         bool asyncSend(const void* byteStream, const size_t byteCount);
@@ -158,6 +160,7 @@ namespace jw
         std::shared_ptr<PacketBufferHandler>    _packetBufferHandler;
         uint64_t                                _channelKey;
         std::vector<OnCloseFunc>                _onCloseList;
+        time_t                                  _lastRecvTime;
     };
 }
 

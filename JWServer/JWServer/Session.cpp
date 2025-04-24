@@ -6,6 +6,7 @@
 #include "TypeDefinition.h"
 #include "PacketBufferHandler.h"
 #include "Packet.h"
+#include "TimeUtil.h"
 
 namespace jw
 {
@@ -103,6 +104,8 @@ namespace jw
                 LOG_ERROR(L"next async recv error, id:{}, error:{}", GetId(), WSAGetLastError());
                 return false;
             }
+
+            UpdateRecvTime();
         }
         break;
         case ASYNC_CONTEXT_ID_SEND:
@@ -305,6 +308,7 @@ namespace jw
         {
             return false;
         }
+
         return true;
     }
 
@@ -370,7 +374,12 @@ namespace jw
         LOG_DEBUG(L"Session set state, id:{}, oldState:{}, newState:{}", GetId(), Session::GetStateToStr(oldState), Session::GetStateToStr(newState));
     }
 
-    SessionID Session::MakeSessionID(uint32_t index, uint16_t portId)
+    void Session::UpdateRecvTime()
+    {
+        _lastRecvTime = TimeUtil::GetCurrentUTCTimeSecond();
+    }
+
+    SessionID Session::MakeSessionID(const uint32_t index, const uint16_t portId)
     {
         SessionID sessionId;
         sessionId.padding = 0;

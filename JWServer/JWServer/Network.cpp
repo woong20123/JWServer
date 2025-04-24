@@ -3,18 +3,20 @@
 #include "Logger.h"
 #include "IOWorker.h"
 #include "Port.h"
+#include "Session.h"
+#include "SessionInspector.h"
+#include "TimeUtil.h"
 #include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
 
 namespace jw
 {
-
+    std::shared_ptr<Port> Network::_NullPort = nullptr;
     Network::Network() :
         _iocpHandle{ nullptr },
         _ioWorker{ nullptr },
-        _workerThreadCount{ 0 },
-        _NullPort{ nullptr }
+        _workerThreadCount{ 0 }
     {}
 
     Network::~Network() {
@@ -43,6 +45,10 @@ namespace jw
             LOG_FETAL(L"initializeWSASocketFunc Fail");
             return false;
         }
+
+        _sessionInspector = std::make_unique<SessionInspector>();
+        _sessionInspector->Initialize(true, TimeUtil::SECOND_TO_MILLISECOND * 10);
+        _sessionInspector->Run();
 
         initializeIOWorkers();
 
@@ -148,6 +154,12 @@ namespace jw
         return false;
     }
 
+    std::shared_ptr<Session> Network::GetSession(uint64_t sessionId)
+    {
+        SessionID structSessionId{ sessionId };
+        return GetSession(structSessionId.portId, structSessionId.index);
+    }
+
     std::shared_ptr<Session> Network::GetSession(const PortId_t portId, const int32_t sessionIndex)
     {
         if (auto& port = getPort(portId);
@@ -157,6 +169,16 @@ namespace jw
         }
 
         return nullptr;
+    }
+
+    bool Network::RegisterSessionInspectorInfoTable(const Network::PortId_t portId, std::shared_ptr<SessionInspectorInfoTable>& table)
+    {
+        if (_sessionInspector)
+        {
+            _sessionInspector->RegisterTable(portId, table);
+            return true;
+        }
+        return false;
     }
 
     bool Network::initializeWinSock()
@@ -225,6 +247,6 @@ namespace jw
         }
 
         LOG_ERROR(L"not find portNumber, portId:{}", portId);
-        return _NullPort;
+        return Network::_NullPort;
     }
 }

@@ -107,6 +107,9 @@
     <ClInclude Include="SerializerTimer.h">
       <Filter>Serializer</Filter>
     </ClInclude>
+    <ClInclude Include="SessionInspector.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="SerializerTimer.cpp">
       <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionInspector.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

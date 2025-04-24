@@ -51,10 +51,11 @@ namespace jw
         const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
 
         // config를 설정을 셋팅 합니다. 
-        _config->RegisterConfigDefinition("server-port", L"13211");
-        _config->RegisterConfigDefinition("worker-thread", L"0");
-        _config->RegisterConfigDefinition("max-client-session-count", L"5000");
-        _config->RegisterConfigDefinition("timer-tick-interval-milliSecond", L"100");
+        _config->RegisterConfigDefinition(SampleServerConfig::SERVER_PORT, L"13211");
+        _config->RegisterConfigDefinition(SampleServerConfig::WORKER_THREAD, L"0");
+        _config->RegisterConfigDefinition(SampleServerConfig::MAX_CLIENT_SESSION_COUNT, L"5000");
+        _config->RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MILLISECOND, L"100");
+        _config->RegisterConfigDefinition(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND, L"300");
 
         if (!_config->Load(configPath))
         {
@@ -90,6 +91,7 @@ namespace jw
         clientPort._sesionMaxCount = _config->GetMaxClientSessionCount();
         clientPort._sessionHandler = gameSessionHandler;
         clientPort._packetBufferHandler = std::make_shared<TrustedPacketBufferHandler>();
+        clientPort._recvCheckTimeSecond = _config->GetSessionRecvCheckTimeSecond();
 
         reigstPort(clientPort);
 

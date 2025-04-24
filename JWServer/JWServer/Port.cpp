@@ -5,6 +5,7 @@
 #include "Session.h"
 #include "SessionBuffer.h"
 #include "SessionHandler.h"
+#include "SessionInspector.h"
 
 namespace jw
 {
@@ -62,6 +63,11 @@ namespace jw
             return false;
         }
 
+        _sessionInspectorStatusTable = std::make_shared<SessionInspectorInfoTable>();
+        _sessionInspectorStatusTable->Initialize(_id, info._sesionMaxCount, info._recvCheckTimeSecond);
+
+        NETWORK().RegisterSessionInspectorInfoTable(_id, _sessionInspectorStatusTable);
+
         LOG_INFO(L"Port Initialize Success, id:{}, portNumber:{}, sesionMaxCount:{}", info._id, info._portNumber, info._sesionMaxCount);
 
         return true;
@@ -105,8 +111,14 @@ namespace jw
             return nullptr;
         }
 
+        session->RegisterOnClose([this, sessionIndex](uint32_t reason) {
+            _sessionInspectorStatusTable->SetStateReleased(sessionIndex);
+            });
+
         _sessionList[sessionIndex] = session;
         _sessionHandler->OnCreated(session.get());
+
+        _sessionInspectorStatusTable->SetStateAllocated(sessionIndex);
 
         LOG_INFO(L"Session Create Success, id:{}, port:{}, sessionId:{}, sessionIndex:{}, sessionMaxCount:{}", _id, _portNumber, sessionId.id, sessionIndex, _sessionMaxCount);
 
