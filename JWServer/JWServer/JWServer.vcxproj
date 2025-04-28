@@ -149,6 +149,7 @@ bootstrap.bat</Command>
   <ItemGroup>
     <ClInclude Include="Arguments.h" />
     <ClInclude Include="ArgumentsHandler.h" />
+    <ClInclude Include="BadIpBlock.h" />
     <ClInclude Include="Channel.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Consumer.hpp" />
@@ -189,6 +190,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="ArgumentsHandler.cpp" />
     <ClCompile Include="AsyncObject.h" />
+    <ClCompile Include="BadIpBlock.cpp" />
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="IOWorker.cpp" />

@@ -45,10 +45,12 @@ namespace jw
 
         std::shared_ptr<Session> GetSession(const int32_t sessionIndex);
 
+        const size_t GetSessionCount() const;
+
     private:
 
-        size_t getAvailableSessionCount();
-        size_t getUsedSessionCount();
+        size_t getAvailableSessionCount() const;
+        size_t getUsedSessionCount() const;
         void initializeSessionIndex(const size_t maxSessionCount);
 
         uint32_t                                _id;
@@ -59,7 +61,7 @@ namespace jw
         std::shared_ptr<Session>* _sessionList;
         SessionIndexCon                         _availableSessionIndexCon;     // 사용가능한 세션 인덱스
         size_t                                  _sessionMaxCount;
-        std::shared_mutex                       _sessionMutex;
+        mutable std::shared_mutex                       _sessionMutex;
         std::shared_ptr<SessionHandler>         _sessionHandler;
         std::shared_ptr<PacketBufferHandler>    _packetBufferHander;
     };

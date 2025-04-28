@@ -7,34 +7,56 @@ namespace jw
     {
         Config::Initialize(parser);
     }
-    void SampleServerConfig::OnLoading()
+    void SampleServerConfig::onLoading()
     { }
 
-    void SampleServerConfig::OnLoaded()
+    void SampleServerConfig::onLoaded()
     { }
 
-    int16_t SampleServerConfig::GetServerPort()
+    const int16_t SampleServerConfig::GetServerPort()
     {
         return GetInt16(SampleServerConfig::SERVER_PORT);
     }
 
-    int16_t SampleServerConfig::GetWorkerThreadCount()
+    const int16_t SampleServerConfig::GetWorkerThreadCount()
     {
         return GetInt16(SampleServerConfig::WORKER_THREAD);
     }
 
-    int64_t SampleServerConfig::GetMaxClientSessionCount()
+    const int64_t SampleServerConfig::GetMaxClientSessionCount()
     {
         return GetInt64(SampleServerConfig::MAX_CLIENT_SESSION_COUNT);
     }
 
-    int64_t SampleServerConfig::GetTimerTickIntervalMilliSecond()
+    const int64_t SampleServerConfig::GetTimerTickIntervalMilliSecond()
     {
-        return GetInt64(SampleServerConfig::TIMER_TICK_INTERVAL_MILLISECOND);
+        return GetInt64(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC);
     }
 
-    int64_t SampleServerConfig::GetSessionRecvCheckTimeSecond()
+    const int64_t SampleServerConfig::GetLoggerTickIntervalMilliSecond()
+    {
+        return GetInt64(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC);
+    }
+
+    const int64_t SampleServerConfig::GetSessionRecvCheckTimeSecond()
     {
         return GetInt64(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND);
+    }
+
+    const bool SampleServerConfig::GetBadIpBlockEnable()
+    {
+        return GetBool(SampleServerConfig::BAD_IP_BLOCK_ENABLE);
+    }
+    const int64_t SampleServerConfig::GetBadIpBlockSanctionTimeSecond()
+    {
+        return GetInt64(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND);
+    }
+    const int32_t SampleServerConfig::GetBadIpBlockTriggeringSessionCount()
+    {
+        return GetInt32(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT);
+    }
+    const int32_t SampleServerConfig::GetBadIpBlockThresholdCheckedCount()
+    {
+        return GetInt32(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT);
     }
 }

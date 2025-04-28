@@ -3,6 +3,7 @@
 #define __JW_NETWOKR_HELPER_H__
 #include <WinSock2.h>
 #include <cstdint>
+#include <string>
 
 namespace jw
 {
@@ -16,6 +17,9 @@ namespace jw
         static bool AssociateDeviceWithIOCP(HANDLE h, HANDLE iocpHandle, uint64_t key);
 
         static uint16_t GetProcessorCount();
+
+        static const std::string GetAddressStringA(uint32_t address);
+        static const std::wstring GetAddressStringW(uint32_t address);
     };
 }
 

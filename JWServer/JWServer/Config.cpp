@@ -15,7 +15,7 @@ namespace jw
 
     bool Config::Load(std::filesystem::path filePath)
     {
-        OnLoading();
+        onLoading();
         const auto currentPath = std::filesystem::current_path();
 
         if (!std::filesystem::is_regular_file(filePath))
@@ -42,7 +42,7 @@ namespace jw
             _parser->Write(filePath, _configMap);
         }
 
-        OnLoaded();
+        onLoaded();
 
         return true;
     }
@@ -145,18 +145,38 @@ namespace jw
         return true;
     }
 
-    int16_t Config::GetInt16(const std::string& key)
+    const bool Config::GetBool(const std::string& key) const
+    {
+        const auto value = GetString(key);
+        if ((value.size() == 3 && value == L"yes") ||
+            (value.size() == 1 && value == L"y"))
+        {
+            return true;
+        }
+
+        if ((value.size() == 2 && value == L"no") ||
+            (value.size() == 1 && value == L"n"))
+        {
+            return false;
+        }
+
+        assert(false && std::format("Config::GetBool parser Error, value:{}", value.c_str()).c_str());
+        return false;
+    }
+
+
+    const int16_t Config::GetInt16(const std::string& key) const
     {
         return static_cast<int32_t>(GetInt64(key));
     }
 
-    int32_t Config::GetInt32(const std::string& key)
+    const int32_t Config::GetInt32(const std::string& key) const
     {
 
         return static_cast<int32_t>(GetInt64(key));
     }
 
-    int64_t Config::GetInt64(const std::string& key)
+    const int64_t Config::GetInt64(const std::string& key) const
     {
         auto it = _configMap.find(key);
         if (it != _configMap.end())
@@ -167,7 +187,7 @@ namespace jw
     }
 
 
-    std::wstring Config::GetString(const std::string& key)
+    const std::wstring Config::GetString(const std::string& key) const
     {
         auto it = _configMap.find(key);
         if (it != _configMap.end())

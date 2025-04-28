@@ -1,4 +1,5 @@
 ﻿#include "NetworkHelper.h"
+#include "StringConverter.h"
 #include <thread>
 
 namespace jw
@@ -32,6 +33,17 @@ namespace jw
         GetSystemInfo(&sysInfo);
         return static_cast<uint16_t>(sysInfo.dwNumberOfProcessors);
 #endif
+    }
+
+    const std::string NetworkHelper::GetAddressStringA(uint32_t address)
+    {
+        return std::format("{}.{}.{}.{}", address & 0xFF, address >> 8 & 0xFF, address >> 16 & 0xFF, address >> 24 & 0xFF);
+    }
+
+    const std::wstring NetworkHelper::GetAddressStringW(uint32_t address)
+    {
+
+        return StringConverter::StrA2WUseUTF8(GetAddressStringA(address)).value();
     }
 }
 

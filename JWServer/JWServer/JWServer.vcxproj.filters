@@ -110,6 +110,9 @@
     <ClInclude Include="SessionInspector.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="BadIpBlock.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">
@@ -216,6 +219,9 @@
       <Filter>Serializer</Filter>
     </ClCompile>
     <ClCompile Include="SessionInspector.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="BadIpBlock.cpp">
       <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>

@@ -25,7 +25,13 @@ namespace jw
     SampleServer::~SampleServer()
     {}
 
-    bool SampleServer::onStartLog()
+    bool SampleServer::onStartingLog()
+    {
+        setLogWaitMilliseconds(static_cast<uint32_t>(_config->GetLoggerTickIntervalMilliSecond()));
+        return true;
+    }
+
+    bool SampleServer::onStartedLog()
     {
 #ifdef _DEBUG
         std::vector<jw::LogType> consoleLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO, jw::LogType::LOG_DEBUG };
@@ -54,8 +60,14 @@ namespace jw
         _config->RegisterConfigDefinition(SampleServerConfig::SERVER_PORT, L"13211");
         _config->RegisterConfigDefinition(SampleServerConfig::WORKER_THREAD, L"0");
         _config->RegisterConfigDefinition(SampleServerConfig::MAX_CLIENT_SESSION_COUNT, L"5000");
-        _config->RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MILLISECOND, L"100");
+        _config->RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC, L"100");
+        _config->RegisterConfigDefinition(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC, L"100");
         _config->RegisterConfigDefinition(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND, L"300");
+        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_ENABLE, Config::BOOL_FALSE);
+        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND, L"3600");
+        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT, L"5000");
+        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT, L"1");
+
 
         if (!_config->Load(configPath))
         {
@@ -95,6 +107,13 @@ namespace jw
 
         reigstPort(clientPort);
 
+        Network::BadIpBlockOption badIpBlockOption;
+        badIpBlockOption._isRun = _config->GetBadIpBlockEnable();
+        badIpBlockOption._sanctionsTimeSecond = _config->GetBadIpBlockSanctionTimeSecond();
+        badIpBlockOption._triggeringSessionCount = _config->GetBadIpBlockTriggeringSessionCount();
+        badIpBlockOption._thresholdCheckedCount = _config->GetBadIpBlockThresholdCheckedCount();
+        NETWORK().SetBadIpBlockOption(badIpBlockOption);
+
         return true;
     }
 
@@ -102,6 +121,11 @@ namespace jw
     {
         setTimerTickIntervalMilliSecond(_config->GetTimerTickIntervalMilliSecond());
 
+        return true;
+    }
+
+    bool SampleServer::onStartedTimer()
+    {
         return true;
     }
 

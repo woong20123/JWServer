@@ -164,13 +164,19 @@ namespace jw
         READ_LOCK(_sessionMutex);
         return _sessionList[sessionIndex];
     }
-    size_t Port::getAvailableSessionCount()
+
+    const size_t Port::GetSessionCount() const
+    {
+        return getUsedSessionCount();
+    }
+
+    size_t Port::getAvailableSessionCount() const
     {
         READ_LOCK(_sessionMutex);
         return _availableSessionIndexCon.size();
     }
 
-    size_t Port::getUsedSessionCount()
+    size_t Port::getUsedSessionCount() const
     {
         READ_LOCK(_sessionMutex);
         return _sessionMaxCount - _availableSessionIndexCon.size();

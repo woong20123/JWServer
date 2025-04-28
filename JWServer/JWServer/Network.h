@@ -15,17 +15,27 @@ namespace jw
     class Session;
     class SessionInspector;
     class SessionInspectorInfoTable;
+    class BadIpBlock;
     class Network : public Singleton<Network>
     {
     public:
         using PortId_t = uint16_t;
         using PortContainer = std::unordered_map<uint16_t, std::shared_ptr<Port>>;
 
+        struct BadIpBlockOption
+        {
+            bool        _isRun;
+            int64_t     _sanctionsTimeSecond;
+            int32_t     _triggeringSessionCount;
+            int32_t    _thresholdCheckedCount;
+        };
+
         static constexpr PortId_t INVALID_PORT_ID_TYPE = 0;
         // 해당 값으로 설정시 (프로세서 * 2)개의 스레드를 생성합니다 .
         static constexpr uint16_t DEFAULT_WORKER_THREAD_COUNT = 0;
 
         bool Initialize();
+        void SetBadIpBlockOption(const BadIpBlockOption& option);
 
         bool Start(uint16_t& workerThreadCount);
         void Stop();
@@ -43,6 +53,10 @@ namespace jw
         std::shared_ptr<Session>        GetSession(const PortId_t portId, const int32_t sessionIndex);
         bool                            RegisterSessionInspectorInfoTable(const PortId_t portId, std::shared_ptr<SessionInspectorInfoTable>& table);
 
+        size_t                          GetSessionCount(const PortId_t portId);
+
+        void                            RegisterBadIp(const uint32_t address);
+        const bool                      IsBadIp(const uint32_t address, int32_t sessionCount);
 
     protected:
         Network();
@@ -65,6 +79,7 @@ namespace jw
         std::unique_ptr<IOWorker>           _ioWorker;
         PortContainer                       _portContainer;
         std::unique_ptr<SessionInspector>   _sessionInspector;
+        std::shared_ptr<BadIpBlock>         _badIpBlock;
 
         static std::shared_ptr<Port>               _NullPort;
         friend class Singleton<Network>;

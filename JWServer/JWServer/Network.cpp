@@ -6,6 +6,7 @@
 #include "Session.h"
 #include "SessionInspector.h"
 #include "TimeUtil.h"
+#include "BadIpBlock.h"
 #include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
@@ -50,9 +51,23 @@ namespace jw
         _sessionInspector->Initialize(true, TimeUtil::SECOND_TO_MILLISECOND * 10);
         _sessionInspector->Run();
 
+        _badIpBlock = std::make_shared<EmptyBadIpBlock>();
+
         initializeIOWorkers();
 
         return true;
+    }
+
+    void Network::SetBadIpBlockOption(const BadIpBlockOption& option)
+    {
+        if (option._isRun)
+        {
+            _badIpBlock = std::make_shared<DefaultBadIpBlock>();
+        }
+        else
+        {
+            _badIpBlock = std::make_shared<DefaultBadIpBlock>();
+        }
     }
 
     bool Network::Start(uint16_t& workerThreadCount)
@@ -178,6 +193,29 @@ namespace jw
             _sessionInspector->RegisterTable(portId, table);
             return true;
         }
+        return false;
+    }
+
+    size_t Network::GetSessionCount(const PortId_t portId)
+    {
+        if (auto& port = getPort(portId);
+            nullptr != port)
+        {
+            return port->GetSessionCount();
+        }
+        return 0L;
+    }
+
+    void Network::RegisterBadIp(const uint32_t address)
+    {
+        if (_badIpBlock)
+            _badIpBlock->RegisterBadIp(address);
+    }
+
+    const bool Network::IsBadIp(const uint32_t address, int32_t sessionCount)
+    {
+        if (_badIpBlock)
+            return _badIpBlock->IsBadIp(address, sessionCount);
         return false;
     }
 

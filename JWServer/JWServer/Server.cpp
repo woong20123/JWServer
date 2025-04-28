@@ -22,53 +22,58 @@ namespace jw
         _workerThreadCount{ 0 },
         _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
         _state{ ServerState::SERVER_STATE_NONE },
-        _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
+        _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC },
+        _logWaitMilliseconds{ 100 }
     {
     }
 
     Server::~Server() {}
 
-    bool Server::Initialize(const std::wstring& name)
+    bool Server::Initialize(const std::wstring& name, int argc, char* argv[])
     {
         _name = name;
         _logWorker = std::make_unique<LogWorker>();
 
         onInitialize();
 
-        setState(ServerState::SERVER_STATE_INIT);
+        setState(ServerState::SERVER_STATE_INITIALIZING);
 
-        return true;
-    }
-
-    bool Server::Start(int argc, char* argv[])
-    {
         if (_name == INVALID_SERVER_NAME || _logWorker == nullptr)
         {
             std::wcerr << L"not call Server::Initialize()" << std::endl;
             return false;
         }
 
-        setState(ServerState::SERVER_STATE_STARTING);
-
-        startLog();
+        if (!startLog())
+        {
+            std::wcerr << L"fail startLog func" << std::endl;
+            return false;
+        }
 
         setArgument(argc, argv);
 
         setConfig();
 
-        startNetwork();
+        if (!startNetwork())
+            return false;
 
-        startTimer();
+        if (!startTimer())
+            return false;
 
+        setState(ServerState::SERVER_STATE_INITIALIZED);
+
+        return true;
+    }
+
+    void Server::Start(int argc, char* argv[])
+    {
         LOG_INFO(L"on start, name:{}", _name);
 
         setState(ServerState::SERVER_STATE_ON_SERVER);
 
         waitEvent();
 
-        closeServer();
-
-        return true;
+        CloseServer();
     }
 
     void Server::SendServerEvent(std::shared_ptr<ServerEvent>& eventObj)
@@ -81,19 +86,6 @@ namespace jw
         _serverEventContainer->Push(eventObj);
     }
 
-    void Server::Stop()
-    {
-        if (_state == ServerState::SERVER_STATE_CLOSING ||
-            _state == ServerState::SERVER_STATE_CLOSED)
-            return;
-
-        _serverEventContainer->SetStopSignal();
-        std::shared_ptr<ServerEvent> evt = std::make_shared<NotifyServerEvent>();
-        SendServerEvent(evt);
-
-        setState(ServerState::SERVER_STATE_CLOSING);
-    }
-
     const wchar_t* Server::ServerStateToStr(ServerState state)
     {
         return ServerStateStr[static_cast<size_t>(state)];
@@ -102,13 +94,25 @@ namespace jw
     bool Server::startLog()
     {
         // logger와 logWorker를 container로 연결 
+        if (!onStartingLog())
+        {
+            std::wcerr << L"fail onStartingLog func" << std::endl;
+            return false;
+        }
+
         std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
         LOGGER().Initialize(container);
         _logWorker->SetProducerCon(container);
 
-        onStartLog();
-
-        _logWorker->RunThread();
+        if (onStartedLog())
+        {
+            _logWorker->RunThread();
+        }
+        else
+        {
+            std::wcerr << L"fail onStartedLog func" << std::endl;
+            return false;
+        }
 
         LOG_INFO(L"initialize Log Success, name:{}, registLogStreamCount:{}", _name, _logWorker->getRegistedLogStreamCount());
         return true;
@@ -161,6 +165,11 @@ namespace jw
         _tickIntervalMilliSecond = intervalMilliSecond;
     }
 
+    void Server::setLogWaitMilliseconds(const uint32_t waitMilliSecond)
+    {
+        _logWaitMilliseconds = waitMilliSecond;
+    }
+
     void Server::reigstPort(const PortInfo& portInfo)
     {
         std::shared_ptr<Port> port = std::make_shared<Port>();
@@ -197,25 +206,50 @@ namespace jw
 
     bool Server::startNetwork()
     {
-        onStartingNetwork();
+        if (!onStartingNetwork())
+        {
+            LOG_ERROR(L"fail onStartedNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
+            return false;
+        }
 
-        NETWORK().Initialize();
+        if (!NETWORK().Initialize() ||
+            !NETWORK().Start(_workerThreadCount))
+        {
+            LOG_ERROR(L"fail startNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
+            return false;
+        }
 
-        NETWORK().Start(_workerThreadCount);
-
-        onStartedNetwork();
+        if (!onStartedNetwork())
+        {
+            LOG_ERROR(L"fail onStartedNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
+            return false;
+        }
 
         LOG_INFO(L"initialize Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
 
         return true;
     }
 
-    void Server::startTimer()
+    bool Server::startTimer()
     {
-        onStartingTimer();
+        if (!onStartingTimer())
+        {
+            LOG_ERROR(L"fail onStartingTimer, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+            return false;
+        }
 
         TIMER_LAUNCHER().Initialize(_tickIntervalMilliSecond);
         TIMER_LAUNCHER().Run();
+
+        if (!onStartedTimer())
+        {
+            LOG_ERROR(L"fail onStartedTimer, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+            return false;
+        }
+
+        LOG_INFO(L"initialize startTimer Success, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+
+        return true;
     }
 
     void Server::waitEvent()
@@ -239,7 +273,6 @@ namespace jw
         }
 
         LOG_INFO(L"Server is closed, name:{}", _name);
-        setState(ServerState::SERVER_STATE_CLOSED);
     }
 
     void Server::handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs)
@@ -250,8 +283,9 @@ namespace jw
         }
     }
 
-    void Server::closeServer()
+    void Server::CloseServer()
     {
+        setState(ServerState::SERVER_STATE_CLOSING);
         NETWORK().Stop();
         LOGGER().Stop();
         TIMER_LAUNCHER().Stop();
@@ -260,5 +294,18 @@ namespace jw
 
         // 서버의 정리작업을 기다립니다. 
         std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));
+
+        setState(ServerState::SERVER_STATE_CLOSED);
+    }
+
+    void Server::Stop()
+    {
+        if (_state == ServerState::SERVER_STATE_CLOSING ||
+            _state == ServerState::SERVER_STATE_CLOSED)
+            return;
+
+        _serverEventContainer->SetStopSignal();
+        std::shared_ptr<ServerEvent> evt = std::make_shared<NotifyServerEvent>();
+        SendServerEvent(evt);
     }
 }

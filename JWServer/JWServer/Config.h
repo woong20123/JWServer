@@ -18,15 +18,15 @@ namespace jw
     class Config
     {
     public:
+        static constexpr const wchar_t* BOOL_TRUE = L"yes";
+        static constexpr const wchar_t* BOOL_FALSE = L"no";
+
         using ConfigMap = std::unordered_map<std::string, std::wstring>;
         Config() = default;
         virtual ~Config() = default;
         virtual void Initialize(std::shared_ptr<ConfigParser> parser);
         bool Load(std::filesystem::path filePath);
         void WriteFromDefaultDefinition(std::filesystem::path filePath);
-
-        virtual void OnLoading() = 0;
-        virtual void OnLoaded() = 0;
 
         void RegisterConfigDefinition(const std::string& key, const std::wstring& defaultValue)
         {
@@ -36,12 +36,17 @@ namespace jw
     protected:
         std::shared_ptr<ConfigParser> _parser;
 
-        int16_t GetInt16(const std::string& key);
-        int32_t GetInt32(const std::string& key);
-        int64_t GetInt64(const std::string& key);
-        std::wstring GetString(const std::string& key);
+        const bool GetBool(const std::string& key) const;
+        const int16_t GetInt16(const std::string& key) const;
+        const int32_t GetInt32(const std::string& key) const;
+        const int64_t GetInt64(const std::string& key) const;
+        const std::wstring GetString(const std::string& key) const;
 
     private:
+
+        virtual void onLoading() = 0;
+        virtual void onLoaded() = 0;
+
         void makeDefintion();
         void checkDefinition(bool& isChanged, ConfigMap& configMap);
         std::vector<ConfigDefinition> _configDefinition;

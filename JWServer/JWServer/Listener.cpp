@@ -176,6 +176,9 @@ namespace jw
 			reinterpret_cast<LPSOCKADDR*>(&localAddr), &localAddrSize,
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
+
+		NETWORK().IsBadIp(remoteAddr->sin_addr.S_un.S_addr, static_cast<int32_t>(NETWORK().GetSessionCount(_portId)));
+
 		// 세션 생성
 		const auto session = NETWORK().CreateSession(_portId);
 
