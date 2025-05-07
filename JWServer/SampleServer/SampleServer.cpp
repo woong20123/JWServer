@@ -25,13 +25,13 @@ namespace jw
     SampleServer::~SampleServer()
     {}
 
-    bool SampleServer::onStartingLog()
+    bool SampleServer::onInitializingLog()
     {
         setLogWaitMilliseconds(static_cast<uint32_t>(_config->GetLoggerTickIntervalMilliSecond()));
         return true;
     }
 
-    bool SampleServer::onStartedLog()
+    bool SampleServer::onInitializedLog()
     {
 #ifdef _DEBUG
         std::vector<jw::LogType> consoleLogFlags = { jw::LogType::LOG_FATAL, jw::LogType::LOG_ERROR, jw::LogType::LOG_WARN, jw::LogType::LOG_INFO, jw::LogType::LOG_DEBUG };
@@ -47,7 +47,7 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onStartConfig()
+    bool SampleServer::onSetConfig()
     {
         // config를 설정합니다. 
         // config를 설정하는 방법은 Config.h, Config.cpp를 참고하세요.         
@@ -80,14 +80,14 @@ namespace jw
     }
 
 
-    bool SampleServer::onStartingNetwork()
+    bool SampleServer::onInitializingNetwork()
     {
         // 워커 스레드 설정
         setNetworkWorkerThread(_config->GetWorkerThreadCount());
         return true;
     }
 
-    bool SampleServer::onStartedNetwork()
+    bool SampleServer::onInitializedNetwork()
     {
         // GameSessionHandler 및 PacketHandler 설정 
         std::shared_ptr<SessionHandler> gameSessionHandler = std::make_shared<GameSessionHandler>();;
@@ -107,6 +107,7 @@ namespace jw
 
         reigstPort(clientPort);
 
+        // BadIPBlock 설정
         Network::BadIpBlockOption badIpBlockOption;
         badIpBlockOption._isRun = _config->GetBadIpBlockEnable();
         badIpBlockOption._sanctionsTimeSecond = _config->GetBadIpBlockSanctionTimeSecond();
@@ -117,35 +118,52 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onStartingTimer()
+    bool SampleServer::onInitializingTimer()
     {
         setTimerTickIntervalMilliSecond(_config->GetTimerTickIntervalMilliSecond());
 
         return true;
     }
 
-    bool SampleServer::onStartedTimer()
+    bool SampleServer::onInitializedTimer()
     {
         return true;
     }
 
-    bool SampleServer::onInitialize()
+    bool SampleServer::onInitializing()
+    {
+        LOG_INFO(L"initializing server, name:{}", GetName().data());
+        return true;
+    }
+
+    bool SampleServer::onInitialized()
+    {
+        LOG_INFO(L"initialized server, name:{}", GetName().data());
+        return true;
+    }
+
+    bool SampleServer::onStartedServer()
     {
         _world->Initialize(World::USER_LIST_MAX_SIZE);
 
-        LOG_INFO(L"initialize server, name:{}", GetName().data());
+        LOG_INFO(L"started server, name:{}", GetName().data());
         return true;
+    }
+
+    void SampleServer::onClosingServer()
+    {
+        LOG_INFO(L"closing server, name:{}", GetName().data());
+    }
+
+    void SampleServer::onClosedServer()
+    {
+        LOG_INFO(L"closed server, name:{}", GetName().data());
     }
 
     bool SampleServer::onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj)
     {
         LOG_INFO(L"recved server event, id:{}", eventObj->_id);
         return true;
-    }
-
-    void SampleServer::onClosedServer()
-    {
-        LOG_INFO(L"closed server, name:{}", GetName().data());
     }
 
     World* SampleServer::GetWorld()

@@ -22,16 +22,25 @@ namespace jw
         virtual ~SampleServer();
 
     private:
-        bool onStartingLog() override;
-        bool onStartedLog() override;
-        bool onStartConfig() override;
-        bool onStartingNetwork() override;
-        bool onStartedNetwork() override;
-        bool onStartedTimer() override;
-        bool onStartingTimer() override;
-        bool onInitialize() override;
-        bool onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj) override;
+        bool onInitializing() override;
+        bool onInitialized() override;
+        bool onStartedServer() override;
+        void onClosingServer() override;
         void onClosedServer() override;
+
+        bool onInitializingLog() override;
+        bool onInitializedLog() override;
+
+        bool onSetConfig() override;
+
+        bool onInitializingNetwork() override;
+        bool onInitializedNetwork() override;
+
+        bool onInitializedTimer() override;
+        bool onInitializingTimer() override;
+
+        bool onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj) override;
+
 
         std::unique_ptr<World>              _world;
         std::unique_ptr<RoomManager>        _roomManager;

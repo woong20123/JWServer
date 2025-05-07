@@ -22,8 +22,8 @@ namespace jw
         _workerThreadCount{ 0 },
         _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
         _state{ ServerState::SERVER_STATE_NONE },
-        _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC },
-        _logWaitMilliseconds{ 100 }
+        _timerTickIntervalMSec{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC },
+        _logWaitMSec{ 100 }
     {
     }
 
@@ -34,31 +34,35 @@ namespace jw
         _name = name;
         _logWorker = std::make_unique<LogWorker>();
 
-        onInitialize();
-
-        setState(ServerState::SERVER_STATE_INITIALIZING);
-
         if (_name == INVALID_SERVER_NAME || _logWorker == nullptr)
         {
             std::wcerr << L"not call Server::Initialize()" << std::endl;
             return false;
         }
 
-        if (!startLog())
+        setState(ServerState::SERVER_STATE_INITIALIZING);
+
+        if (!initializeAndRunLog())
         {
             std::wcerr << L"fail startLog func" << std::endl;
             return false;
         }
 
-        setArgument(argc, argv);
+        registArgument(argc, argv);
 
         setConfig();
 
-        if (!startNetwork())
+        if (!initializeNetwork())
+        {
+            LOG_ERROR(L"fail initialize Network, name:{}", _name);
             return false;
+        }
 
-        if (!startTimer())
+        if (!initializeTimer())
+        {
+            LOG_ERROR(L"fail initialize Timer, name:{}", _name);
             return false;
+        }
 
         setState(ServerState::SERVER_STATE_INITIALIZED);
 
@@ -69,7 +73,11 @@ namespace jw
     {
         LOG_INFO(L"on start, name:{}", _name);
 
-        setState(ServerState::SERVER_STATE_ON_SERVER);
+        startNetwork();
+
+        startTimer();
+
+        setState(ServerState::SERVER_STATE_STARTED_SERVER);
 
         waitEvent();
 
@@ -91,12 +99,12 @@ namespace jw
         return ServerStateStr[static_cast<size_t>(state)];
     }
 
-    bool Server::startLog()
+    bool Server::initializeAndRunLog()
     {
         // logger와 logWorker를 container로 연결 
-        if (!onStartingLog())
+        if (!onInitializingLog())
         {
-            std::wcerr << L"fail onStartingLog func" << std::endl;
+            std::wcerr << L"fail onInitializingLog func" << std::endl;
             return false;
         }
 
@@ -104,15 +112,13 @@ namespace jw
         LOGGER().Initialize(container);
         _logWorker->SetProducerCon(container);
 
-        if (onStartedLog())
+        if (!onInitializedLog())
         {
-            _logWorker->RunThread();
-        }
-        else
-        {
-            std::wcerr << L"fail onStartedLog func" << std::endl;
+            std::wcerr << L"fail onInitializedLog func" << std::endl;
             return false;
         }
+
+        _logWorker->RunThread();
 
         LOG_INFO(L"initialize Log Success, name:{}, registLogStreamCount:{}", _name, _logWorker->getRegistedLogStreamCount());
         return true;
@@ -160,14 +166,14 @@ namespace jw
         _workerThreadCount = workerThreadCount;
     }
 
-    void Server::setTimerTickIntervalMilliSecond(const int64_t intervalMilliSecond)
+    void Server::setTimerTickIntervalMilliSecond(const int64_t timerTickIntervalMSec)
     {
-        _tickIntervalMilliSecond = intervalMilliSecond;
+        _timerTickIntervalMSec = timerTickIntervalMSec;
     }
 
-    void Server::setLogWaitMilliseconds(const uint32_t waitMilliSecond)
+    void Server::setLogWaitMilliseconds(const uint32_t waitMSec)
     {
-        _logWaitMilliseconds = waitMilliSecond;
+        _logWaitMSec = waitMSec;
     }
 
     void Server::reigstPort(const PortInfo& portInfo)
@@ -185,11 +191,31 @@ namespace jw
             return;
         }
 
+        switch (state)
+        {
+        case jw::ServerState::SERVER_STATE_INITIALIZING:
+            onInitializing();
+            break;
+        case jw::ServerState::SERVER_STATE_INITIALIZED:
+            onInitialized();
+            break;
+        case jw::ServerState::SERVER_STATE_STARTED_SERVER:
+            onStartedServer();
+            break;
+        case jw::ServerState::SERVER_STATE_CLOSING:
+            break;
+        case jw::ServerState::SERVER_STATE_CLOSED:
+            onClosedServer();
+            break;
+        default:
+            break;
+        }
+
         LOG_INFO(L"sucesss, beforeState:{}, afeterState:{}", Server::ServerStateToStr(_state), Server::ServerStateToStr(state));
         _state = state;
     }
 
-    bool Server::setArgument(int argc, char* argv[])
+    bool Server::registArgument(int argc, char* argv[])
     {
         ARGUMENT().Initialize(argc, argv);
         ARGUMENT().HandleArgument();
@@ -199,27 +225,26 @@ namespace jw
     bool Server::setConfig()
     {
         // TODO : config를 설정합니다. 
-        onStartConfig();
+        onSetConfig();
 
         return true;
     }
 
-    bool Server::startNetwork()
+    bool Server::initializeNetwork()
     {
-        if (!onStartingNetwork())
+        if (!onInitializingNetwork())
         {
             LOG_ERROR(L"fail onStartedNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
             return false;
         }
 
-        if (!NETWORK().Initialize() ||
-            !NETWORK().Start(_workerThreadCount))
+        if (!NETWORK().Initialize())
         {
             LOG_ERROR(L"fail startNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
             return false;
         }
 
-        if (!onStartedNetwork())
+        if (!onInitializedNetwork())
         {
             LOG_ERROR(L"fail onStartedNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
             return false;
@@ -230,26 +255,37 @@ namespace jw
         return true;
     }
 
-    bool Server::startTimer()
+    bool Server::initializeTimer()
     {
-        if (!onStartingTimer())
+        if (!onInitializingTimer())
         {
-            LOG_ERROR(L"fail onStartingTimer, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+            LOG_ERROR(L"fail onStartingTimer, name:{}, tickIntervalMilliSecond:{}", _name, _timerTickIntervalMSec);
             return false;
         }
 
-        TIMER_LAUNCHER().Initialize(_tickIntervalMilliSecond);
-        TIMER_LAUNCHER().Run();
+        TIMER_LAUNCHER().Initialize(_timerTickIntervalMSec);
 
-        if (!onStartedTimer())
+        if (!onInitializedTimer())
         {
-            LOG_ERROR(L"fail onStartedTimer, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+            LOG_ERROR(L"fail onStartedTimer, name:{}, tickIntervalMilliSecond:{}", _name, _timerTickIntervalMSec);
             return false;
         }
 
-        LOG_INFO(L"initialize startTimer Success, name:{}, tickIntervalMilliSecond:{}", _name, _tickIntervalMilliSecond);
+        LOG_INFO(L"initialize startTimer Success, name:{}, tickIntervalMilliSecond:{}", _name, _timerTickIntervalMSec);
 
         return true;
+    }
+
+    void Server::startNetwork()
+    {
+        NETWORK().Start(_workerThreadCount);
+
+        LOG_INFO(L"start Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
+    }
+    void Server::startTimer()
+    {
+        TIMER_LAUNCHER().Run();
+        LOG_INFO(L"start Timer Success, name:{}", _name);
     }
 
     void Server::waitEvent()
@@ -289,8 +325,6 @@ namespace jw
         NETWORK().Stop();
         LOGGER().Stop();
         TIMER_LAUNCHER().Stop();
-
-        onClosedServer();
 
         // 서버의 정리작업을 기다립니다. 
         std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));

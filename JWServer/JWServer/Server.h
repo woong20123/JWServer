@@ -28,7 +28,7 @@ namespace jw
         SERVER_STATE_NONE = 0,
         SERVER_STATE_INITIALIZING,
         SERVER_STATE_INITIALIZED,
-        SERVER_STATE_ON_SERVER,
+        SERVER_STATE_STARTED_SERVER,
         SERVER_STATE_CLOSING,
         SERVER_STATE_CLOSED,
         SERVER_STATE_MAX
@@ -81,6 +81,8 @@ namespace jw
 
         bool Initialize(const std::wstring& name, int argc, char* argv[]);
         void Start(int argc, char* argv[]);
+
+        // 서버에 이벤트를 전송합니다. 
         void SendServerEvent(std::shared_ptr<ServerEvent>& eventObj);
 
         ServerState GetState() { return _state; }
@@ -97,52 +99,60 @@ namespace jw
         void registLogStream(const std::shared_ptr<LogStream>& logStream);
 
         void setNetworkWorkerThread(const uint16_t);
-        void setTimerTickIntervalMilliSecond(const int64_t intervalMilliSecond);
+        void setTimerTickIntervalMilliSecond(const int64_t timerTickIntervalMSec);
         void setLogWaitMilliseconds(const uint32_t waitMilliSecond);
         void reigstPort(const PortInfo& portInfo);
 
         void setState(ServerState state);
     private:
 
+        // 서버 초기화시 사용자가 설정할 작업을 등록 합니다.
+        virtual bool onInitializing() { return true; }
+        virtual bool onInitialized() { return true; }
+        virtual bool onStartedServer() { return true; }
+        virtual void onClosingServer() { }
+        virtual void onClosedServer() { }
+
         // 서버 구동시 사용자가 설정할 Log 작업을 등록 합니다. 
         // - LogStream 등록
-        virtual bool onStartingLog() = 0;
-        virtual bool onStartedLog() = 0;
+        virtual bool onInitializingLog() { return true; }
+        virtual bool onInitializedLog() { return true; }
 
-        virtual bool onStartConfig() = 0;
+        // config 설정 작업을 등록합니다. 
+        virtual bool onSetConfig() { return true; }
 
         // 서버 구동시 사용자가 설정할 Network 작업을 등록 합니다. 
-        // - Port 등록 
-        // - SessionHandler 등록
-        // - PacketHandler 등록 
-        virtual bool onStartingNetwork() = 0;
-        virtual bool onStartedNetwork() = 0;
+        virtual bool onInitializingNetwork() = 0;
+        virtual bool onInitializedNetwork() = 0;
 
-        virtual bool onStartingTimer() = 0;
-        virtual bool onStartedTimer() = 0;
-
-        virtual bool onInitialize() = 0;
+        virtual bool onInitializingTimer() = 0;
+        virtual bool onInitializedTimer() = 0;
 
         // 런타임에 서버에 전달되는 이벤트 처리 동작을 추가 합니다. 
         virtual bool onHandleEvent(const std::shared_ptr<ServerEvent>& event) = 0;
 
-        // 서버 종료시에 진행할 작업을 등록합니다. 
-        virtual void onClosedServer() = 0;
 
-        bool startLog();
-        bool setArgument(int argc, char* argv[]);
+
+        // initialize
+        bool initializeAndRunLog();
+        bool registArgument(int argc, char* argv[]);
         bool setConfig();
-        bool startNetwork();
-        bool startTimer();
+        bool initializeNetwork();
+        bool initializeTimer();
+
+        // start
+        void startNetwork();
+        void startTimer();
+
         void waitEvent();
         void handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs);
         void Stop();
 
         std::wstring                            _name;
         std::unique_ptr<LogWorker>              _logWorker;
-        int64_t                                 _tickIntervalMilliSecond;
+        int64_t                                 _timerTickIntervalMSec;
         uint16_t                                _workerThreadCount;
-        uint32_t                                _logWaitMilliseconds;
+        uint32_t                                _logWaitMSec;
         std::unique_ptr<ServerEventProducerCon> _serverEventContainer;
         std::atomic<ServerState>                _state;
     };

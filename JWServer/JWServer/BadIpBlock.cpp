@@ -6,24 +6,27 @@
 
 namespace jw
 {
-    DefaultBadIpBlock::DefaultBadIpBlock() : _option{ BadIpOption::DEFAULT_SACTION_TIME_SECOND, BadIpOption::DEFAULT_TRIGGERING_SESSION_COUNT, BadIpOption::DEFAULT_THRESHOLD_CHECKED_COUNT }
+    BadIpBlock::BadIpBlock() : _option{ BadIpOption::DEFAULT_SACTION_TIME_SECOND, BadIpOption::DEFAULT_TRIGGERING_SESSION_COUNT, BadIpOption::DEFAULT_THRESHOLD_CHECKED_COUNT }
     {
-
     }
 
-    DefaultBadIpBlock::~DefaultBadIpBlock()
+    void BadIpBlock::Initalize()
     {
-
     }
 
-    void DefaultBadIpBlock::Initalize(const BadIpOption& option)
+    void BadIpBlock::SetOption(const BadIpOption& option)
+    {
+        setOption(option);
+    }
+
+    void BadIpBlock::setOption(const BadIpOption& option)
     {
         _option._sanctionsTimeSecond = option._sanctionsTimeSecond;
         _option._triggeringSessionCount = option._triggeringSessionCount;
         _option._thresholdCheckedCount = option._thresholdCheckedCount;
     }
 
-    void DefaultBadIpBlock::RegisterBadIp(IPAddress address)
+    void BadIpBlock::RegisterBadIp(IPAddress address)
     {
         if (address == INVALID_IP_ADDRESS) return;
 
@@ -46,10 +49,10 @@ namespace jw
             }
         }
 
-        LOG_INFO(L"[DefaultBadIpBlock] {} is Regist BadIp, sanctionsEndTime:{}, totalRegisteredCount:{}", NetworkHelper::GetAddressStringW(address).c_str(), sanctionsEndTime, totalRegisteredCount);
+        LOG_INFO(L"[BadIpBlock] {} is Regist BadIp, sanctionsEndTime:{}, totalRegisteredCount:{}", NetworkHelper::GetAddressStringW(address).c_str(), sanctionsEndTime, totalRegisteredCount);
     }
 
-    const bool DefaultBadIpBlock::IsBadIp(IPAddress address, int32_t sessionCount)
+    const bool BadIpBlock::IsBadIp(IPAddress address, int32_t sessionCount)
     {
         if (address == INVALID_IP_ADDRESS) return false;
 
@@ -85,7 +88,7 @@ namespace jw
         const auto count = _detectedbadIPCount.fetch_add(1, std::memory_order_relaxed);
         if (count % DETECTED_BAD_IP_LOG_COUNT == 0)
         {
-            LOG_INFO(L"[DefaultBadIpBlock] {:s} is detected. expirationTime:{:d}, checkedCount:{:d}, count:{:d}", NetworkHelper::GetAddressStringW(address), expirationTime, checkedCount, count);
+            LOG_INFO(L"[BadIpBlock] {:s} is detected. expirationTime:{:d}, checkedCount:{:d}, count:{:d}", NetworkHelper::GetAddressStringW(address), expirationTime, checkedCount, count);
         }
         return true;
     }

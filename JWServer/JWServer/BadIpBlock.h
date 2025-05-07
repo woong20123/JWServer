@@ -10,15 +10,17 @@ namespace jw
     class BadIpBlock
     {
     public:
-        using IPAddress = uint32_t;
-        static constexpr IPAddress INVALID_IP_ADDRESS = 0xFFFFFFFF;
-
         struct BadIpEntry
         {
             static constexpr uint32_t MAX_BAD_IP_COUNT = 1000;
             uint32_t    _checkedCount;
             int64_t     _expiredTimeSecond;
         };
+
+        using IPAddress = uint32_t;
+        static constexpr IPAddress INVALID_IP_ADDRESS = 0xFFFFFFFF;
+        static constexpr uint64_t DETECTED_BAD_IP_LOG_COUNT = 1000;
+        using BadIpEntryList = std::unordered_map<IPAddress, BadIpEntry>;
 
         struct BadIpOption
         {
@@ -31,34 +33,15 @@ namespace jw
             int32_t _thresholdCheckedCount;
         };
 
-        BadIpBlock() = default;
-        virtual ~BadIpBlock() = default;
+        BadIpBlock();
+        ~BadIpBlock() = default;
 
-        virtual void Initalize(const BadIpOption& option) = 0;
-        virtual void RegisterBadIp(IPAddress) = 0;
-        virtual const bool IsBadIp(IPAddress, int32_t sessionCount) = 0;
-    };
-
-    class EmptyBadIpBlock : public BadIpBlock
-    {
-    public:
-        void Initalize(const BadIpOption& option) override {};
-        void RegisterBadIp(IPAddress address) override {}
-        const bool IsBadIp(IPAddress address, int32_t sessionCount) override { return false; }
-    };
-
-    class DefaultBadIpBlock : public BadIpBlock
-    {
-    public:
-        static constexpr uint64_t DETECTED_BAD_IP_LOG_COUNT = 1000;
-        using BadIpEntryList = std::unordered_map<IPAddress, BadIpEntry>;
-        DefaultBadIpBlock();
-        ~DefaultBadIpBlock() override;
-
-        void Initalize(const BadIpOption& option) override;
-        void RegisterBadIp(IPAddress address) override;
-        const bool IsBadIp(IPAddress address, int32_t sessionCount) override;
+        void Initalize();
+        void SetOption(const BadIpOption& option);
+        void RegisterBadIp(IPAddress address);
+        const bool IsBadIp(IPAddress address, int32_t sessionCount);
     private:
+        void setOption(const BadIpOption& option);
         BadIpOption _option;
         BadIpEntryList _badIpList;
         std::shared_mutex _badIpListMutex;

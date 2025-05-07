@@ -49,9 +49,9 @@ namespace jw
 
         _sessionInspector = std::make_unique<SessionInspector>();
         _sessionInspector->Initialize(true, TimeUtil::SECOND_TO_MILLISECOND * 10);
-        _sessionInspector->Run();
 
-        _badIpBlock = std::make_shared<EmptyBadIpBlock>();
+        _badIpBlock = std::make_shared<BadIpBlock>();
+        _badIpBlock->Initalize();
 
         initializeIOWorkers();
 
@@ -60,14 +60,7 @@ namespace jw
 
     void Network::SetBadIpBlockOption(const BadIpBlockOption& option)
     {
-        if (option._isRun)
-        {
-            _badIpBlock = std::make_shared<DefaultBadIpBlock>();
-        }
-        else
-        {
-            _badIpBlock = std::make_shared<DefaultBadIpBlock>();
-        }
+        _badIpBlock->SetOption({ option._sanctionsTimeSecond, option._triggeringSessionCount, option._thresholdCheckedCount });
     }
 
     bool Network::Start(uint16_t& workerThreadCount)
@@ -86,6 +79,9 @@ namespace jw
 
 
         _ioWorker->RunThreads(_workerThreadCount);
+
+        _sessionInspector->Run();
+
         LOG_INFO(L"Network start, workerThreadCount:{}", _workerThreadCount);
         return true;
     }
@@ -93,6 +89,7 @@ namespace jw
     void Network::Stop()
     {
         _ioWorker->Stop();
+        _sessionInspector->Stop();
     }
 
     LPFN_ACCEPTEX Network::GetAcceptExFunc() const
