@@ -15,6 +15,9 @@ namespace jw
         constexpr static int32_t MAX_SERIALIZE_TYPE = 32;
         constexpr static int32_t NO_DELAY_TIME = 0;
 
+        SerializerManager(const SerializerManager&) = delete;
+        SerializerManager& operator=(const SerializerManager&) = delete;
+
         void Initialize();
         bool RegistSerializer(SerializerKey& serializerKey, std::shared_ptr<Serializer>& serializer);
         std::shared_ptr<Serializer> GetSerializer(const SerializerKey& serializerKey);
@@ -23,9 +26,7 @@ namespace jw
         int32_t MakeSerializeId(const int16_t serializeType);
     protected:
         SerializerManager();
-        ~SerializerManager();
-        SerializerManager(const SerializerManager&) = delete;
-        SerializerManager& operator=(const SerializerManager&) = delete;
+        ~SerializerManager() = default;
     private:
         friend class Singleton<SerializerManager>;
         std::map<SerializerKey, std::shared_ptr<Serializer>> _serializers;

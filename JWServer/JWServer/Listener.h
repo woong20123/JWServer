@@ -35,7 +35,7 @@ namespace jw
 	{
 	public:
 		Listener();
-		~Listener();
+		~Listener() = default;
 		bool Initialize(uint32_t portId, uint16_t portNumber, HANDLE iocpHandle, const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc);
 		uint32_t GetAsyncObjectId() const override { return ASYNC_OBJ_LISTENER; }
 		bool HandleEvent(AsyncContext* context, unsigned long bytes) override;

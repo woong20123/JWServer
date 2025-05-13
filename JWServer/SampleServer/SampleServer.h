@@ -31,7 +31,7 @@ namespace jw
         bool onInitializingLog() override;
         bool onInitializedLog() override;
 
-        bool onSetConfig() override;
+        bool onInitializeConfig() override;
 
         bool onInitializingNetwork() override;
         bool onInitializedNetwork() override;

@@ -7,7 +7,7 @@
 
 namespace jw
 {
-    TimerLauncher::TimerLauncher() : _isRun{ false }, _timerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _timerLogicThread{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
+    TimerLauncher::TimerLauncher() : _state{ STATE_NONE }, _timerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _timerLogicThread{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
     {
 
     }
@@ -15,7 +15,8 @@ namespace jw
     TimerLauncher::~TimerLauncher()
     {
         Stop();
-        _timerLogicThread.join();
+        if(STATE_STOP == _state)
+            _timerLogicThread.join();
     }
 
     void TimerLauncher::Initialize(const int64_t tickIntervalMilliSecond)
@@ -27,7 +28,9 @@ namespace jw
     {
         _timerLogicThread = std::thread([this]() {
             uint64_t lastTimerTick{ 0 };
-            _isRun = true;
+            setState(STATE_RUN);
+
+            assert(_tickIntervalMilliSecond > 0);
 
             LOG_INFO(L"TimerLauncher Thread Run");
 
@@ -36,7 +39,7 @@ namespace jw
             while (true)
             {
                 startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-                if (!_isRun)
+                if (STATE_STOP == _state)
                 {
                     LOG_INFO(L"StopSignal send to Server");
                     break;
@@ -64,7 +67,20 @@ namespace jw
     void TimerLauncher::Stop()
     {
         LOG_INFO(L"TimerLauncher Stop");
-        _isRun = false;
+        setState(STATE_STOP);
+    }
+
+    void TimerLauncher::setState(int8_t state)
+    {
+        int8_t beforeState = _state;
+        if (STATE_STOP == state)
+        {
+            if (beforeState != STATE_RUN) return;
+        }
+
+        _state = state;
+
+        LOG_INFO(L"setState, beforeState:{}, afterState:{}", beforeState, _state);
     }
 
     int64_t TimerLauncher::GetTickIntervalMillisecond()
@@ -183,6 +199,6 @@ namespace jw
         if (adjustedIntervalMs > 0)
             std::this_thread::sleep_for(std::chrono::milliseconds(adjustedIntervalMs));
         else
-            LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, endTimeMs:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, endTimeMs);
+            LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, endTimeMs:{}, tickIntervalMilliSecond:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, endTimeMs, _tickIntervalMilliSecond);
     }
 }

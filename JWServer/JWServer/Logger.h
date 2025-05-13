@@ -50,6 +50,9 @@ namespace jw
         using msgString = std::wstring;
         using msgStringView = std::wstring_view;
 
+        Logger(const Logger&) = delete;
+        Logger& operator=(const Logger&) = delete;
+
         void Initialize(const std::shared_ptr<PContainer>& producerCon);
 
         void SetLevel(LogType logType);
@@ -89,8 +92,6 @@ namespace jw
     protected:
         Logger();
         ~Logger();
-        Logger(const Logger&) = delete;
-        Logger& operator=(const Logger&) = delete;
 
     private:
         bool enableLogLevel(const LogType level) const;

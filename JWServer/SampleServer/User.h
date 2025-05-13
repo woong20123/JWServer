@@ -14,10 +14,9 @@ namespace jw
 
         User();
         User(std::shared_ptr<Session>& session);
-        virtual ~User();
+        virtual ~User() = default;
 
-        void Initialize(std::shared_ptr<Session>& session, const std::string& name);
-        void Initialize(std::shared_ptr<Session>&& session, const std::string& name);
+        void Initialize(const std::shared_ptr<Session>& session, const std::string& name);
         std::string_view GetName() const;
 
         void SetUserKey(const int64_t userId);

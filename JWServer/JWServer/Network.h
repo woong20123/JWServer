@@ -34,6 +34,9 @@ namespace jw
         // 해당 값으로 설정시 (프로세서 * 2)개의 스레드를 생성합니다 .
         static constexpr uint16_t DEFAULT_WORKER_THREAD_COUNT = 0;
 
+        Network(const Network&) = delete;
+        Network& operator=(const Network&) = delete;
+
         bool Initialize();
         void SetBadIpBlockOption(const BadIpBlockOption& option);
 
@@ -61,8 +64,6 @@ namespace jw
     protected:
         Network();
         ~Network();
-        Network(const Network&) = delete;
-        Network& operator=(const Network&) = delete;
     private:
         bool initializeWinSock();
         bool initializeWSASocketFunc();

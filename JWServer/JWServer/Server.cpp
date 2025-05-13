@@ -20,14 +20,14 @@ namespace jw
         _name{ INVALID_SERVER_NAME },
         _logWorker{ nullptr },
         _workerThreadCount{ 0 },
-        _serverEventContainer{ std::make_unique<ServerEventProducerCon>(60000) },
+        _serverEventContainer{ std::make_unique<ServerEventProducerCon>(DEFAULT_SERVER_EVENT_TIME_TICK_MSEC) },
         _state{ ServerState::SERVER_STATE_NONE },
         _timerTickIntervalMSec{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC },
-        _logWaitMSec{ 100 }
+        _logWaitMSec{ DEFAULT_LOG_WAIT_TICK_MSEC }
     {
     }
 
-    Server::~Server() {}
+    Server::~Server() = default;
 
     bool Server::Initialize(const std::wstring& name, int argc, char* argv[])
     {
@@ -50,7 +50,11 @@ namespace jw
 
         registArgument(argc, argv);
 
-        setConfig();
+        if (!initializeConfig())
+        {
+            LOG_ERROR(L"fail setConfig, name:{}", _name);
+            return false;
+        }
 
         if (!initializeNetwork())
         {
@@ -222,10 +226,11 @@ namespace jw
         return true;
     }
 
-    bool Server::setConfig()
+    bool Server::initializeConfig()
     {
         // TODO : config를 설정합니다. 
-        onSetConfig();
+        if (!onInitializeConfig())
+            return false;
 
         return true;
     }

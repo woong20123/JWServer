@@ -11,9 +11,6 @@ namespace jw
     Channel::Channel(std::shared_ptr<Session>& session) : _session(session)
     {
     }
-    Channel::~Channel()
-    {
-    }
 
     void Channel::SetSession(const std::shared_ptr<Session>& session)
     {

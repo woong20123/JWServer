@@ -13,9 +13,6 @@ namespace jw
 		_iocpHandle{ INVALID_HANDLE_VALUE }
 	{}
 
-	Listener::~Listener()
-	{}
-
 	bool Listener::Initialize(uint32_t portId, uint16_t portNumber, HANDLE iocpHandle, const LPFN_ACCEPTEX acceptexFunc, const LPFN_GETACCEPTEXSOCKADDRS acceptexSockAddrFunc)
 	{
 		if (portId < 0 || portNumber < 0 || iocpHandle == INVALID_HANDLE_VALUE ||

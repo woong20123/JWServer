@@ -22,8 +22,7 @@ namespace jw
         _roomManager = std::make_unique<RoomManager>();
         _config = std::make_unique<SampleServerConfig>();
     }
-    SampleServer::~SampleServer()
-    {}
+    SampleServer::~SampleServer() = default;
 
     bool SampleServer::onInitializingLog()
     {
@@ -47,27 +46,14 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onSetConfig()
+    bool SampleServer::onInitializeConfig()
     {
         // config를 설정합니다. 
         // config를 설정하는 방법은 Config.h, Config.cpp를 참고하세요.         
         std::locale::global(std::locale("ko_KR.UTF-8"));
 
-        _config->Initialize(std::make_shared<JsonConfigParser>());
+        _config->Initialize(ConfigParser::CreateParser(ConfigParser::ParserType::JSON));
         const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
-
-        // config를 설정을 셋팅 합니다. 
-        _config->RegisterConfigDefinition(SampleServerConfig::SERVER_PORT, L"13211");
-        _config->RegisterConfigDefinition(SampleServerConfig::WORKER_THREAD, L"0");
-        _config->RegisterConfigDefinition(SampleServerConfig::MAX_CLIENT_SESSION_COUNT, L"5000");
-        _config->RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC, L"100");
-        _config->RegisterConfigDefinition(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC, L"100");
-        _config->RegisterConfigDefinition(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND, L"300");
-        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_ENABLE, Config::BOOL_FALSE);
-        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND, L"3600");
-        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT, L"5000");
-        _config->RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT, L"1");
-
 
         if (!_config->Load(configPath))
         {

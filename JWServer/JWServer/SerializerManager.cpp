@@ -6,11 +6,6 @@ namespace jw
     SerializerManager::SerializerManager()
     {
     }
-
-    SerializerManager::~SerializerManager()
-    {
-    }
-
     void SerializerManager::Initialize()
     {
     }

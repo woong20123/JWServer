@@ -68,6 +68,7 @@ namespace jw
 
         static constexpr uint32_t DEFAULT_SERVER_EVENT_TIME_TICK_MSEC = 60000;
         static constexpr int64_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC = 100;
+        static constexpr int32_t   DEFAULT_LOG_WAIT_TICK_MSEC = 100;
         // 관리되는 최대 타이머 틱
         // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
         // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다.         
@@ -99,8 +100,8 @@ namespace jw
         void registLogStream(const std::shared_ptr<LogStream>& logStream);
 
         void setNetworkWorkerThread(const uint16_t);
-        void setTimerTickIntervalMilliSecond(const int64_t timerTickIntervalMSec);
-        void setLogWaitMilliseconds(const uint32_t waitMilliSecond);
+        void setTimerTickIntervalMilliSecond(const int64_t timerTickIntervalMSecond);
+        void setLogWaitMilliseconds(const uint32_t waitMSecond);
         void reigstPort(const PortInfo& portInfo);
 
         void setState(ServerState state);
@@ -119,7 +120,7 @@ namespace jw
         virtual bool onInitializedLog() { return true; }
 
         // config 설정 작업을 등록합니다. 
-        virtual bool onSetConfig() { return true; }
+        virtual bool onInitializeConfig() { return true; }
 
         // 서버 구동시 사용자가 설정할 Network 작업을 등록 합니다. 
         virtual bool onInitializingNetwork() = 0;
@@ -136,7 +137,7 @@ namespace jw
         // initialize
         bool initializeAndRunLog();
         bool registArgument(int argc, char* argv[]);
-        bool setConfig();
+        bool initializeConfig();
         bool initializeNetwork();
         bool initializeTimer();
 

@@ -1,5 +1,6 @@
 ﻿#include "LogFileStream.h"
 #include "TypeDefinition.h"
+#include "TimeUtil.h"
 #include <string>
 #include <windows.h>
 #include <filesystem>
@@ -9,18 +10,18 @@ namespace jw
     LogFileStream::LogFileStream(const wchar_t* path, const wchar_t* processName, size_t bufferSize) :
         _path{ path },
         _processname{ processName },
-        _bufferPos{ 0 },
-        _fileNameTick{ 0 },
-        _bufferSize{ bufferSize }
+        _streamBufferPos{ 0 },
+        _isSetfileName{ false },
+        _streamBufferSize{ bufferSize }
     {
-        _logBuffer = new LogBuffer::BufferType[bufferSize];
+        _streamBuffer = new LogBuffer::BufferType[bufferSize];
     }
 
     LogFileStream::~LogFileStream()
     {
-        if (_logBuffer) {
-            delete[] _logBuffer;
-            _logBuffer = nullptr;
+        if (_streamBuffer) {
+            delete[] _streamBuffer;
+            _streamBuffer = nullptr;
         }
     }
 
@@ -36,16 +37,16 @@ namespace jw
         const auto lineBreakLen = STRLEN(logBuffer->GetLineBreak());
         size_t totalMsgLen = prefixLen + msgLen + lineBreakLen;
 
-        if (_bufferSize <= _bufferPos + totalMsgLen)
+        if (_streamBufferSize <= _streamBufferPos + totalMsgLen)
             Flush();
 
         // 메시지 복사
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetPrefix(), prefixLen);
-        _bufferPos += prefixLen;
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetMsg(), msgLen);
-        _bufferPos += msgLen;
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
-        _bufferPos += lineBreakLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetPrefix(), prefixLen);
+        _streamBufferPos += prefixLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetMsg(), msgLen);
+        _streamBufferPos += msgLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
+        _streamBufferPos += lineBreakLen;
     }
 
     void LogFileStream::Flush()
@@ -62,7 +63,7 @@ namespace jw
 
         if (INVALID_HANDLE_VALUE == h)
         {
-            _bufferPos = 0;
+            _streamBufferPos = 0;
             return;
         }
 
@@ -78,46 +79,41 @@ namespace jw
             result = ::WriteFile(h, &mark, sizeof(mark), &written, NULL);
         }
 
-        result = ::WriteFile(h, _logBuffer, (DWORD)_bufferPos * sizeof(wchar_t), &written, NULL);
+        result = ::WriteFile(h, _streamBuffer, (DWORD)_streamBufferPos * sizeof(wchar_t), &written, NULL);
         ::CloseHandle(h);
 
         initBuffer();
     }
     void LogFileStream::initBuffer()
     {
-        _bufferPos = 0;
-        _logBuffer[0] = '\0';
+        _streamBufferPos = 0;
+        _streamBuffer[0] = '\0';
     }
 
     void LogFileStream::makeFileName()
     {
-        if (!_fileNameTick)
+        if (!_isSetfileName)
         {
-            const auto timeTick = makeNowTick();
-            const auto year = timeTick / YEAR_DIGIT;
-            const auto month = (timeTick % YEAR_DIGIT) / MONTH_DIGIT;
-            const auto day = (timeTick % MONTH_DIGIT) / DAY_DIGIT;
-            const auto hour = timeTick % DAY_DIGIT;
-            const auto min = timeTick % HOUR_DIGIT;
+            time_t now = time(NULL);
+            struct tm tmNow;
+            localtime_s(&tmNow, &now);
+            TimeInfo timeInfo = TimeUtil::toTimeInfo(&tmNow);
 
             _fullFileName.clear();
             _fullFileName.append(_path);
             _fullFileName.append(_processname);
-            _fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}_{:02}.log", timeTick, ::GetCurrentProcessId(), year, month, day, hour, min));
-            _fileNameTick = timeTick;
+            _fullFileName.append(std::format(L"({},{:06})_{:02}-{:02}-{:02}_{:02}_{:02}.log", makeNowTick(&tmNow), ::GetCurrentProcessId(), timeInfo.year, timeInfo.month, timeInfo.day, timeInfo.hour, timeInfo.minute));
+            _isSetfileName = true;
         }
     }
 
-    int64_t LogFileStream::makeNowTick() const
+    const int64_t LogFileStream::makeNowTick(tm* ptmNow) const
     {
-        time_t now = time(NULL);
-        struct tm tmNow;
-        localtime_s(&tmNow, &now);
-        return static_cast<int64_t>((tmNow.tm_year + 1900)) * YEAR_DIGIT +
-            static_cast<int64_t>((tmNow.tm_mon + 1) * MONTH_DIGIT) +
-            static_cast<int64_t>(tmNow.tm_mday * DAY_DIGIT) +
-            static_cast<int64_t>(tmNow.tm_hour * HOUR_DIGIT) +
-            tmNow.tm_min;
+        return static_cast<int64_t>((ptmNow->tm_year + 1900)) * YEAR_DIGIT +
+            static_cast<int64_t>((ptmNow->tm_mon + 1) * MONTH_DIGIT) +
+            static_cast<int64_t>(ptmNow->tm_mday * DAY_DIGIT) +
+            static_cast<int64_t>(ptmNow->tm_hour * HOUR_DIGIT) +
+            ptmNow->tm_min;
     }
 
     void LogFileStream::makeFolder(std::wstring_view path)

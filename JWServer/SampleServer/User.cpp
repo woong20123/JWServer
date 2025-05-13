@@ -11,20 +11,11 @@ namespace jw
     {}
     User::User(std::shared_ptr<Session>& session) : Channel(session), _userKey{ INVALID_USER_KEY }, _enterRoomId{ INVALID_ROOM_ID }
     {}
-    User::~User()
-    {
-        LOG_DEBUG(L"Destory User");
-    }
 
-    void User::Initialize(std::shared_ptr<Session>& session, const std::string& name)
+    void User::Initialize(const std::shared_ptr<Session>& session, const std::string& name)
     {
         setSession(session);
         setName(name);
-    }
-
-    void User::Initialize(std::shared_ptr<Session>&& session, const std::string& name)
-    {
-        Initialize(session, name);
     }
 
     std::string_view User::GetName() const

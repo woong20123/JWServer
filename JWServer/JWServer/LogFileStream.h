@@ -7,6 +7,7 @@
 
 namespace jw
 {
+
     class LogFileStream : public LogStream
     {
     public:
@@ -25,19 +26,18 @@ namespace jw
         void Flush() override;
     private:
         void initBuffer();
-        inline const size_t remainBuffer() { return _bufferSize - _bufferPos; }
+        inline const size_t remainBuffer() { return _streamBufferSize - _streamBufferPos; }
         void makeFileName();
-        int64_t makeNowTick() const;
-
+        const int64_t makeNowTick(tm* ptmNow) const;
         void makeFolder(std::wstring_view path);
 
-        LogBuffer::BufferType* _logBuffer{ nullptr };
-        size_t                  _bufferPos;
-        size_t                  _bufferSize;
+        LogBuffer::BufferType* _streamBuffer{ nullptr };
+        size_t                  _streamBufferPos;
+        size_t                  _streamBufferSize;
         std::wstring            _processname;
         std::wstring            _path;
         std::wstring            _fullFileName;
-        size_t                  _fileNameTick;
+        bool                    _isSetfileName;
     };
 }
 #endif // __JW_LOG_FILE_STREAM_H_

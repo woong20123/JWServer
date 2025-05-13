@@ -11,8 +11,6 @@ namespace jw
     {
         ::memset(_buffer, 0x00, sizeof(_buffer));
     }
-    SessionRecvBuffer::~SessionRecvBuffer()
-    {}
 
     SessionRecvBuffer::bufferType* SessionRecvBuffer::GetBuffer()
     {
@@ -61,10 +59,7 @@ namespace jw
     {
     }
 
-    SessionSendBuffer::~SessionSendBuffer()
-    {
-
-    }
+    SessionSendBuffer::~SessionSendBuffer() = default;
 
     std::pair<bool, bool> SessionSendBuffer::Add(const void* byteStream, const size_t byteCount)
     {

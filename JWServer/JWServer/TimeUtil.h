@@ -1,10 +1,21 @@
 ﻿#pragma once
 #include <cstdint>
 #include <chrono>
+#include <ctime>
 #ifndef __JW_TIME_UTIL_H__
 #define __JW_TIME_UTIL_H__
 namespace jw
 {
+    struct TimeInfo
+    {
+        int16_t year{ 0 };
+        int16_t month{ 0 };
+        int16_t day{ 0 };
+        int16_t hour{ 0 };
+        int16_t minute{ 0 };
+        int64_t second{ 0 };
+    };
+
     class TimeUtil
     {
     public:
@@ -26,8 +37,6 @@ namespace jw
         // 1일을 밀리세컨드로 변환
         constexpr static int64_t DAY_TO_MILLISECOND = DAY_TO_SECOND * 1000;
 
-
-
         static time_t GetCurrentUTCTimeSecond()
         {
             return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -36,6 +45,18 @@ namespace jw
         static int64_t GetCurrentTimeMilliSecond()
         {
             return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        }
+
+        static TimeInfo toTimeInfo(tm* ptm)
+        {
+            TimeInfo timeInfo;
+            timeInfo.year = ptm->tm_year + 1900;
+            timeInfo.month = ptm->tm_mon + 1;
+            timeInfo.day = ptm->tm_mday;
+            timeInfo.hour = ptm->tm_hour;
+            timeInfo.minute = ptm->tm_min;
+            timeInfo.second = ptm->tm_sec;
+            return timeInfo;
         }
     };
 }

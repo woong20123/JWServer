@@ -26,13 +26,22 @@ namespace jw
         explicit Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount = DEFAULT_THREAD_COUNT);
         virtual ~Consumer();
 
-        void SetProducerCon(std::shared_ptr<PCContainer>& producerCon) {
+        void SetProducerCon(const std::shared_ptr<PCContainer>& producerCon) {
             _pProducerCon = producerCon;
+        }
+
+        void SetProducerCon(std::shared_ptr<PCContainer>&& producerCon) {
+            _pProducerCon = std::move(producerCon);
         }
 
         void SetName(const std::string& name)
         {
             _name = name;
+        }
+
+        void SetName(std::string&& name)
+        {
+            _name = std::move(name);
         }
 
         void RunThread();
@@ -59,7 +68,9 @@ namespace jw
 
     template<typename object>
     Consumer<object>::Consumer() : _pProducerCon{ nullptr }
-    {}
+    {
+        static_assert(std::is_pointer<object>::value == false, "Consumer's <object> must not be pointer type ");
+    }
 
     template<typename object>
     Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducerCon{ producer }, _threadCount{ threadCount }
@@ -69,6 +80,7 @@ namespace jw
     template<typename object>
     Consumer<object>::~Consumer()
     {
+        joinWaitThread();
     }
 
     template<typename object>

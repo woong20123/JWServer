@@ -12,7 +12,7 @@ namespace jw
     public:
         Channel();
         Channel(std::shared_ptr<Session>& session);
-        virtual ~Channel();
+        virtual ~Channel() = default;
 
         void SetSession(const std::shared_ptr<Session>& session);
         void RemovSession();

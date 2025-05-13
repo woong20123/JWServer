@@ -14,6 +14,12 @@ namespace jw
     class TimerLauncher : public Singleton<TimerLauncher>
     {
     public:
+        enum
+        {
+            STATE_NONE,
+            STATE_RUN,
+            STATE_STOP
+        };
         // 한 틱이 가지는 기본 시간 값( 100ms )
         static constexpr int64_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND = 100;
 
@@ -23,6 +29,8 @@ namespace jw
         using TimerList = std::list<Timer*>;
         using TimerListArray = std::array<TimerList, DEFAULT_TIMER_MANAGE_MAX_TICK>;
 
+        TimerLauncher(const TimerLauncher&) = delete;
+        TimerLauncher& operator=(const TimerLauncher&) = delete;
 
         void Initialize(const int64_t tickIntervalMilliSecond);
         void Run();
@@ -38,8 +46,6 @@ namespace jw
     protected:
         TimerLauncher();
         ~TimerLauncher();
-        TimerLauncher(const TimerLauncher&) = delete;
-        TimerLauncher& operator=(const TimerLauncher&) = delete;
     private:
         void registTimer(Timer* timer);
         void registLongTermTimer(Timer* timer);
@@ -51,9 +57,11 @@ namespace jw
         int64_t getNextTimerTickToIndex(int64_t intervalIndex);
         TimerList& getCurrentTimerList();
 
+        void setState(int8_t state);
+
         friend class Singleton<TimerLauncher>;
 
-        bool                                    _isRun;
+        uint8_t                                 _state;
         std::thread                             _timerLogicThread;
 
         uint64_t                                _timerTick;

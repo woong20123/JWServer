@@ -12,9 +12,6 @@ namespace jw
     World::World()
     {
     }
-    World::~World()
-    {
-    }
 
     void World::Initialize(size_t userListSize)
     {

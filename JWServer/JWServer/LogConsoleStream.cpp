@@ -4,18 +4,18 @@
 
 namespace jw
 {
-    LogConsoleStream::LogConsoleStream(size_t bufferSize) : _logBuffer{ nullptr }, _bufferPos{ 0 }, _bufferSize{ bufferSize }
+    LogConsoleStream::LogConsoleStream(size_t bufferSize) : _streamBuffer{ nullptr }, _streamBufferPos{ 0 }, _streamBufferSize{ bufferSize }
     {
-        _logBuffer = new LogBuffer::BufferType[bufferSize];
-        ::memset(_logBuffer, 0x00, sizeof(LogBuffer::BufferType) * bufferSize);
+        _streamBuffer = new LogBuffer::BufferType[bufferSize];
+        ::memset(_streamBuffer, 0x00, sizeof(LogBuffer::BufferType) * bufferSize);
     }
 
     LogConsoleStream::~LogConsoleStream()
     {
-        if (_logBuffer)
+        if (_streamBuffer)
         {
-            delete[] _logBuffer;
-            _logBuffer = nullptr;
+            delete[] _streamBuffer;
+            _streamBuffer = nullptr;
         }
     }
 
@@ -26,27 +26,27 @@ namespace jw
         const auto lineBreakLen = STRLEN(logBuffer->GetLineBreak());
         size_t totalMsgLen = prefixLen + msgLen + lineBreakLen;
 
-        if (_bufferSize <= _bufferPos + totalMsgLen)
+        if (_streamBufferSize <= _streamBufferPos + totalMsgLen)
             Flush();
 
         // 메시지 복사
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetPrefix(), prefixLen);
-        _bufferPos += prefixLen;
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetMsg(), msgLen);
-        _bufferPos += msgLen;
-        STRNCPY(&_logBuffer[_bufferPos], remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
-        _bufferPos += lineBreakLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetPrefix(), prefixLen);
+        _streamBufferPos += prefixLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetMsg(), msgLen);
+        _streamBufferPos += msgLen;
+        STRNCPY(&_streamBuffer[_streamBufferPos], remainBuffer(), logBuffer->GetLineBreak(), lineBreakLen);
+        _streamBufferPos += lineBreakLen;
     }
 
     void LogConsoleStream::Flush()
     {
-        wprintf_s(L"%s", _logBuffer);
+        wprintf_s(L"%s", _streamBuffer);
         initBuffer();
     }
 
     void LogConsoleStream::initBuffer()
     {
-        _bufferPos = 0;
-        _logBuffer[0] = '\0';
+        _streamBufferPos = 0;
+        _streamBuffer[0] = '\0';
     }
 }

@@ -14,8 +14,11 @@ namespace jw
         static constexpr size_t BASE_ALLOCATE_COUNT = 128;
         static constexpr size_t MAX_ALLOCATE_COUNT = 32768;
 
-        PacketBuffer* Acquire();
-        void Release(PacketBuffer* obj);
+        using Type = PacketBuffer;
+        using Ptr = PacketBuffer*;
+
+        Ptr Acquire();
+        void Release(Ptr obj);
         uint64_t GetUseCount();
     protected:
         PacketBufferPool();

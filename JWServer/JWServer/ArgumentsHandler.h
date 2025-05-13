@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace jw
 {
@@ -18,9 +19,10 @@ namespace jw
         using ArgumentContainer = std::vector<std::wstring >;
         using HandlerKey = std::wstring;
         using HandlerValue = std::function<void(uint16_t, const ArgumentContainer&)>;
+        using HandlerContainer = std::unordered_map<HandlerKey, HandlerValue>;
 
         ArgumentsHandler();
-        virtual ~ArgumentsHandler();
+        virtual ~ArgumentsHandler() = default;
         void Initialize(const std::wstring& processName);
 
         void HandleArgument(const ArgumentContainer& arguments);
@@ -30,9 +32,9 @@ namespace jw
         bool addHandler(const HandlerKey& key, const HandlerValue& value);
         virtual void registerHandler() = 0;
     private:
-        struct Impl;
-        std::unique_ptr<Impl> _pImpl;
 
+        HandlerContainer                        _handlerContainer;
+        std::wstring                            _processName;
     };
 
     // ArgumentsHandler를 상속받아 기본적인 구현 사항을 추가한 클래스입니다. 

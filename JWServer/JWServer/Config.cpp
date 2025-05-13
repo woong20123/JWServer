@@ -34,13 +34,7 @@ namespace jw
 
         _parser->Parse(filePath, _configMap);
 
-        bool isChanged{ false };
-        checkDefinition(isChanged, _configMap);
-
-        if (isChanged)
-        {
-            _parser->Write(filePath, _configMap);
-        }
+        checkAndWriteEmptyKey(filePath);
 
         onLoaded();
 
@@ -60,10 +54,10 @@ namespace jw
             return;
         }
 
-        ConfigMap defaultConfigMap;
-        bool isChanged{ false };
-        checkDefinition(isChanged, defaultConfigMap);
-        _parser->Write(filePath, defaultConfigMap);
+        ConfigMap emptyConfigMap;
+        bool isChangedConfigMap{ false };
+        compareConfigMapAndDefinition(isChangedConfigMap, emptyConfigMap);
+        _parser->Write(filePath, emptyConfigMap);
     }
 
     void Config::makeDefintion()
@@ -74,7 +68,7 @@ namespace jw
 
     }
 
-    void Config::checkDefinition(bool& isChanged, ConfigMap& configMap)
+    void Config::compareConfigMapAndDefinition(bool& isChanged, ConfigMap& configMap)
     {
         for (const auto& def : _configDefinition)
         {
@@ -86,6 +80,29 @@ namespace jw
                 isChanged = true;
             }
         }
+    }
+
+    void Config::checkAndWriteEmptyKey(const std::filesystem::path& filePath)
+    {
+        bool isChangedConfigMap{ false };
+        compareConfigMapAndDefinition(isChangedConfigMap, _configMap);
+
+        if (isChangedConfigMap)
+        {
+            _parser->Write(filePath, _configMap);
+        }
+    }
+
+    std::shared_ptr<ConfigParser> ConfigParser::CreateParser(const ParserType parserType)
+    {
+        switch (parserType)
+        {
+        case ConfigParser::ParserType::JSON:
+            return std::make_shared<JsonConfigParser>();
+        }
+
+        LOG_ERROR(L"parser type is not supported, parserType:{}", static_cast<int>(parserType));
+        return nullptr;
     }
 
     bool JsonConfigParser::Parse(const std::filesystem::path& filePath, ConfigParser::ConfigMap& configMap)

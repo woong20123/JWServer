@@ -31,12 +31,12 @@ namespace jw
     struct SerializerKey;
     class SerializeObject;
     class Packet;
-    class World 
+    class World
     {
     public:
         static constexpr size_t USER_LIST_MAX_SIZE = 5000;
         World();
-        virtual ~World();
+        ~World() = default;
 
         void Initialize(size_t userListSize);
         REGITER_USER_RESULT RegistUser(std::shared_ptr<User> user);

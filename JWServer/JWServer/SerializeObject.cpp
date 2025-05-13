@@ -9,10 +9,6 @@ namespace jw
     {
     }
 
-    SerializeObject::~SerializeObject()
-    {
-    }
-
     void SerializeObject::Initialize(const int64_t delayMilliSeconds, const time_t tickIntervalMilliSecond)
     {
         _intervalMilliSeconds = tickIntervalMilliSecond;

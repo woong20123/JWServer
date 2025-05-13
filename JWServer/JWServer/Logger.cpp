@@ -34,7 +34,8 @@ namespace jw
 
     void Logger::Stop()
     {
-        _logProducerCon->SetStopSignal();
+        if(_logProducerCon)
+            _logProducerCon->SetStopSignal();
         _isRun = false;
     }
 

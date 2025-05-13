@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
+#include <string_view>
 
 namespace jw
 {
@@ -21,6 +22,7 @@ namespace jw
         static constexpr const wchar_t* BOOL_TRUE = L"yes";
         static constexpr const wchar_t* BOOL_FALSE = L"no";
 
+        using ConfigDefinitionList = std::vector<ConfigDefinition>;
         using ConfigMap = std::unordered_map<std::string, std::wstring>;
         Config() = default;
         virtual ~Config() = default;
@@ -47,20 +49,33 @@ namespace jw
         virtual void onLoading() = 0;
         virtual void onLoaded() = 0;
 
+        void checkAndWriteEmptyKey(const std::filesystem::path& filePath);
+
         void makeDefintion();
-        void checkDefinition(bool& isChanged, ConfigMap& configMap);
-        std::vector<ConfigDefinition> _configDefinition;
-        ConfigMap _configMap;
+        void compareConfigMapAndDefinition(bool& isChanged, ConfigMap& configMap);
+
+        ConfigDefinitionList    _configDefinition;
+        ConfigMap               _configMap;
     };
 
     class ConfigParser
     {
     public:
+        enum class ParserType
+        {
+            NONE = 0,
+            JSON,
+            MAX
+        };
+
         using ConfigMap = Config::ConfigMap;
         ConfigParser() = default;
         virtual ~ConfigParser() = default;
         virtual bool Parse(const std::filesystem::path& filePath, ConfigMap& configMap) = 0;
         virtual bool Write(const std::filesystem::path& filePath, ConfigMap& configMap) = 0;
+
+        // ConfigParser의 Factory 함수
+        static std::shared_ptr<ConfigParser> CreateParser(const ParserType parserType);
     private:
         std::filesystem::path _filePath;
     };

@@ -88,8 +88,10 @@ namespace jw
 
     void Network::Stop()
     {
-        _ioWorker->Stop();
-        _sessionInspector->Stop();
+        if(_ioWorker)
+            _ioWorker->Stop();
+        if(_sessionInspector)
+            _sessionInspector->Stop();
     }
 
     LPFN_ACCEPTEX Network::GetAcceptExFunc() const

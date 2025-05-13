@@ -8,15 +8,20 @@
 
 namespace jw
 {
-	template<typename T, size_t BASE_ALLOCATE_COUNT, size_t MAX_ALLOCATE_COUNT>
+	template<typename T, size_t BASE_ALLOCATE_COUNT = 16, size_t MAX_ALLOCATE_COUNT = 32768>
 	class ObjectPool
 	{
 	public:
-		ObjectPool() {}
+		using Type = std::decay_t<T>;
 
-		T* Acquire()
+		ObjectPool()
 		{
-			T* ret{ nullptr };
+			static_assert(std::is_pointer<T>::value == false, "ObjectPool's <T> must not be pointer type ");
+		}
+
+		Type* Acquire()
+		{
+			Type* ret{ nullptr };
 			{
 				std::unique_lock<std::shared_mutex> lk{ _listMutex };
 
@@ -28,21 +33,19 @@ namespace jw
 			}
 			return ret;
 		}
-		void Release(T* object)
+		void Release(Type* object)
 		{
-			{
-				std::unique_lock<std::shared_mutex> lk{ _listMutex };
-				_list.push_back(object);
-			}
+			std::unique_lock<std::shared_mutex> lk{ _listMutex };
+			_list.push_back(object);
 		}
 	private:
 
 		void allocate()
 		{
-			T* ptr = reinterpret_cast<T*>(::operator new(_allocateCount * sizeof(T)));
+			Type* ptr = reinterpret_cast<Type*>(::operator new(_allocateCount * sizeof(Type)));
 			for (int i = 0; i < _allocateCount; ++i)
 			{
-				_list.push_back(new(ptr + i) T);
+				_list.push_back(new(ptr + i) Type);
 			}
 
 			// allicateCount를 2배씩 증가시켜 최대 MAX_ALLOCATE_COUNT까지 증가 시킵니다.
@@ -52,7 +55,7 @@ namespace jw
 			}
 		}
 
-		std::list<T*>			_list;
+		std::list<Type*>			_list;
 		std::shared_mutex		_listMutex;
 		size_t					_allocateCount{ BASE_ALLOCATE_COUNT };
 	};

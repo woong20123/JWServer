@@ -21,7 +21,7 @@ namespace jw
         using obj = object;
         using durationType = uint32_t;
 
-        ProducerContainer(uint32_t durationMilliseconds);
+        ProducerContainer(uint32_t durationMSecond);
         virtual ~ProducerContainer();
 
         void							Wait(std::list<object>& objList);

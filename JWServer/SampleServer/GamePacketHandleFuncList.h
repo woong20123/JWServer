@@ -12,6 +12,9 @@ namespace jw
     class GamePacketHandleFuncList : public Singleton<GamePacketHandleFuncList>
     {
     public:
+        GamePacketHandleFuncList(GamePacketHandleFuncList&) = delete;
+        GamePacketHandleFuncList& operator=(const GamePacketHandleFuncList&) = delete;
+
         void Initialize(std::shared_ptr<PacketHandler>& packetHandler);
         bool HandleGamePingReq(Session* session, const Packet& packet);
         bool HandleGameLoginReq(Session* session, const Packet& packet);
@@ -24,8 +27,6 @@ namespace jw
     protected:
         GamePacketHandleFuncList() = default;
         ~GamePacketHandleFuncList() = default;
-        GamePacketHandleFuncList(GamePacketHandleFuncList&) = delete;
-        GamePacketHandleFuncList& operator=(const GamePacketHandleFuncList&) = delete;
     private:
         void registGamePacketHandleList();
         static void* getPacketData(const Packet& packet);

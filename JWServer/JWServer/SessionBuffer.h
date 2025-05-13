@@ -20,7 +20,7 @@ namespace jw
         using bufferType = char;
         static constexpr size_t BUFFER_MAX_SIZE = 4000;
         SessionRecvBuffer();
-        ~SessionRecvBuffer();
+        ~SessionRecvBuffer() = default;
 
         bufferType* GetBuffer();
         bufferType* GetFreeBuffer();

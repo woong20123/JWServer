@@ -16,11 +16,11 @@ namespace jw
         void Flush() override;
     private:
         void initBuffer();
-        inline const size_t remainBuffer() { return _bufferSize - _bufferPos; }
+        inline const size_t remainBuffer() { return _streamBufferSize - _streamBufferPos; }
 
-        LogBuffer::BufferType * _logBuffer;
-        size_t _bufferPos;
-        size_t _bufferSize;
+        LogBuffer::BufferType* _streamBuffer;
+        size_t _streamBufferPos;
+        size_t _streamBufferSize;
     };
 }
 #endif

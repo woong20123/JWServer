@@ -6,14 +6,14 @@ namespace jw
     PacketBufferPool::PacketBufferPool()
     {}
 
-    PacketBuffer* PacketBufferPool::Acquire()
+    PacketBufferPool::Ptr PacketBufferPool::Acquire()
     {
         PacketBuffer* ret{ _objectPool.Acquire() };
         ++_useCount;
         return ret;
     }
 
-    void PacketBufferPool::Release(PacketBuffer* obj)
+    void PacketBufferPool::Release(PacketBufferPool::Ptr obj)
     {
         if (!obj) return;
         _objectPool.Release(obj);

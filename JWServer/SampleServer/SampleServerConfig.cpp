@@ -8,7 +8,18 @@ namespace jw
         Config::Initialize(parser);
     }
     void SampleServerConfig::onLoading()
-    { }
+    {
+        RegisterConfigDefinition(SampleServerConfig::SERVER_PORT, L"13211");
+        RegisterConfigDefinition(SampleServerConfig::WORKER_THREAD, L"0");
+        RegisterConfigDefinition(SampleServerConfig::MAX_CLIENT_SESSION_COUNT, L"5000");
+        RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC, L"100");
+        RegisterConfigDefinition(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC, L"100");
+        RegisterConfigDefinition(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND, L"300");
+        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_ENABLE, Config::BOOL_FALSE);
+        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND, L"3600");
+        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT, L"5000");
+        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT, L"1");
+    }
 
     void SampleServerConfig::onLoaded()
     { }

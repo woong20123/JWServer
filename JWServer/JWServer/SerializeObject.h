@@ -18,7 +18,7 @@ namespace jw
     {
     public:
         SerializeObject(int32_t type, int32_t id);
-        ~SerializeObject();
+        ~SerializeObject() = default;
 
         void Initialize(const int64_t delayMilliSeconds, const time_t intervalMilliSeconds);
         virtual void Execute() = 0;
