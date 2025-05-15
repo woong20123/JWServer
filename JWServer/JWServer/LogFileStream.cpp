@@ -120,7 +120,7 @@ namespace jw
     {
         if (std::filesystem::create_directory(path))
         {
-            std::wcout << L"폴더 생성 완료 : " << path << std::endl;
+            std::wcout << L"폴더 생성 완료 : " << path << '\n';
         }
         else
         {

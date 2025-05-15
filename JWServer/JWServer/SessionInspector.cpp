@@ -129,7 +129,8 @@ namespace jw
     {
         if (_isRun)
             Stop();
-        _inspectorThread.join();
+
+        if (_inspectorThread.joinable()) _inspectorThread.join();
     }
 
     void SessionInspector::Initialize(const bool isRun, const time_t checkIntervalMilliSecond)

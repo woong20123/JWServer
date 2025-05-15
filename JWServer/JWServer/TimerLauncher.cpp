@@ -15,8 +15,8 @@ namespace jw
     TimerLauncher::~TimerLauncher()
     {
         Stop();
-        if(STATE_STOP == _state)
-            _timerLogicThread.join();
+
+        if (_timerLogicThread.joinable()) _timerLogicThread.join();
     }
 
     void TimerLauncher::Initialize(const int64_t tickIntervalMilliSecond)

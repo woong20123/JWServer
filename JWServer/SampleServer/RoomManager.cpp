@@ -66,7 +66,7 @@ namespace jw
             for (const auto& roomInfo : _roomList | std::views::take(10))
             {
                 const auto& room = roomInfo.second;
-                roomList.push_back({ roomInfo.first, room->GetRoomName().data(), room->getHostUserName().data(), room->GetHostUserId() });
+                roomList.emplace_back(roomInfo.first, room->GetRoomName().data(), room->getHostUserName().data(), room->GetHostUserId());
             }
         }
 

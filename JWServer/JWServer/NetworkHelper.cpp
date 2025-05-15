@@ -25,9 +25,7 @@ namespace jw
     uint16_t NetworkHelper::GetProcessorCount()
     {
 #if _HAS_CXX17 
-
         return static_cast<uint16_t>(std::thread::hardware_concurrency());
-
 #else 
         SYSTEM_INFO sysInfo;
         GetSystemInfo(&sysInfo);

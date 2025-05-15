@@ -20,7 +20,7 @@ namespace jw
         if (LOG_STREAM_MAX_COUNT <= _logStreamCnt) return;
         {
             WRITE_LOCK(_logStreamMutex);
-            _logStreams.push_back(stream);
+            _logStreams.emplace_back(stream);
             ++_logStreamCnt;
         }
     }

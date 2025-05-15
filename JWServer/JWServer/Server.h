@@ -72,7 +72,7 @@ namespace jw
         // 관리되는 최대 타이머 틱
         // 등록하는 타이머의 틱이 해당 값 보다 크다면 라스트 틱에 타이머를 등록한 후 틱을 감소 시킵니다. 
         // 다음의 작업을 반복해서 동작할 수 있도록 구성합니다.         
-        static constexpr int32_t   SERVER_CLOSE_WAIT_SECOND = 10;
+        static constexpr int32_t   SERVER_CLOSE_WAIT_SECOND = 5;
 
         using ServerEventProducerCon = ProducerContainer<std::shared_ptr<ServerEvent>>;
         using TimerList = std::list<Timer*>;

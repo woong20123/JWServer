@@ -152,7 +152,7 @@ namespace jw
 
 	bool Listener::onAccept(AcceptContext& context)
 	{
-		ASSERT_WITH_MSG(0 <= context._index && context._index < CONTEXT_COUNT, std::format(L"INVALID AcceptContext index {}", context._index).c_str());
+		ASSERT_WITH_MSG(0 <= context._index && context._index < CONTEXT_COUNT, std::format("INVALID AcceptContext index {}", context._index).c_str());
 		int addrSize{ sizeof(SOCKADDR) + 16 };
 		uint32_t recvedSize{ 0 };
 

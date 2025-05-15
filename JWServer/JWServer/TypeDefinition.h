@@ -22,7 +22,7 @@
 #define ASSERT_WITH_MSG(CONDITION, MSG) \
     do { \
         if (!(CONDITION)) { \
-            std::wcerr << "Assertion failed: " << (MSG) << std::endl; \
+            std::wcerr << L"Assertion failed: " << (MSG) << std::endl; \
             assert(CONDITION); \
         } \
     } while (false)

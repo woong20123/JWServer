@@ -59,9 +59,9 @@ namespace jw
     std::vector<Room::userID> Room::GetMemberIds() const
     {
         std::vector<userID> memberIds;
-        for (const auto& user : _userList)
+        for (const auto& [userKey, roomUserInfo] : _userList)
         {
-            memberIds.push_back(user.first);
+            memberIds.emplace_back(userKey);
         }
         return memberIds;
     }
@@ -69,9 +69,9 @@ namespace jw
     std::vector<RoomUserInfo> Room::GetMemberInfoList() const
     {
         std::vector<RoomUserInfo> memberInfoList;
-        for (const auto& user : _userList)
+        for (const auto& [userKey, roomUserInfo] : _userList)
         {
-            memberInfoList.push_back(user.second);
+            memberInfoList.emplace_back(roomUserInfo);
         }
         return memberInfoList;
     }

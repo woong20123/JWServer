@@ -36,7 +36,7 @@ namespace jw
 
         if (_name == INVALID_SERVER_NAME || _logWorker == nullptr)
         {
-            std::wcerr << L"not call Server::Initialize()" << std::endl;
+            std::cerr << std::format("not call Server::Initialize()\n");
             return false;
         }
 
@@ -44,7 +44,7 @@ namespace jw
 
         if (!initializeAndRunLog())
         {
-            std::wcerr << L"fail startLog func" << std::endl;
+            std::cerr << std::format("fail startLog func\n");
             return false;
         }
 
@@ -108,7 +108,7 @@ namespace jw
         // logger와 logWorker를 container로 연결 
         if (!onInitializingLog())
         {
-            std::wcerr << L"fail onInitializingLog func" << std::endl;
+            std::cerr << std::format("fail onInitializingLog func\n");
             return false;
         }
 
@@ -118,7 +118,7 @@ namespace jw
 
         if (!onInitializedLog())
         {
-            std::wcerr << L"fail onInitializedLog func" << std::endl;
+            std::cerr << std::format("fail onInitializedLog func\n");
             return false;
         }
 

@@ -94,7 +94,7 @@ namespace jw
         prepare();
 
         for (int i = 0; i < _threadCount; i++)
-            _threads.push_back(std::thread(&Consumer::execute, this));
+            _threads.emplace_back(&Consumer::execute, this);
     }
 
     template<typename object>
@@ -107,7 +107,7 @@ namespace jw
                 // 이전에 등록된 모든 queueObject가 다 처리 되었다면 종료, 최대 대기 시간도 필요 할 듯
                 if (0 == _pProducerCon->Size())
                 {
-                    std::cerr << "Producer<" << typeid(obj).name() << "> " << _name.c_str() << " is stop" << std::endl;
+                    std::cerr << std::format("Producer<{}> {}  is stop\n", typeid(obj).name(), _name);
                     break;
                 }
             }
@@ -130,7 +130,10 @@ namespace jw
     void Consumer<object>::joinWaitThread()
     {
         for (auto& t : _threads)
-            t.join();
+        {
+            if (t.joinable())
+                t.join();
+        }
     }
 }
 

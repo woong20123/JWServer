@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	{
 		SAMPLE_SERVER().CloseServer();
 		// Logger가 초기화 되지 않을 수 있기에 wcerr로 출력합니다. 
-		std::wcerr << L"Server Initialize Error" << std::endl;
+		std::cerr << std::format("Server Initialize Error\n");
 	}
 	
 
