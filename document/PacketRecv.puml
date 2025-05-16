@@ -1,0 +1,33 @@
+@startuml
+
+actor client
+participant "IO Worker" as worker order 1
+participant "Session" as session order 2
+participant "SessionHandler\n(GameSessionHandler)" as sessionHandler order 3
+participant "PacketHandler\n(GamePacketHandler)" as packetHandler order 4
+participant "GamePacketHandleFuncList\n(HandleGame_XXXXX)" as gamePacketHandleFuncList order 5
+participant "PacketHandler" as packetHandler order 6
+participant "Serializer" as Serialzer order 7
+
+group Packet Recv Thread
+
+client -> worker : socket recv 이벤트 
+activate worker
+worker -> session : iocp를 통해 소켓에서\nRecv한 byte스트림 전달
+deactivate worker
+activate session
+session -> sessionHandler : byte스트림을\n패킷으로 조립 후 전달
+deactivate session
+activate sessionHandler
+sessionHandler -> packetHandler : 패킷을 PacketHandler로 전달
+deactivate sessionHandler
+activate packetHandler
+packetHandler -> gamePacketHandleFuncList : command에 따라서\n분기하여\npacket 전달
+deactivate packetHandler
+activate gamePacketHandleFuncList
+gamePacketHandleFuncList -> Serialzer : 작업에 맞는 task\n를 생성한 후에\nSerializer에 Post
+deactivate gamePacketHandleFuncList
+
+end
+
+@enduml
