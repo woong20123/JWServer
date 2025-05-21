@@ -91,6 +91,8 @@ namespace jw
         CLOSE_REASON_SEND_FAIL,
         CLOSE_REASON_CLIENT_DISCONNECTED,
         CLOSE_REASON_INSPECTOR_TIMEOUT,
+        CLOSE_REASON_SESSION_DESTRUCTOR,
+        CLOSE_REASON_MAX,
     };
 
     class Session : public AsyncObject

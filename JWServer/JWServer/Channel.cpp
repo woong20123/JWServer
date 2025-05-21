@@ -4,11 +4,11 @@
 
 namespace jw
 {
-    Channel::Channel()
+    Channel::Channel() : Channel{ nullptr }
     {
     }
 
-    Channel::Channel(std::shared_ptr<Session>& session) : _session(session)
+    Channel::Channel(const std::shared_ptr<Session>& session) : _session(session)
     {
     }
 

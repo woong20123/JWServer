@@ -10,6 +10,7 @@ participant "PacketHandler" as packetHandler order 6
 participant "Serializer" as Serialzer order 7
 
 group Packet Recv Thread
+note right of client : 해당 스레드는 스레드 세이프 하지 않습니다.
 
 client -> worker : socket recv 이벤트 
 activate worker

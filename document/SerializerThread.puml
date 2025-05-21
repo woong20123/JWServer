@@ -1,0 +1,34 @@
+@startuml
+
+actor client
+participant "SerializeObject" as serializeObject order 1
+participant "SerializerTimer" as serializerTimer order 2
+participant "IOCP" as iocp order 3
+participant "TimerLauncher" as timerLauncher order 4
+
+
+
+
+group TimerLauncher Thread
+
+
+timerLauncher -> timerLauncher : tick마다 활성화된\n timer 취합
+activate timerLauncher
+timerLauncher -> iocp : timer를 IOCP에 등록
+deactivate timerLauncher
+end
+
+group Serializer Thread
+note right of client : 규약된 데이터에 대해서 스레드 세이프 합니다. 
+iocp -> serializerTimer
+activate serializerTimer
+serializerTimer -> serializeObject : 현재 틱에 실행할\n object들의\nExecute함수 실행
+deactivate serializerTimer
+activate serializeObject
+serializeObject -> serializeObject : Task 로직 실행 
+serializeObject -> client : task 결과에 대한\n응답을 전달합니다. 
+deactivate serializeObject
+
+end
+
+@enduml

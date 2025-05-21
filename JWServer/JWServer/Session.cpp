@@ -25,7 +25,11 @@ namespace jw
 
     Session::~Session()
     {
-        LOG_DEBUG(L"Session Destroy, id:{}", GetId());
+        LOG_DEBUG(L"Session Destructor, id:{}", GetId());
+        if (!IsClosed())
+        {
+            Close(CloseReason::CLOSE_REASON_SESSION_DESTRUCTOR);
+        }
     }
 
     bool Session::Initialize(SessionID sessionId, std::shared_ptr<SessionHandler>& sessionHandler, std::shared_ptr<PacketBufferHandler>& packetBufferHandelr)
@@ -197,7 +201,8 @@ namespace jw
         _socket = INVALID_SOCKET;
         setState(SessionState::SESSION_STATE_CLOSED);
 
-        _sessionHandler->OnClosed(this);
+        if (_sessionHandler)
+            _sessionHandler->OnClosed(this);
 
         for (auto& onClose : _onCloseList)
             onClose(iReason);
