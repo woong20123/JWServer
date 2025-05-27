@@ -60,7 +60,7 @@ namespace jw
             if (index + 1 < arguments.size())
             {
                 LOG_ERROR(L"경로 설정 성공, 경로:{}", arguments[index + 1].c_str());
-                ARGUMENT().SetPath(arguments[index + 1].c_str());
+                GetArguments().SetPath(arguments[index + 1].c_str());
             }
             else
             {

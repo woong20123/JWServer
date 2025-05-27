@@ -42,7 +42,7 @@ namespace jw
     void SessionInspectorInfoTable::SetStateAllocated(const int32_t sessionIndex)
     {
         setState(sessionIndex, SESSION_INSPECTOR_STATUS_ALLOCATED);
-        const auto session = NETWORK().GetSession(_portId, sessionIndex);
+        const auto session = GetNetwork().GetSession(_portId, sessionIndex);
         if (session)
             session->UpdateRecvTime();
     }
@@ -53,7 +53,7 @@ namespace jw
 
     void SessionInspectorInfoTable::Inspect()
     {
-        time_t currentTime = TimeUtil::GetCurrentUTCTimeSecond();
+        time_t currentTime = TimeUtil::GetCurrentTimeT();
         for (int32_t i = 0; i < static_cast<int32_t>(_maxSessionCount); ++i)
         {
             int32_t sessionIndex = i;
@@ -72,7 +72,7 @@ namespace jw
             }
             else if (sessionInspectorInfo._state == SESSION_INSPECTOR_STATUS_ALLOCATED)
             {
-                const auto session = NETWORK().GetSession(_portId, sessionIndex);
+                const auto session = GetNetwork().GetSession(_portId, sessionIndex);
                 if (session)
                 {
                     if (session->GetLastRecvTime() + _recvCheckTimeSecond <= currentTime)
@@ -83,7 +83,7 @@ namespace jw
             }
             else if (sessionInspectorInfo._state == SESSION_INSPECTOR_STATUS_CANDIDATE_CLOSE)
             {
-                const auto session = NETWORK().GetSession(_portId, sessionIndex);
+                const auto session = GetNetwork().GetSession(_portId, sessionIndex);
                 if (session)
                 {
                     if (session->GetLastRecvTime() + _recvCheckTimeSecond <= currentTime)

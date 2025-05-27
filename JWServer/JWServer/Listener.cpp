@@ -80,10 +80,8 @@ namespace jw
 			return false;
 		}
 
-		for (int i = 0; i < CONTEXT_COUNT; ++i)
+		for (int i{ 0 }; i < CONTEXT_COUNT; ++i)
 		{
-			auto& context{ _context[i] };
-
 			if (!asyncAccept(i))
 			{
 				LOG_FETAL(L"asyncAccept Fail, index:{}, portId:{}, portNumber:{}", i, _portId, _portNumber);
@@ -101,10 +99,17 @@ namespace jw
 	{
 		const auto acceptContext = static_cast<AcceptContext*>(context);
 
-		if (!acceptContext || !onAccept(*acceptContext))
+		if (!acceptContext)
+		{
+			LOG_ERROR(L"acceptContext is nullptr, portId:{}, portNumber:{}", _portId, _portNumber);
+			return false;
+		}
+
+		if (!onAccept(*acceptContext))
 		{
 			::closesocket(acceptContext->_socket);
 			acceptContext->_socket = INVALID_SOCKET;
+			LOG_ERROR(L"fail onAccept, portId:{}, portNumber:{}", _portId, _portNumber);
 			return false;
 		}
 
@@ -174,10 +179,10 @@ namespace jw
 			reinterpret_cast<LPSOCKADDR*>(&remoteAddr), &remoteAddrSize);
 
 
-		NETWORK().IsBadIp(remoteAddr->sin_addr.S_un.S_addr, static_cast<int32_t>(NETWORK().GetSessionCount(_portId)));
+		GetNetwork().IsBadIp(remoteAddr->sin_addr.S_un.S_addr, static_cast<int32_t>(GetNetwork().GetSessionCount(_portId)));
 
 		// 세션 생성
-		const auto session = NETWORK().CreateSession(_portId);
+		const auto session = GetNetwork().CreateSession(_portId);
 
 		if (!session || !session->SetSocketInfo(context._socket, remoteAddr))
 		{

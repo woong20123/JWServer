@@ -53,7 +53,7 @@ namespace jw
         std::locale::global(std::locale("ko_KR.UTF-8"));
 
         _config->Initialize(ConfigParser::CreateParser(ConfigParser::ParserType::JSON));
-        const auto& configPath = std::format(L"./{}_config.json", ARGUMENT().getProcessName());
+        const auto& configPath = std::format(L"./{}_config.json", GetArguments().getProcessName());
 
         if (!_config->Load(configPath))
         {
@@ -85,7 +85,7 @@ namespace jw
         PortInfo clientPort;
         clientPort._id = CLIENT_PORT_ID;
         clientPort._portNumber = _config->GetServerPort();
-        clientPort._iocpHandle = NETWORK().GetIOCPHandle();
+        clientPort._iocpHandle = GetNetwork().GetIOCPHandle();
         clientPort._sesionMaxCount = _config->GetMaxClientSessionCount();
         clientPort._sessionHandler = gameSessionHandler;
         clientPort._packetBufferHandler = std::make_shared<TrustedPacketBufferHandler>();
@@ -99,7 +99,7 @@ namespace jw
         badIpBlockOption._sanctionsTimeSecond = _config->GetBadIpBlockSanctionTimeSecond();
         badIpBlockOption._triggeringSessionCount = _config->GetBadIpBlockTriggeringSessionCount();
         badIpBlockOption._thresholdCheckedCount = _config->GetBadIpBlockThresholdCheckedCount();
-        NETWORK().SetBadIpBlockOption(badIpBlockOption);
+        GetNetwork().SetBadIpBlockOption(badIpBlockOption);
 
         return true;
     }

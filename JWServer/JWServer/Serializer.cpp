@@ -8,7 +8,7 @@ namespace jw
     {
         _timer = std::make_shared<SerializerTimer>(_serializerKey);
         _timer->SetIntervalMs(tickIntervalMs);
-        TIMER_LAUNCHER().RegistTimer(_timer.get());
+        GetTimerLauncher().RegistTimer(_timer.get());
     }
 
     Serializer::~Serializer()

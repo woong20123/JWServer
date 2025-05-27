@@ -69,7 +69,8 @@ namespace jw
     template<typename object>
     Consumer<object>::Consumer() : _pProducerCon{ nullptr }
     {
-        static_assert(std::is_pointer<object>::value == false, "Consumer's <object> must not be pointer type ");
+        static_assert(std::is_pointer_v<object> == false, "Consumer's <object> must not be pointer type ");
+        static_assert(std::is_reference_v<object> == false, "Consumer's <object> must not be reference type ");
     }
 
     template<typename object>

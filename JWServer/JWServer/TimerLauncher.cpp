@@ -158,7 +158,7 @@ namespace jw
         {
             std::for_each(std::begin(timerList), std::end(timerList), [](Timer* timer) {
                 timer->SetExcuteTick(timer->GetExpireTick());
-                ::PostQueuedCompletionStatus(NETWORK().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
+                ::PostQueuedCompletionStatus(GetNetwork().GetIOCPHandle(), 0, (ULONG_PTR)timer, nullptr);
                 });
             timerList.clear();
         }
@@ -200,5 +200,10 @@ namespace jw
             std::this_thread::sleep_for(std::chrono::milliseconds(adjustedIntervalMs));
         else
             LOG_WARN(L"timerEvent diffTimeMs:{}, adjustedIntervalMs:{}, baseTimeMs:{}, endTimeMs:{}, tickIntervalMilliSecond:{}", diffTimeMs, adjustedIntervalMs, baseTimeMs, endTimeMs, _tickIntervalMilliSecond);
+    }
+
+    TimerLauncher& GetTimerLauncher()
+    {
+        return jw::TimerLauncher::GetInstance();
     }
 }

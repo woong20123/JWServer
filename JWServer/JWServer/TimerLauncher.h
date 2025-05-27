@@ -72,7 +72,8 @@ namespace jw
 
         int64_t                                 _tickIntervalMilliSecond;
     };
+
+    TimerLauncher& GetTimerLauncher();
 }
 
-#define TIMER_LAUNCHER jw::TimerLauncher::GetInstance
 #endif // !__JW_TIMER_LAUNCHER_H__

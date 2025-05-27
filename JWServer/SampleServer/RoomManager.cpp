@@ -63,7 +63,7 @@ namespace jw
         std::vector<RoomInfo> roomList;
         {
             READ_LOCK(_roomListMutex);
-            for (const auto& roomInfo : _roomList | std::views::take(10))
+            for (const auto& roomInfo : std::as_const(_roomList) | std::views::take(10))
             {
                 const auto& room = roomInfo.second;
                 roomList.emplace_back(roomInfo.first, room->GetRoomName().data(), room->getHostUserName().data(), room->GetHostUserId());

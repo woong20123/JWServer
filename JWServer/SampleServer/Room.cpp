@@ -26,7 +26,7 @@ namespace jw
         // WorldSerializer µî·Ï 
         SerializerKey serializerKey{ SERIALIZER_TYPE_ROOM, SERIALIZER_MANAGER().MakeSerializeId(SERIALIZER_TYPE_ROOM) };
         _serializerKey = std::make_unique<SerializerKey>(serializerKey);
-        _serializer = std::make_shared<Serializer>(serializerKey, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
+        _serializer = std::make_shared<Serializer>(serializerKey, GetTimerLauncher().GetTickIntervalMilliSecond());
         SERIALIZER_MANAGER().RegistSerializer(serializerKey, _serializer);
     }
 
@@ -59,7 +59,7 @@ namespace jw
     std::vector<Room::userID> Room::GetMemberIds() const
     {
         std::vector<userID> memberIds;
-        for (const auto& [userKey, roomUserInfo] : _userList)
+        for (auto& [userKey, roomUserInfo] : std::as_const(_userList))
         {
             memberIds.emplace_back(userKey);
         }
@@ -69,7 +69,7 @@ namespace jw
     std::vector<RoomUserInfo> Room::GetMemberInfoList() const
     {
         std::vector<RoomUserInfo> memberInfoList;
-        for (const auto& [userKey, roomUserInfo] : _userList)
+        for (auto& [userKey, roomUserInfo] : std::as_const(_userList))
         {
             memberInfoList.emplace_back(roomUserInfo);
         }

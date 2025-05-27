@@ -130,7 +130,7 @@ namespace jw
     {
         GameRoomListOk gameRoomListOk;
         auto roomInfoList = SAMPLE_SERVER().GetRoomManager()->GetRoomList();
-        for (const auto& roomInfo : roomInfoList)
+        for (auto& roomInfo : std::as_const(roomInfoList))
         {
             RoomListInfo* roomListInfo = gameRoomListOk.add_roominfo();
             roomListInfo->set_roomid(roomInfo._roomId);

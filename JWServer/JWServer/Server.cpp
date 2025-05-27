@@ -13,6 +13,7 @@
 #include <list>
 #include <chrono>
 #include "Config.h"
+#include "DumpMaker.h"
 
 namespace jw
 {
@@ -31,6 +32,9 @@ namespace jw
 
     bool Server::Initialize(const std::wstring& name, int argc, char* argv[])
     {
+        GetDumpMaker().SetApplicationName(name);
+        GetDumpMaker().Regist();
+
         _name = name;
         _logWorker = std::make_unique<LogWorker>();
 
@@ -113,7 +117,7 @@ namespace jw
         }
 
         std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
-        LOGGER().Initialize(container);
+        GetLogger().Initialize(container);
         _logWorker->SetProducerCon(container);
 
         if (!onInitializedLog())
@@ -145,8 +149,8 @@ namespace jw
     void Server::registFileLogStream(const std::span<LogType> logFlags)
     {
 
-        const wchar_t* fileStreamPath = L"log\\";
-        const wchar_t* fileStreamName = L"JWServer";
+        constexpr const wchar_t* fileStreamPath = L"log\\";
+        constexpr const wchar_t* fileStreamName = L"JWServer";
 
         std::wstring flags;
         for (const auto flag : logFlags)
@@ -184,7 +188,7 @@ namespace jw
     {
         std::shared_ptr<Port> port = std::make_shared<Port>();
         port->Initialize(portInfo);
-        NETWORK().RegistPort(portInfo._id, port);
+        GetNetwork().RegistPort(portInfo._id, port);
     }
 
     void Server::setState(ServerState state)
@@ -197,18 +201,18 @@ namespace jw
 
         switch (state)
         {
-        case jw::ServerState::SERVER_STATE_INITIALIZING:
+        case ServerState::SERVER_STATE_INITIALIZING:
             onInitializing();
             break;
-        case jw::ServerState::SERVER_STATE_INITIALIZED:
+        case ServerState::SERVER_STATE_INITIALIZED:
             onInitialized();
             break;
-        case jw::ServerState::SERVER_STATE_STARTED_SERVER:
+        case ServerState::SERVER_STATE_STARTED_SERVER:
             onStartedServer();
             break;
-        case jw::ServerState::SERVER_STATE_CLOSING:
+        case ServerState::SERVER_STATE_CLOSING:
             break;
-        case jw::ServerState::SERVER_STATE_CLOSED:
+        case ServerState::SERVER_STATE_CLOSED:
             onClosedServer();
             break;
         default:
@@ -221,8 +225,8 @@ namespace jw
 
     bool Server::registArgument(int argc, char* argv[])
     {
-        ARGUMENT().Initialize(argc, argv);
-        ARGUMENT().HandleArgument();
+        GetArguments().Initialize(argc, argv);
+        GetArguments().HandleArgument();
         return true;
     }
 
@@ -243,7 +247,7 @@ namespace jw
             return false;
         }
 
-        if (!NETWORK().Initialize())
+        if (!GetNetwork().Initialize())
         {
             LOG_ERROR(L"fail startNetwork, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
             return false;
@@ -268,7 +272,7 @@ namespace jw
             return false;
         }
 
-        TIMER_LAUNCHER().Initialize(_timerTickIntervalMSec);
+        GetTimerLauncher().Initialize(_timerTickIntervalMSec);
 
         if (!onInitializedTimer())
         {
@@ -283,13 +287,13 @@ namespace jw
 
     void Server::startNetwork()
     {
-        NETWORK().Start(_workerThreadCount);
+        GetNetwork().Start(_workerThreadCount);
 
         LOG_INFO(L"start Network Success, name:{}, workerThreadCount:{}", _name, _workerThreadCount);
     }
     void Server::startTimer()
     {
-        TIMER_LAUNCHER().Run();
+        GetTimerLauncher().Run();
         LOG_INFO(L"start Timer Success, name:{}", _name);
     }
 
@@ -327,9 +331,9 @@ namespace jw
     void Server::CloseServer()
     {
         setState(ServerState::SERVER_STATE_CLOSING);
-        NETWORK().Stop();
-        LOGGER().Stop();
-        TIMER_LAUNCHER().Stop();
+        GetNetwork().Stop();
+        GetLogger().Stop();
+        GetTimerLauncher().Stop();
 
         // 서버의 정리작업을 기다립니다. 
         std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));

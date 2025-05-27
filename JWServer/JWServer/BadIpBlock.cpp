@@ -30,7 +30,7 @@ namespace jw
     {
         if (address == INVALID_IP_ADDRESS) return;
 
-        const auto sanctionsEndTime = TimeUtil::GetCurrentUTCTimeSecond() + _option._sanctionsTimeSecond;
+        const auto sanctionsEndTime = TimeUtil::GetCurrentTimeT() + _option._sanctionsTimeSecond;
         static constexpr uint32_t FIRST_COUNT{ 1 };
         size_t totalRegisteredCount{ 0 };
         uint32_t checkedCount{ FIRST_COUNT };
@@ -58,7 +58,7 @@ namespace jw
 
         if (sessionCount < _option._triggeringSessionCount) return false;
 
-        const auto now = TimeUtil::GetCurrentUTCTimeSecond();
+        const auto now = TimeUtil::GetCurrentTimeT();
         int64_t expirationTime{};
         int32_t checkedCount{};
 

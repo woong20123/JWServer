@@ -88,9 +88,9 @@ namespace jw
 
     void Network::Stop()
     {
-        if(_ioWorker)
+        if (_ioWorker)
             _ioWorker->Stop();
-        if(_sessionInspector)
+        if (_sessionInspector)
             _sessionInspector->Stop();
     }
 
@@ -286,4 +286,6 @@ namespace jw
         LOG_ERROR(L"not find portNumber, portId:{}", portId);
         return Network::_NullPort;
     }
+
+    Network& GetNetwork() { return Network::GetInstance(); }
 }

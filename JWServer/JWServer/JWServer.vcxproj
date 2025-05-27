@@ -153,6 +153,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Channel.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Consumer.hpp" />
+    <ClInclude Include="DumpMaker.h" />
     <ClInclude Include="IOWorker.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="LogBuffer.h" />
@@ -193,6 +194,7 @@ bootstrap.bat</Command>
     <ClCompile Include="BadIpBlock.cpp" />
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="DumpMaker.cpp" />
     <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="LogBuffer.cpp" />

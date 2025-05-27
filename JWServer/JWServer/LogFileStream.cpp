@@ -54,7 +54,7 @@ namespace jw
         makeFileName();
         HANDLE h{ INVALID_HANDLE_VALUE };
         constexpr int TRY_COUNT = 20;
-        for (int i = 1; i < TRY_COUNT; ++i)
+        for (int i{ 1 }; i < TRY_COUNT; ++i)
         {
             if (INVALID_HANDLE_VALUE != (h = CreateFileW(_fullFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)))
                 break;
@@ -94,10 +94,10 @@ namespace jw
     {
         if (!_isSetfileName)
         {
-            time_t now = time(NULL);
+            time_t now = TimeUtil::GetCurrentTimeT();
             struct tm tmNow;
             localtime_s(&tmNow, &now);
-            TimeInfo timeInfo = TimeUtil::toTimeInfo(&tmNow);
+            TimeInfo timeInfo = TimeUtil::ToTimeInfo(&tmNow);
 
             _fullFileName.clear();
             _fullFileName.append(_path);

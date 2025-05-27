@@ -19,6 +19,7 @@ namespace jw
     class TimeUtil
     {
     public:
+
         // 1초를 세컨드로 변환
         constexpr static int64_t SECOND_TO_SECOND = 1;
         // 1분을 세컨드로 변환
@@ -37,17 +38,27 @@ namespace jw
         // 1일을 밀리세컨드로 변환
         constexpr static int64_t DAY_TO_MILLISECOND = DAY_TO_SECOND * 1000;
 
-        static time_t GetCurrentUTCTimeSecond()
+        static time_t GetCurrentTimeT()
         {
-            return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            using namespace std::chrono;
+            return system_clock::to_time_t(std::chrono::system_clock::now());
         }
 
         static int64_t GetCurrentTimeMilliSecond()
         {
-            return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            using namespace std::chrono;
+            return duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         }
 
-        static TimeInfo toTimeInfo(tm* ptm)
+        static TimeInfo GetCurrentTimeInfo()
+        {
+            time_t now = GetCurrentTimeT();
+            tm tmNow;
+            localtime_s(&tmNow, &now);
+            return ToTimeInfo(&tmNow);
+        }
+
+        static TimeInfo ToTimeInfo(tm* ptm)
         {
             TimeInfo timeInfo;
             timeInfo.year = ptm->tm_year + 1900;

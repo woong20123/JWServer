@@ -19,7 +19,7 @@ namespace jw
         static void SendPacketBroadCastInRoomUser(const int64_t roomId, Packet& sendPackets, const int64_t ignoreUserKey)
         {
             const auto memberIdList = SAMPLE_SERVER().GetRoomManager()->GetRoomMemberIds(roomId);
-            for (const auto& memberId : memberIdList)
+            for (auto& memberId : memberIdList)
             {
                 if (ignoreUserKey == memberId) continue;
                 const auto& memberUser = SAMPLE_SERVER().GetWorld()->FindUser(memberId);
@@ -156,7 +156,7 @@ namespace jw
         const auto& memberIdList = SAMPLE_SERVER().GetRoomManager()->GetRoomMemberInfoList(_roomId);
         const auto& roomInfo = SAMPLE_SERVER().GetRoomManager()->GetRoomInfo(_roomId);
         GameRoomEnterOk roomEnterOk;
-        for (const auto& memberInfo : memberIdList)
+        for (auto& memberInfo : memberIdList)
         {
             UserInfo* userInfo = roomEnterOk.add_memberuserinfos();
             userInfo->set_userid(memberInfo._userId);

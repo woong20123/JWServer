@@ -98,4 +98,9 @@ namespace jw
     {
         return _pImpl->_processName;
     }
+
+    Arguments& GetArguments()
+    {
+        return Arguments::GetInstance();
+    }
 }

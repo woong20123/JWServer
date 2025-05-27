@@ -104,9 +104,9 @@ namespace jw
         friend class Singleton<Logger>;
 
     };
-}
 
-#define LOGGER jw::Logger::GetInstance
+    Logger& GetLogger();
+}
 
 #if _HAS_CXX20 
 #define LOG_WRITE(type, fmt, ...) \

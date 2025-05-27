@@ -94,7 +94,7 @@ namespace jw
         }
 
         std::shared_ptr<User> user = std::make_shared<User>();
-        user->Initialize(NETWORK().GetSession(session->GetPortId(), session->GetIndex()), name);
+        user->Initialize(GetNetwork().GetSession(session->GetPortId(), session->GetIndex()), name);
         if (const auto registerUserResult = SAMPLE_SERVER().GetWorld()->RegistUser(user);
             registerUserResult != REGITER_USER_RESULT_SUCCESS)
         {

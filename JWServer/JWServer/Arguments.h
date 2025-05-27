@@ -37,9 +37,9 @@ namespace jw
 
         friend class Singleton<Arguments>;
     };
-}
 
-#define ARGUMENT jw::Arguments::GetInstance
+    Arguments& GetArguments();
+}
 
 #endif // __JW_ARGUMENTS_H__
 

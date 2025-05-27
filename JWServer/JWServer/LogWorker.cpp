@@ -11,7 +11,7 @@ namespace jw
     {
         joinWaitThread();
 
-        for (const auto& stream : _logStreams)
+        for (auto& stream : std::as_const(_logStreams))
             stream->Initialize();
     }
 
@@ -36,16 +36,16 @@ namespace jw
     {
         if (objs.empty()) return;
 
-        for (const auto& obj : objs) {
+        for (auto& obj : objs) {
             obj->MakePreFix();
-            for (const auto& stream : _logStreams)
+            for (auto& stream : std::as_const(_logStreams))
             {
                 if (stream->EnableLogType(obj->GetLogType()))
                     stream->Write(obj);
             }
         }
 
-        for (const auto& stream : _logStreams)
+        for (auto& stream : std::as_const(_logStreams))
             stream->Flush();
     }
 }

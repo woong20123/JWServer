@@ -57,7 +57,7 @@ namespace jw
         _portNumber = info._portNumber;
         _ipcpHandle = info._iocpHandle;
 
-        if (!_listerner->Initialize(_id, _portNumber, _ipcpHandle, NETWORK().GetAcceptExFunc(), NETWORK().GetAcceptExSockAddrFunc()))
+        if (!_listerner->Initialize(_id, _portNumber, _ipcpHandle, GetNetwork().GetAcceptExFunc(), GetNetwork().GetAcceptExSockAddrFunc()))
         {
             LOG_FETAL(L"lister initialize fail, id:{}, portNumber:{}", info._id, info._portNumber);
             return false;
@@ -66,7 +66,7 @@ namespace jw
         _sessionInspectorStatusTable = std::make_shared<SessionInspectorInfoTable>();
         _sessionInspectorStatusTable->Initialize(_id, info._sesionMaxCount, info._recvCheckTimeSecond);
 
-        NETWORK().RegisterSessionInspectorInfoTable(_id, _sessionInspectorStatusTable);
+        GetNetwork().RegisterSessionInspectorInfoTable(_id, _sessionInspectorStatusTable);
 
         LOG_INFO(L"Port Initialize Success, id:{}, portNumber:{}, sesionMaxCount:{}", info._id, info._portNumber, info._sesionMaxCount);
 

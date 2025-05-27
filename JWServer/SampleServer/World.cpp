@@ -15,14 +15,14 @@ namespace jw
 
     void World::Initialize(size_t userListSize)
     {
-        for (int i = 1; i <= userListSize; ++i) {
+        for (int i{ 1 }; i <= userListSize; ++i) {
             _issueBaseKey.push(i);
         }
 
         // WorldSerializer µî·Ï 
         SerializerKey serializerKey{ SERIALIZER_TYPE_WORLD, SERIALIZER_MANAGER().MakeSerializeId(SERIALIZER_TYPE_WORLD) };
         _serializerKey = std::make_unique<SerializerKey>(serializerKey);
-        _serializer = std::make_shared<Serializer>(serializerKey, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
+        _serializer = std::make_shared<Serializer>(serializerKey, GetTimerLauncher().GetTickIntervalMilliSecond());
         SERIALIZER_MANAGER().RegistSerializer(serializerKey, _serializer);
     }
 
@@ -72,7 +72,7 @@ namespace jw
     void World::BroadcastPacket(Packet& packet)
     {
         WRITE_LOCK(_userList_mutex);
-        for (const auto& user : _userList)
+        for (auto& user : std::as_const(_userList))
         {
             if (user.second)
                 user.second->Send(packet);

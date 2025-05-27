@@ -1,6 +1,5 @@
 ﻿#include "Timer.h"
 #include "Logger.h"
-#include <ctime>
 
 namespace jw
 {

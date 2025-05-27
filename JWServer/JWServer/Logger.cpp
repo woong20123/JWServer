@@ -34,7 +34,7 @@ namespace jw
 
     void Logger::Stop()
     {
-        if(_logProducerCon)
+        if (_logProducerCon)
             _logProducerCon->SetStopSignal();
         _isRun = false;
     }
@@ -88,4 +88,6 @@ namespace jw
     {
         return level <= _logLevel;
     }
+
+    Logger& GetLogger() { return Logger::GetInstance(); }
 }

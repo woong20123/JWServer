@@ -61,12 +61,12 @@ namespace jw
             }
         }
 
-        TIMER_LAUNCHER().RegistTimer(this);
+        GetTimerLauncher().RegistTimer(this);
     }
 
     bool SerializerTimer::Post(const std::shared_ptr<SerializeObject>& so, int32_t delayMilliSeconds)
     {
-        so->Initialize(delayMilliSeconds, TIMER_LAUNCHER().GetTickIntervalMilliSecond());
+        so->Initialize(delayMilliSeconds, GetTimerLauncher().GetTickIntervalMilliSecond());
         {
             post(so);
         }

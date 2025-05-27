@@ -143,7 +143,7 @@ namespace jw
 
     bool Session::OnAccept()
     {
-        if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_socket), NETWORK().GetIOCPHandle(), reinterpret_cast<uint64_t>(this)))
+        if (!NetworkHelper::AssociateDeviceWithIOCP(reinterpret_cast<HANDLE>(_socket), GetNetwork().GetIOCPHandle(), reinterpret_cast<uint64_t>(this)))
         {
             LOG_FETAL(L"sessionSocket fail AssociateDeviceWithIOCP, id:{}, ip:{}, port:{}", GetId(), _ipString.c_str(), _port);
             return false;
@@ -218,7 +218,7 @@ namespace jw
         const auto ipString = _ipString;
         const auto port = _port;
 
-        if (!NETWORK().DestroySession(GetPortId(), this))
+        if (!GetNetwork().DestroySession(GetPortId(), this))
         {
             LOG_ERROR(L"DestorySession Fail, id:{}, ip:{}, port:{}", id, ipString.c_str(), port);
         }
@@ -381,7 +381,7 @@ namespace jw
 
     void Session::UpdateRecvTime()
     {
-        _lastRecvTime = TimeUtil::GetCurrentUTCTimeSecond();
+        _lastRecvTime = TimeUtil::GetCurrentTimeT();
     }
 
     SessionID Session::MakeSessionID(const uint32_t index, const uint16_t portId)

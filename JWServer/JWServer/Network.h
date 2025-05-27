@@ -85,9 +85,9 @@ namespace jw
         static std::shared_ptr<Port>               _NullPort;
         friend class Singleton<Network>;
     };
-}
 
-#define NETWORK jw::Network::GetInstance
+    Network& GetNetwork();
+}
 
 #endif // !__JW_NETWORK_H__
 
