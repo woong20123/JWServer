@@ -129,6 +129,8 @@ namespace jw
         virtual bool onInitializingTimer() = 0;
         virtual bool onInitializedTimer() = 0;
 
+        virtual bool onValidateChecker() = 0;
+
         // 런타임에 서버에 전달되는 이벤트 처리 동작을 추가 합니다. 
         virtual bool onHandleEvent(const std::shared_ptr<ServerEvent>& event) = 0;
 
@@ -140,6 +142,7 @@ namespace jw
         bool initializeConfig();
         bool initializeNetwork();
         bool initializeTimer();
+        bool validateChecker();
 
         // start
         void startNetwork();

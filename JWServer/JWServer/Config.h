@@ -21,9 +21,12 @@ namespace jw
     public:
         static constexpr const wchar_t* BOOL_TRUE = L"yes";
         static constexpr const wchar_t* BOOL_FALSE = L"no";
+        static constexpr const wchar_t* NONE_VALUE = L"";
 
         using ConfigDefinitionList = std::vector<ConfigDefinition>;
         using ConfigMap = std::unordered_map<std::string, std::wstring>;
+        using BoolCheckValue = std::pair<std::wstring, bool>;
+
         Config() = default;
         virtual ~Config() = default;
         virtual void Initialize(std::shared_ptr<ConfigParser> parser);
@@ -33,6 +36,11 @@ namespace jw
         void RegisterConfigDefinition(const std::string& key, const std::wstring& defaultValue)
         {
             _configDefinition.emplace_back(key, defaultValue);
+        }
+
+        bool IsValidate() const
+        {
+            return _validate;
         }
 
     protected:
@@ -49,6 +57,8 @@ namespace jw
         virtual void onLoading() = 0;
         virtual void onLoaded() = 0;
 
+        const wchar_t* getValue(const std::string& key) const;
+
         void checkAndWriteEmptyKey(const std::filesystem::path& filePath);
 
         void makeDefintion();
@@ -56,6 +66,8 @@ namespace jw
 
         ConfigDefinitionList    _configDefinition;
         ConfigMap               _configMap;
+        std::vector<BoolCheckValue> _boolCheckedValues;
+        mutable bool                _validate;
     };
 
     class ConfigParser

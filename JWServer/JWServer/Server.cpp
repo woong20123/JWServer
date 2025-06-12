@@ -72,6 +72,12 @@ namespace jw
             return false;
         }
 
+        if (!validateChecker())
+        {
+            LOG_ERROR(L"fail validate checker, name:{}", _name);
+            return false;
+        }
+
         setState(ServerState::SERVER_STATE_INITIALIZED);
 
         return true;
@@ -281,6 +287,17 @@ namespace jw
         }
 
         LOG_INFO(L"initialize startTimer Success, name:{}, tickIntervalMilliSecond:{}", _name, _timerTickIntervalMSec);
+
+        return true;
+    }
+
+    bool Server::validateChecker()
+    {
+        if (!onValidateChecker())
+        {
+            LOG_ERROR(L"fail onValidateChecker, name:{}", _name);
+            return false;
+        }
 
         return true;
     }

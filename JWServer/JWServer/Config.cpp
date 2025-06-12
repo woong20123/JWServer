@@ -11,6 +11,16 @@ namespace jw
     void Config::Initialize(std::shared_ptr<ConfigParser> parser)
     {
         _parser = parser;
+        _validate = true;
+
+        _boolCheckedValues.emplace_back(L"yes", true);
+        _boolCheckedValues.emplace_back(L"y", true);
+        _boolCheckedValues.emplace_back(L"true", true);
+
+        _boolCheckedValues.emplace_back(L"no", false);
+        _boolCheckedValues.emplace_back(L"n", false);
+        _boolCheckedValues.emplace_back(L"false", false);
+
     }
 
     bool Config::Load(std::filesystem::path filePath)
@@ -164,27 +174,32 @@ namespace jw
 
     const bool Config::GetBool(const std::string& key) const
     {
-        const auto value = GetString(key);
-        if ((value.size() == 3 && value == L"yes") ||
-            (value.size() == 1 && value == L"y"))
+        const auto value = getValue(key);
+
+        // _boolCheckedValues를 key 검색하여 일치하는 값이 있는지 확인 합니다. 
+        const auto findIt = std::find_if(begin(_boolCheckedValues), end(_boolCheckedValues),
+            [&value](const BoolCheckValue& checkValue)
+            {
+                return checkValue.first == value;
+            });
+
+        if (findIt != end(_boolCheckedValues))
         {
-            return true;
+            return findIt->second;
         }
 
-        if ((value.size() == 2 && value == L"no") ||
-            (value.size() == 1 && value == L"n"))
-        {
-            return false;
-        }
 
-        assert(false && std::format("Config::GetBool parser Error, value:{}", value.c_str()).c_str());
+        // _boolCheckedValues에 등록되지 않은 값을 셋팅했다면 프로그램을 종료 시킵니다. 
+        LOG_ERROR(L"Config::GetBool parser Error, key:{}, value:{}", StringConverter::StrA2WUseUTF8(key).value().c_str(), value);
+        _validate = false;
+
         return false;
     }
 
 
     const int16_t Config::GetInt16(const std::string& key) const
     {
-        return static_cast<int32_t>(GetInt64(key));
+        return static_cast<int16_t>(GetInt64(key));
     }
 
     const int32_t Config::GetInt32(const std::string& key) const
@@ -195,22 +210,42 @@ namespace jw
 
     const int64_t Config::GetInt64(const std::string& key) const
     {
-        auto it = _configMap.find(key);
-        if (it != _configMap.end())
+        auto value = getValue(key);
+        int64_t result{ 0L };
+        if (wcscmp(value, NONE_VALUE) != 0)
         {
-            return std::stoll(it->second);
+            try
+            {
+                result = std::stoll(value);
+            }
+            catch (std::exception const& ex)
+            {
+                LOG_ERROR(L"Config::GetInt parser Error, key:{}, value:{}, ex:{}", StringConverter::StrA2WUseUTF8(key).value().c_str(), value,
+                    StringConverter::StrA2WUseUTF8(ex.what()).value().c_str());
+                _validate = false;
+            }
         }
-        return 0L;
+        return result;
     }
 
-
     const std::wstring Config::GetString(const std::string& key) const
+    {
+        auto value = getValue(key);
+        if (wcscmp(value, NONE_VALUE) == 0)
+        {
+            LOG_ERROR(L"Config::GetString parser Error, key:{}, value:{}", StringConverter::StrA2WUseUTF8(key).value().c_str(), value);
+            _validate = false;
+        }
+        return value;
+    }
+
+    const wchar_t* Config::getValue(const std::string& key) const
     {
         auto it = _configMap.find(key);
         if (it != _configMap.end())
         {
-            return it->second;
+            return it->second.c_str();
         }
-        return L"";
+        return NONE_VALUE;
     }
 }

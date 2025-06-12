@@ -104,6 +104,11 @@ namespace jw
         return true;
     }
 
+    bool SampleServer::onInitializedTimer()
+    {
+        return true;
+    }
+
     bool SampleServer::onInitializingTimer()
     {
         setTimerTickIntervalMilliSecond(_config->GetTimerTickIntervalMilliSecond());
@@ -111,8 +116,13 @@ namespace jw
         return true;
     }
 
-    bool SampleServer::onInitializedTimer()
+    bool SampleServer::onValidateChecker()
     {
+        if (!_config->IsValidate())
+        {
+            return false;
+        }
+
         return true;
     }
 
