@@ -25,7 +25,7 @@ namespace jw
 
         using ConfigDefinitionList = std::vector<ConfigDefinition>;
         using ConfigMap = std::unordered_map<std::string, std::wstring>;
-        using BoolCheckValue = std::pair<std::wstring, bool>;
+        using BoolCheckedCon = std::unordered_map<std::wstring, bool>;
 
         Config() = default;
         virtual ~Config() = default;
@@ -53,6 +53,7 @@ namespace jw
         const std::wstring GetString(const std::string& key) const;
 
     private:
+        void makeCheckedValues();
 
         virtual void onLoading() = 0;
         virtual void onLoaded() = 0;
@@ -64,9 +65,9 @@ namespace jw
         void makeDefintion();
         void compareConfigMapAndDefinition(bool& isChanged, ConfigMap& configMap);
 
-        ConfigDefinitionList    _configDefinition;
-        ConfigMap               _configMap;
-        std::vector<BoolCheckValue> _boolCheckedValues;
+        ConfigDefinitionList        _configDefinition;
+        ConfigMap                   _configMap;
+        BoolCheckedCon              _boolCheckedContainer;
         mutable bool                _validate;
     };
 

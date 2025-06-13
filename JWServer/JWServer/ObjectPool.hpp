@@ -12,16 +12,17 @@ namespace jw
 	class ObjectPool
 	{
 	public:
-		using Type = std::decay_t<T>;
+		using Type = std::decay_t<std::remove_pointer_t<T>>;
+		using Pointer = Type*;
 
 		ObjectPool()
 		{
-			static_assert(std::is_pointer<T>::value == false, "ObjectPool's <T> must not be pointer type ");
+
 		}
 
-		Type* Acquire()
+		Pointer Acquire()
 		{
-			Type* ret{ nullptr };
+			Pointer ret{ nullptr };
 			{
 				std::unique_lock<std::shared_mutex> lk{ _listMutex };
 
@@ -33,7 +34,7 @@ namespace jw
 			}
 			return ret;
 		}
-		void Release(Type* object)
+		void Release(Pointer object)
 		{
 			std::unique_lock<std::shared_mutex> lk{ _listMutex };
 			_list.push_back(object);
@@ -42,7 +43,7 @@ namespace jw
 
 		void allocate()
 		{
-			Type* ptr = reinterpret_cast<Type*>(::operator new(_allocateCount * sizeof(Type)));
+			Pointer ptr = reinterpret_cast<Pointer>(::operator new(_allocateCount * sizeof(Type)));
 			for (int i = 0; i < _allocateCount; ++i)
 			{
 				_list.push_back(new(ptr + i) Type);
@@ -55,7 +56,7 @@ namespace jw
 			}
 		}
 
-		std::list<Type*>			_list;
+		std::list<Pointer>			_list;
 		std::shared_mutex		_listMutex;
 		size_t					_allocateCount{ BASE_ALLOCATE_COUNT };
 	};

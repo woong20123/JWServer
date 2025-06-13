@@ -18,14 +18,11 @@ namespace jw
     class ProducerContainer
     {
     public:
-        using obj = object;
-        using durationType = uint32_t;
-
         ProducerContainer(uint32_t durationMSecond);
         virtual ~ProducerContainer();
 
         void							Wait(std::list<object>& objList);
-        void                            Wait(std::list<object>& objList, durationType durationMilliseconds);
+        void                            Wait(std::list<object>& objList, uint32_t durationMilliseconds);
         void							Push(const object& obj);
         void							Flush();
         void							SetStopSignal();
@@ -34,7 +31,7 @@ namespace jw
     private:
         std::condition_variable_any			_cv;
         std::shared_mutex					_shared_mutex;
-        std::list<obj>				        _list;
+        std::list<object>				    _list;
         std::atomic<bool>					_isStop;
         uint32_t                            _defaultDurationMilliseconds;
     };
@@ -55,7 +52,7 @@ namespace jw
     }
 
     template<typename object>
-    void ProducerContainer<object>::Wait(std::list<object>& objList, durationType durationMilliseconds)
+    void ProducerContainer<object>::Wait(std::list<object>& objList, uint32_t durationMilliseconds)
     {
         using namespace std::chrono_literals;
         std::unique_lock<std::shared_mutex> lk(_shared_mutex);

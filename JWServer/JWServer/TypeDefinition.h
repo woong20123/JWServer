@@ -30,7 +30,7 @@
 #define WRITE_LOCK(mtx) std::unique_lock<std::shared_mutex> lk(mtx)
 #define READ_LOCK(mtx) std::shared_lock<std::shared_mutex> lk(mtx)
 
-#define MAKE_CRASH { void * p = nullptr; *((int*)p) = 10; }
+#define MAKE_CRASH() { throw std::runtime_error(std::format("FileName : {}, Line: {}", __FILE__, __LINE__)); }
 
 #define JW_MIN(r, l) r < l ? r : l;
 #define JW_MAX(r, l) r > l ? r : l;

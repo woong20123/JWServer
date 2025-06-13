@@ -21,7 +21,7 @@ namespace jw
 
         if (size < 0 || getFreeSize() < size)
         {
-            MAKE_CRASH;
+            MAKE_CRASH();
             return false;
         }
 

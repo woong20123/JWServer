@@ -13,14 +13,7 @@ namespace jw
         _parser = parser;
         _validate = true;
 
-        _boolCheckedValues.emplace_back(L"yes", true);
-        _boolCheckedValues.emplace_back(L"y", true);
-        _boolCheckedValues.emplace_back(L"true", true);
-
-        _boolCheckedValues.emplace_back(L"no", false);
-        _boolCheckedValues.emplace_back(L"n", false);
-        _boolCheckedValues.emplace_back(L"false", false);
-
+        makeCheckedValues();
     }
 
     bool Config::Load(std::filesystem::path filePath)
@@ -111,7 +104,7 @@ namespace jw
             return std::make_shared<JsonConfigParser>();
         }
 
-        LOG_ERROR(L"parser type is not supported, parserType:{}", static_cast<int>(parserType));
+        LOG_CRASH(L"parser type is not supported, parserType:{}", static_cast<int>(parserType));
         return nullptr;
     }
 
@@ -177,17 +170,11 @@ namespace jw
         const auto value = getValue(key);
 
         // _boolCheckedValues를 key 검색하여 일치하는 값이 있는지 확인 합니다. 
-        const auto findIt = std::find_if(begin(_boolCheckedValues), end(_boolCheckedValues),
-            [&value](const BoolCheckValue& checkValue)
-            {
-                return checkValue.first == value;
-            });
-
-        if (findIt != end(_boolCheckedValues))
+        if (const auto boolCheckedIt = _boolCheckedContainer.find(value);
+            boolCheckedIt != std::end(_boolCheckedContainer))
         {
-            return findIt->second;
+            return boolCheckedIt->second;
         }
-
 
         // _boolCheckedValues에 등록되지 않은 값을 셋팅했다면 프로그램을 종료 시킵니다. 
         LOG_ERROR(L"Config::GetBool parser Error, key:{}, value:{}", StringConverter::StrA2WUseUTF8(key).value().c_str(), value);
@@ -247,5 +234,18 @@ namespace jw
             return it->second.c_str();
         }
         return NONE_VALUE;
+    }
+
+    void Config::makeCheckedValues()
+    {
+        // true 가능 문자열
+        _boolCheckedContainer.insert({ L"yes",      true });
+        _boolCheckedContainer.insert({ L"y",        true });
+        _boolCheckedContainer.insert({ L"true",     true });
+
+        // false 가능 문자열
+        _boolCheckedContainer.insert({ L"no",       false });
+        _boolCheckedContainer.insert({ L"n",        false });
+        _boolCheckedContainer.insert({ L"false",   false });
     }
 }
