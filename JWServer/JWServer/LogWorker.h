@@ -11,7 +11,7 @@
 namespace jw
 {
     class LogBuffer;
-    class LogWorker : public CONSUMER(std::shared_ptr<LogBuffer>)
+    class LogWorker : public Consumer< std::shared_ptr<LogBuffer> >
     {
         CONSUMER_BASE_DECLARE(LogWorker, LogBuffer);
     public:
@@ -21,7 +21,7 @@ namespace jw
         // 스레드 세이프 합니다. 
         void prepare() override;
 
-        void RegisterLogStream(const std::shared_ptr<LogStream> &stream);
+        void RegisterLogStream(const std::shared_ptr<LogStream>& stream);
         size_t getRegistedLogStreamCount();
     private:
         std::vector<std::shared_ptr<LogStream> >    _logStreams;

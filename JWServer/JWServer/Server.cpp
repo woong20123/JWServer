@@ -36,9 +36,8 @@ namespace jw
         GetDumpMaker().Regist();
 
         _name = name;
-        _logWorker = std::make_unique<LogWorker>();
 
-        if (_name == INVALID_SERVER_NAME || _logWorker == nullptr)
+        if (_name == INVALID_SERVER_NAME)
         {
             std::cerr << std::format("not call Server::Initialize()\n");
             return false;
@@ -122,9 +121,10 @@ namespace jw
             return false;
         }
 
+        // Logger Container를 Logger와 LogWorker에 연결합니다. 
         std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
         GetLogger().Initialize(container);
-        _logWorker->SetProducerCon(container);
+        _logWorker = std::make_unique<LogWorker>(container);
 
         if (!onInitializedLog())
         {

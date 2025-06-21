@@ -10,6 +10,8 @@ namespace jw
     public:
         Singleton(const Singleton&) = delete;
         Singleton& operator=(const Singleton&) = delete;
+        Singleton(Singleton&&) = delete;
+        Singleton& operator=(Singleton&&) = delete;
 
         static T& GetInstance()
         {
@@ -17,8 +19,8 @@ namespace jw
             return intance;
         }
     protected:
-        Singleton() {}
-        ~Singleton() {}
+        Singleton() = default;
+        ~Singleton() = default;
     private:
     };
 }

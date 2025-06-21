@@ -18,8 +18,8 @@ namespace jw
     class Consumer
     {
     public:
-        using obj = object;
         using PCContainer = ProducerContainer<object>;
+        using container = ProducerContainer<object>::container;
         static constexpr size_t DEFAULT_THREAD_COUNT = 1;
 
         explicit Consumer();
@@ -52,7 +52,7 @@ namespace jw
         // Producer에서 전달 된 object를 handle로 전달합니다. 
         void execute();
         // 전달 받은 object를 처리하는 로직을 등록합니다. 
-        virtual void handle(const std::list<obj>& objs) = 0;
+        virtual void handle(const container& objs) = 0;
 
         void joinWaitThread();
 
@@ -108,7 +108,7 @@ namespace jw
                 // 이전에 등록된 모든 queueObject가 다 처리 되었다면 종료, 최대 대기 시간도 필요 할 듯
                 if (0 == _pProducerCon->Size())
                 {
-                    std::cerr << std::format("Producer<{}> {}  is stop\n", typeid(obj).name(), _name);
+                    std::cerr << std::format("Producer<{}> {}  is stop\n", typeid(object).name(), _name);
                     break;
                 }
             }
@@ -120,7 +120,7 @@ namespace jw
                 }
             }
 
-            std::list<obj> queueObjects;
+            container queueObjects;
             _pProducerCon->Wait(queueObjects);
             if (!queueObjects.empty())
                 handle(queueObjects);
@@ -139,17 +139,14 @@ namespace jw
 }
 
 
-
-#define CONSUMER(OBJ) Consumer<OBJ>
-
 #define CONSUMER_BASE_DECLARE(CLASSNAME, OBJ) \
 public: \
     using PCContainer = ProducerContainer<std::shared_ptr<OBJ>>; \
     CLASSNAME() : Consumer() {} \
-    virtual ~CLASSNAME() {} \
+    virtual ~CLASSNAME() = default; \
     CLASSNAME(const std::shared_ptr<PCContainer>& producer) : Consumer(producer) {} \
     CLASSNAME(const std::shared_ptr<PCContainer>& producer, const size_t threadCount) : Consumer(producer, threadCount) {} \
 private: \
-    void handle(const std::list<obj>& objs) override;
+    void handle(const container & objs) override;
 
 #endif //__JW_CONSUMER_HPP__

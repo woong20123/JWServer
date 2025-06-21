@@ -32,7 +32,7 @@ namespace jw
     }
 
     // 작업 처리 내용을 등록합니다. 
-    void LogWorker::handle(const std::list<obj>& objs)
+    void LogWorker::handle(const container& objs)
     {
         if (objs.empty()) return;
 

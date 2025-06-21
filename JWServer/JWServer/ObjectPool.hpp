@@ -14,10 +14,10 @@ namespace jw
 	public:
 		using Type = std::decay_t<std::remove_pointer_t<T>>;
 		using Pointer = Type*;
+		using List = std::list<Pointer>;
 
 		ObjectPool()
 		{
-
 		}
 
 		Pointer Acquire()
@@ -56,7 +56,7 @@ namespace jw
 			}
 		}
 
-		std::list<Pointer>			_list;
+		List					_list;
 		std::shared_mutex		_listMutex;
 		size_t					_allocateCount{ BASE_ALLOCATE_COUNT };
 	};
