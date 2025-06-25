@@ -7,15 +7,30 @@
 
 namespace jw
 {
-    class DumpMaker : public Singleton<DumpMaker>
+    class DumpMaker
     {
     public:
-        void SetApplicationName(const std::wstring& applicationName);
+        DumpMaker() = default;
+
+
         void Regist();
-        void UnhandledExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo);
         void UnRegist();
     private:
-        friend class Singleton<DumpMaker>;
+        virtual void doRegist() = 0;
+        virtual void doUnRegist() = 0;
+    };
+
+    // WindowDumpMaker는 윈도우에서 예외가 발생했을 때 덤프 파일을 생성하는 역할을 합니다.
+    class WindowDumpMaker : public Singleton<WindowDumpMaker, DumpMaker>, public DumpMaker
+    {
+    private:
+        void doRegist() override;
+        void doUnRegist() override;
+
+        static void unhandledExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo);
+        static std::wstring getApplicationName();
+
+        friend class Singleton<WindowDumpMaker>;
 
         std::wstring _applicationName{};
         LPTOP_LEVEL_EXCEPTION_FILTER _oldFilter{ nullptr };

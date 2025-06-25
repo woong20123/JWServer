@@ -4,7 +4,7 @@
 
 namespace jw
 {
-    template<typename T>
+    template<typename PIMPL, typename INTERFACE = PIMPL>
     class Singleton
     {
     public:
@@ -13,9 +13,9 @@ namespace jw
         Singleton(Singleton&&) = delete;
         Singleton& operator=(Singleton&&) = delete;
 
-        static T& GetInstance()
+        static INTERFACE& GetInstance()
         {
-            static T intance;
+            static PIMPL intance;
             return intance;
         }
     protected:

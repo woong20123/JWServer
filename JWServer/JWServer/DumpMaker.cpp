@@ -2,34 +2,62 @@
 #include "TypeDefinition.h"
 #include <DbgHelp.h>
 #include <filesystem>
+#include <functional>
+#include <ranges>
 
 #pragma comment(lib, "Dbghelp.lib")
 
 namespace jw
 {
-    void DumpMaker::SetApplicationName(const std::wstring& applicationName)
-    {
-        _applicationName = applicationName;
-    }
-
     void DumpMaker::Regist()
     {
+        doRegist();
+    }
+
+
+    void DumpMaker::UnRegist()
+    {
+        doUnRegist();
+    }
+
+
+    void WindowDumpMaker::doRegist()
+    {
         auto unhandledExceptionFilterFunc = [](EXCEPTION_POINTERS* pExceptionInfo)->LONG {
-            DumpMaker::GetInstance().UnhandledExceptionFilter(pExceptionInfo);
+            WindowDumpMaker::unhandledExceptionFilter(pExceptionInfo);
             return EXCEPTION_EXECUTE_HANDLER; // 덤프 파일 경로 지정
             };
 
         _oldFilter = ::SetUnhandledExceptionFilter(unhandledExceptionFilterFunc);
     }
 
+    std::wstring WindowDumpMaker::getApplicationName()
+    {
+        wchar_t applicationPath[MAX_PATH] = {};
+        if (!GetModuleFileNameW(nullptr, applicationPath, MAX_PATH)) {
+            return L"unknown";
+        }
 
-    void DumpMaker::UnhandledExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo)
+        std::wstring strApplicationPath{ applicationPath };
+        std::wstring strApplicationName{ L"unknown" };
+        size_t startPos = strApplicationPath.rfind(L'\\');
+        size_t endPos = strApplicationPath.rfind(L'.');
+        if (startPos != std::wstring::npos && endPos != std::wstring::npos && startPos < endPos) {
+            strApplicationName = strApplicationPath.substr(startPos + 1, endPos - startPos);
+        }
+
+        return strApplicationName;
+    }
+
+    void WindowDumpMaker::unhandledExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo)
     {
         constexpr const wchar_t* path = L"log\\dump\\";
 
-        if (!std::filesystem::create_directory(path))
+        std::error_code ec;
+        if (!std::filesystem::is_directory(path, ec))
         {
-            ASSERT_WITH_MSG(false, std::format(L"폴더 생성 실패 : {}", path));
+            std::filesystem::create_directory(path, ec);
+            std::wcout << std::format(L"Create dump directory: {}, ec.Value:{}\n", path, ec.value());
         }
 
         // 덤프 파일 경로 지정
@@ -38,7 +66,7 @@ namespace jw
         GetLocalTime(&st);
 
         _snwprintf_s(dumpPath, MAX_PATH, L"%scrash_%s_%04d%02d%02d_%02d%02d%02d.dmp",
-            path, _applicationName.c_str(), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+            path, getApplicationName().c_str(), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
         // 파일 생성
         HANDLE hDumpFile = CreateFile(dumpPath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -64,7 +92,7 @@ namespace jw
         }
     }
 
-    void DumpMaker::UnRegist()
+    void WindowDumpMaker::doUnRegist()
     {
         if (_oldFilter) {
             ::SetUnhandledExceptionFilter(_oldFilter);
@@ -74,6 +102,6 @@ namespace jw
 
     DumpMaker& GetDumpMaker()
     {
-        return DumpMaker::GetInstance();
+        return WindowDumpMaker::GetInstance();
     }
 }

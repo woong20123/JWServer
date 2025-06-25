@@ -32,7 +32,6 @@ namespace jw
 
     bool Server::Initialize(const std::wstring& name, int argc, char* argv[])
     {
-        GetDumpMaker().SetApplicationName(name);
         GetDumpMaker().Regist();
 
         _name = name;
