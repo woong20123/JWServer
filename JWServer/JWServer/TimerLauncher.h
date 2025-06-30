@@ -62,7 +62,7 @@ namespace jw
         friend class Singleton<TimerLauncher>;
 
         uint8_t                                 _state;
-        std::thread                             _timerLogicThread;
+        std::jthread                            _timerLogicThread;
 
         uint64_t                                _timerTick;
 

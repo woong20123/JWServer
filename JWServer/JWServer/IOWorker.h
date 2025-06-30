@@ -19,11 +19,10 @@ namespace jw
     protected:
         virtual void onStart() {};
         virtual void onClose() {}
-        void execute();
+        void execute(std::stop_token stopToken);
     private:
-        std::vector<std::thread>    _threads;
+        std::vector<std::jthread>   _threads;
         HANDLE                      _iocpHandle;
-        std::atomic<bool>           _isStop;
     };
 }
 #endif

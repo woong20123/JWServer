@@ -63,7 +63,7 @@ namespace jw {
     private:
         std::shared_mutex                   _tablesMutex;
         SessionInspectorInfoTableContainer _sessionInspectorInfoTables;
-        std::thread _inspectorThread;
+        std::jthread _inspectorThread;
         bool        _isRun;
         time_t      _checkIntervalMilliSecond;
 

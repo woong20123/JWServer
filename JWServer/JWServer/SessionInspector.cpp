@@ -147,15 +147,14 @@ namespace jw
 
     void SessionInspector::Run()
     {
-        _isRun = true;
         // 세션을 검사하는 스레드입니다. 
-        _inspectorThread = std::thread([this]() {
+        _inspectorThread = std::jthread([this](std::stop_token stopToken) {
             while (true)
             {
-                if (!_isRun)
+                if (stopToken.stop_requested())
                 {
                     LOG_INFO(L"SessionInspector Thread Stop");
-                    break;
+                    return;
                 }
 
                 {
@@ -173,6 +172,6 @@ namespace jw
     void SessionInspector::Stop()
     {
         LOG_INFO(L"SessionInspector Stop");
-        _isRun = false;
+        _inspectorThread.request_stop();
     }
 }

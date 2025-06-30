@@ -15,8 +15,6 @@ namespace jw
     TimerLauncher::~TimerLauncher()
     {
         Stop();
-
-        if (_timerLogicThread.joinable()) _timerLogicThread.join();
     }
 
     void TimerLauncher::Initialize(const int64_t tickIntervalMilliSecond)
@@ -26,7 +24,7 @@ namespace jw
 
     void TimerLauncher::Run()
     {
-        _timerLogicThread = std::thread([this]() {
+        _timerLogicThread = std::jthread([this](std::stop_token stopToken) {
             uint64_t lastTimerTick{ 0 };
             setState(STATE_RUN);
 
@@ -39,10 +37,11 @@ namespace jw
             while (true)
             {
                 startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-                if (STATE_STOP == _state)
+
+                if (stopToken.stop_requested())
                 {
                     LOG_INFO(L"StopSignal send to Server");
-                    break;
+                    return;
                 }
 
                 // 현재 틱에 해당하는 타이머 목록을 가져옵니다. 
@@ -67,6 +66,9 @@ namespace jw
     void TimerLauncher::Stop()
     {
         LOG_INFO(L"TimerLauncher Stop");
+
+        _timerLogicThread.request_stop();
+
         setState(STATE_STOP);
     }
 

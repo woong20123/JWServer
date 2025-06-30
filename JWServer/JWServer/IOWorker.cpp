@@ -1,18 +1,19 @@
 ﻿#include "IOWorker.h"
 #include "Logger.h"
 #include "AsyncObject.h"
+#include <functional>
 
 namespace jw
 {
-    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _isStop{ false }
+    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }
     {}
 
     IOWorker::~IOWorker()
     {
         _iocpHandle = INVALID_HANDLE_VALUE;
 
-        for (auto& t : _threads)
-            t.join();
+        /*for (auto& t : _threads)
+            t.join();*/
     }
 
     void IOWorker::Initialize(HANDLE iocpHandle)
@@ -26,19 +27,24 @@ namespace jw
 
     void IOWorker::RunThreads(uint16_t workerThreadCount)
     {
+        using namespace std::placeholders;
+
         for (int i = 0; i < workerThreadCount; ++i)
-            _threads.emplace_back(&IOWorker::execute, this);
+            _threads.emplace_back(std::bind(&IOWorker::execute, this, _1));
     }
 
     void IOWorker::Stop()
     {
-        if (!_isStop)
+        for (auto& t : _threads)
         {
-            _isStop = true;
+            if (t.joinable())
+            {
+                t.request_stop();
+            }
         }
     }
 
-    void IOWorker::execute()
+    void IOWorker::execute(std::stop_token stopToken)
     {
         onStart();
 
@@ -52,7 +58,7 @@ namespace jw
         {
             result = ::GetQueuedCompletionStatus(_iocpHandle, &numOfBytes, reinterpret_cast<ULONG_PTR*>(&object), reinterpret_cast<OVERLAPPED**>(&context), MAX_WAIT);
 
-            if (_isStop)
+            if (stopToken.stop_requested())
             {
                 LOG_ERROR(L"IOWorker stopped, tid:{}", std::this_thread::get_id());
                 break;

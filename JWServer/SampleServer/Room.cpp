@@ -39,10 +39,7 @@ namespace jw
     {
         if (_userList.contains(userId)) return false;
 
-        RoomUserInfo userInfo;
-        userInfo._userId = userId;
-        userInfo._name = name;
-        _userList[userId] = userInfo;
+        _userList[userId] = RoomUserInfo{ ._userId = userId, ._name = name };
         return true;
     }
 

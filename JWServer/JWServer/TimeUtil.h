@@ -60,14 +60,9 @@ namespace jw
 
         static TimeInfo ToTimeInfo(tm* ptm)
         {
-            TimeInfo timeInfo;
-            timeInfo.year = ptm->tm_year + 1900;
-            timeInfo.month = ptm->tm_mon + 1;
-            timeInfo.day = ptm->tm_mday;
-            timeInfo.hour = ptm->tm_hour;
-            timeInfo.minute = ptm->tm_min;
-            timeInfo.second = ptm->tm_sec;
-            return timeInfo;
+            return TimeInfo{ .year = static_cast<int16_t>(ptm->tm_year + 1900),  .month = static_cast<int16_t>(ptm->tm_mon + 1),
+                            .day = static_cast<int16_t>(ptm->tm_mday),          .hour = static_cast<int16_t>(ptm->tm_hour),
+                            .minute = static_cast<int16_t>(ptm->tm_min),        .second = ptm->tm_sec };
         }
     };
 }
