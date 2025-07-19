@@ -317,7 +317,7 @@ namespace jw
     {
         while (true)
         {
-            if (_serverEventContainer->IsStop())
+            if (ServerState::SERVER_STATE_STOPING <= _state)
             {
                 LOG_INFO(L"StopSignal send to Server, name:{}", _name);
                 break;
@@ -333,7 +333,8 @@ namespace jw
             LOG_DEBUG(L"Server is running, name:{}", _name);
         }
 
-        LOG_INFO(L"Server is closed, name:{}", _name);
+        setState(ServerState::SERVER_STATE_STOPED);
+        LOG_INFO(L"Server is wait end, name:{}", _name);
     }
 
     void Server::handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs)
@@ -351,6 +352,9 @@ namespace jw
         GetLogger().Stop();
         GetTimerLauncher().Stop();
 
+        if (_logWorker)
+            _logWorker->Stop();
+
         // 서버의 정리작업을 기다립니다. 
         std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));
 
@@ -363,7 +367,8 @@ namespace jw
             _state == ServerState::SERVER_STATE_CLOSED)
             return;
 
-        _serverEventContainer->SetStopSignal();
+        setState(ServerState::SERVER_STATE_STOPING);
+
         std::shared_ptr<ServerEvent> evt = std::make_shared<NotifyServerEvent>();
         SendServerEvent(evt);
     }

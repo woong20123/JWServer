@@ -153,6 +153,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Channel.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Consumer.hpp" />
+    <ClInclude Include="DataBase.h" />
     <ClInclude Include="DumpMaker.h" />
     <ClInclude Include="IOWorker.h" />
     <ClInclude Include="Listener.h" />
@@ -163,6 +164,7 @@ bootstrap.bat</Command>
     <ClInclude Include="Logger.h" />
     <ClInclude Include="LogStream.h" />
     <ClInclude Include="LogWorker.h" />
+    <ClInclude Include="MSSQLDB.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="NetworkHelper.h" />
     <ClInclude Include="Packet.h" />
@@ -194,6 +196,7 @@ bootstrap.bat</Command>
     <ClCompile Include="BadIpBlock.cpp" />
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="DumpMaker.cpp" />
     <ClCompile Include="IOWorker.cpp" />
     <ClCompile Include="Listener.cpp" />
@@ -204,6 +207,7 @@ bootstrap.bat</Command>
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LogStream.cpp" />
     <ClCompile Include="LogWorker.cpp" />
+    <ClCompile Include="MSSQLDB.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="NetworkHelper.cpp" />
     <ClCompile Include="ObjectPool.hpp" />

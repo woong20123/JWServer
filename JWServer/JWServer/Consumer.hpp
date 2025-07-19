@@ -5,6 +5,7 @@
 #include <thread>
 #include <iostream>
 #include <list>
+#include <functional>
 #include "ProducerContainer.hpp"
 namespace jw
 {
@@ -46,24 +47,23 @@ namespace jw
 
         void RunThread();
 
+        void Stop();
+
     protected:
         // Producer에서 object를 전달 받는 로직을 실행 전에 수행해야 할 작업을 등록합니다. 
         virtual void prepare();
         // Producer에서 전달 된 object를 handle로 전달합니다. 
-        void execute();
+        void execute(std::stop_token stoken);
         // 전달 받은 object를 처리하는 로직을 등록합니다. 
         virtual void handle(const container& objs) = 0;
 
-        void joinWaitThread();
 
     private:
-        inline bool isStop() { return 0 != _stopTimeTick; }
 
         std::string                         _name;
         std::shared_ptr<PCContainer>	    _pProducerCon;
-        std::vector<std::thread>	        _threads;
+        std::vector<std::jthread>	        _threads;
         size_t                              _threadCount{ 1 };
-        std::atomic<time_t>                 _stopTimeTick{ 0 };
     };
 
     template<typename object>
@@ -80,9 +80,7 @@ namespace jw
 
     template<typename object>
     Consumer<object>::~Consumer()
-    {
-        joinWaitThread();
-    }
+    {}
 
     template<typename object>
     void Consumer<object>::prepare()
@@ -94,16 +92,31 @@ namespace jw
     {
         prepare();
 
+        using namespace std::placeholders;
+
         for (int i = 0; i < _threadCount; i++)
-            _threads.emplace_back(&Consumer::execute, this);
+            _threads.emplace_back(std::bind(&Consumer::execute, this, _1));
     }
 
     template<typename object>
-    void Consumer<object>::execute()
+    void Consumer<object>::Stop()
+    {
+        for (auto& t : _threads)
+        {
+            if (t.joinable())
+            {
+                t.request_stop();
+            }
+        }
+    }
+
+    template<typename object>
+    void Consumer<object>::execute(std::stop_token stoken)
     {
         while (true)
         {
-            if (isStop())
+
+            if (stoken.stop_requested())
             {
                 // 이전에 등록된 모든 queueObject가 다 처리 되었다면 종료, 최대 대기 시간도 필요 할 듯
                 if (0 == _pProducerCon->Size())
@@ -111,12 +124,9 @@ namespace jw
                     std::cerr << std::format("Producer<{}> {}  is stop\n", typeid(object).name(), _name);
                     break;
                 }
-            }
-            else
-            {
-                if (_pProducerCon->IsStop())
+                else
                 {
-                    _stopTimeTick = ::time(nullptr);
+                    std::cerr << std::format("Producer<{}> {} remain _pProducerCon->Size() = {} \n", typeid(object).name(), _name, _pProducerCon->Size());
                 }
             }
 
@@ -127,15 +137,6 @@ namespace jw
         }
     }
 
-    template<typename object>
-    void Consumer<object>::joinWaitThread()
-    {
-        for (auto& t : _threads)
-        {
-            if (t.joinable())
-                t.join();
-        }
-    }
 }
 
 

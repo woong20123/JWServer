@@ -1,6 +1,7 @@
 ﻿#pragma once
 #ifndef __JW_SINGLETON_HPP__
 #define __JW_SINGLETON_HPP__
+#include <concepts>
 
 namespace jw
 {
@@ -14,6 +15,7 @@ namespace jw
         Singleton& operator=(Singleton&&) = delete;
 
         static INTERFACE& GetInstance()
+            requires std::derived_from<PIMPL, INTERFACE>
         {
             static PIMPL intance;
             return intance;

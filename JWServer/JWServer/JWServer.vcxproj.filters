@@ -116,6 +116,12 @@
     <ClInclude Include="DumpMaker.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="DataBase.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="MSSQLDB.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">
@@ -230,6 +236,12 @@
     <ClCompile Include="DumpMaker.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="DataBase.cpp">
+      <Filter>DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="MSSQLDB.cpp">
+      <Filter>DataBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">
@@ -246,6 +258,9 @@
     </Filter>
     <Filter Include="Timer">
       <UniqueIdentifier>{7b35c05d-2cd7-4c72-896f-c45df6b3d248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataBase">
+      <UniqueIdentifier>{737fb5b4-a45a-45a7-88b1-4080819a0aba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

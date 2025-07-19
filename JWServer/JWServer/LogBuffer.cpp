@@ -8,11 +8,10 @@
 
 namespace jw
 {
-    LogBuffer::LogBuffer()
-    {}
+    LogBuffer::LogBuffer() {}
 
-    LogBuffer::~LogBuffer()
-    {}
+    LogBuffer::~LogBuffer() {}
+
 
     void LogBuffer::Initialize(LogType logType, const BufferType* filePath, const BufferType* func, int line)
     {

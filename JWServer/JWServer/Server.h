@@ -29,6 +29,8 @@ namespace jw
         SERVER_STATE_INITIALIZING,
         SERVER_STATE_INITIALIZED,
         SERVER_STATE_STARTED_SERVER,
+        SERVER_STATE_STOPING,
+        SERVER_STATE_STOPED,
         SERVER_STATE_CLOSING,
         SERVER_STATE_CLOSED,
         SERVER_STATE_MAX
@@ -66,7 +68,7 @@ namespace jw
         static constexpr int32_t   CLIENT_PORT_ID = 1;
         static constexpr int32_t   INTERNAL_PORT_ID = 2;
 
-        static constexpr uint32_t DEFAULT_SERVER_EVENT_TIME_TICK_MSEC = 60000;
+        static constexpr uint32_t DEFAULT_SERVER_EVENT_TIME_TICK_MSEC = 30000;
         static constexpr int64_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC = 100;
         static constexpr int32_t   DEFAULT_LOG_WAIT_TICK_MSEC = 100;
         // 관리되는 최대 타이머 틱

@@ -27,21 +27,17 @@ namespace jw
         void                            Wait(container& objList, uint32_t durationMilliseconds);
         void							Push(const object& obj);
         void							Flush();
-        void							SetStopSignal();
-        bool							IsStop();
         size_t							Size();
     private:
         std::condition_variable_any			_cv;
         std::shared_mutex					_shared_mutex;
-        container	            			    _list;
-        std::atomic<bool>					_isStop;
-        uint32_t                            _defaultDurationMilliseconds;
+        container	            			_list;
+        uint32_t                            _waitdurationMsecs;
     };
 
     template<typename object>
-    ProducerContainer<object>::ProducerContainer(uint32_t defualtDurationMilliseconds) :
-        _defaultDurationMilliseconds{ defualtDurationMilliseconds },
-        _isStop{ false }
+    ProducerContainer<object>::ProducerContainer(uint32_t durationMsecs) :
+        _waitdurationMsecs{ durationMsecs }
     {}
     template<typename object>
     ProducerContainer<object>::~ProducerContainer()
@@ -50,7 +46,7 @@ namespace jw
     template<typename object>
     void ProducerContainer<object>::Wait(container& objList)
     {
-        Wait(objList, _defaultDurationMilliseconds);
+        Wait(objList, _waitdurationMsecs);
     }
 
     template<typename object>
@@ -77,18 +73,6 @@ namespace jw
     void ProducerContainer<object>::Flush()
     {
         _cv.notify_one();
-    }
-
-    template<typename object>
-    void ProducerContainer<object>::SetStopSignal()
-    {
-        _isStop.store(true);
-    }
-
-    template<typename object>
-    bool ProducerContainer<object>::IsStop()
-    {
-        return _isStop.load();
     }
 
     template<typename object>

@@ -34,7 +34,7 @@ namespace jw
         template <class... _Types>
         result makeFormat(_Types&&... args)
         {
-            return std::vformat(std::wstring_view(_fmt), std::make_wformat_args(args...));
+            return std::vformat(_fmt, std::make_wformat_args(args...));
         }
         view _fmt;
     };

@@ -90,6 +90,7 @@ namespace jw
     {
         if (_ioWorker)
             _ioWorker->Stop();
+
         if (_sessionInspector)
             _sessionInspector->Stop();
     }
