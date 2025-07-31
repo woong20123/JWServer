@@ -10,6 +10,7 @@
 #include "LogFileStream.h"
 #include "Port.h"
 #include "TimerLauncher.h"
+#include "ThreadManager.h"
 #include <list>
 #include <chrono>
 #include "Config.h"
@@ -73,6 +74,12 @@ namespace jw
         if (!validateChecker())
         {
             LOG_ERROR(L"fail validate checker, name:{}", _name);
+            return false;
+        }
+
+        if (!initializeThreadManager())
+        {
+            LOG_ERROR(L"fail initialize Thread Manager, name:{}", _name);
             return false;
         }
 
@@ -290,6 +297,14 @@ namespace jw
         return true;
     }
 
+    bool Server::initializeThreadManager()
+    {
+        _threadChecker = std::make_unique<ThreadChecker>();
+        _threadChecker->RunThread();
+
+        return true;
+    }
+
     bool Server::validateChecker()
     {
         if (!onValidateChecker())
@@ -297,6 +312,8 @@ namespace jw
             LOG_ERROR(L"fail onValidateChecker, name:{}", _name);
             return false;
         }
+
+        assert(ServerStateStr[SERVER_STATE_LAST]);
 
         return true;
     }

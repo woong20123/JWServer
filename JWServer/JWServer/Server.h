@@ -15,6 +15,7 @@ namespace jw
     class LogWorker;
     class LogStream;
     class Timer;
+    class ThreadChecker;
 
     enum ServerEventID
     {
@@ -40,10 +41,14 @@ namespace jw
         L"NONE",
         L"INITIALIZING",
         L"INITIALIZED",
-        L"ON SERVER",
+        L"STARTED_SERVER",
+        L"STATE_STOPING",
+        L"STATE_STOPED",
         L"CLOSING",
         L"CLOSED",
     };
+
+    static constexpr int SERVER_STATE_LAST = static_cast<int>(ServerState::SERVER_STATE_MAX) - 1; // 마지막 상태는 서버가 닫힌 상태이므로 제외합니다.
 
     struct ServerEvent
     {
@@ -144,6 +149,7 @@ namespace jw
         bool initializeConfig();
         bool initializeNetwork();
         bool initializeTimer();
+        bool initializeThreadManager();
         bool validateChecker();
 
         // start
@@ -161,6 +167,7 @@ namespace jw
         uint32_t                                _logWaitMSec;
         std::unique_ptr<ServerEventProducerCon> _serverEventContainer;
         std::atomic<ServerState>                _state;
+        std::unique_ptr<ThreadChecker>          _threadChecker;
     };
 }
 

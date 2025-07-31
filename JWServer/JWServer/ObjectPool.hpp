@@ -12,8 +12,8 @@ namespace jw
 	concept IsObjectPoolable = !std::is_pointer_v<T> && !std::is_array_v <T> && !std::is_reference_v <T>;
 
 
-	template<typename T, size_t BASE_ALLOCATE_COUNT = 16, size_t MAX_ALLOCATE_COUNT = 32768>
-		requires IsObjectPoolable<T>
+
+	template<IsObjectPoolable T, size_t BASE_ALLOCATE_COUNT = 16, size_t MAX_ALLOCATE_COUNT = 32768>
 	class ObjectPool
 	{
 	public:
@@ -21,6 +21,8 @@ namespace jw
 		using Reference = ValueType&;
 		using Pointer = ValueType*;
 		using List = std::list<Pointer>;
+
+		constexpr static size_t INCREASE_MULTIPLIER = 2;
 
 		ObjectPool()
 		{
@@ -44,6 +46,11 @@ namespace jw
 		}
 		void Release(Pointer object)
 		{
+			if (!object)
+			{
+				MAKE_CRASH("object is nullptr");
+			}
+
 			std::unique_lock<std::shared_mutex> lk{ _listMutex };
 			_list.push_back(object);
 		}
@@ -60,7 +67,7 @@ namespace jw
 			// allicateCount를 2배씩 증가시켜 최대 MAX_ALLOCATE_COUNT까지 증가 시킵니다.
 			if (_allocateCount < MAX_ALLOCATE_COUNT)
 			{
-				_allocateCount = JW_MIN(_allocateCount * 2, MAX_ALLOCATE_COUNT);
+				_allocateCount = JW_MIN(_allocateCount * INCREASE_MULTIPLIER, MAX_ALLOCATE_COUNT);
 			}
 		}
 

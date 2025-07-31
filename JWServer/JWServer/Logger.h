@@ -118,7 +118,7 @@ jw::Logger::GetInstance().WriteString(type ,__WFILE__, __FUNCTIONW__, __LINE__, 
 #define LOG_WARN(fmt, ...)              LOG_WRITE(jw::LogType::LOG_WARN, fmt, __VA_ARGS__)
 #define LOG_INFO(fmt, ...)              LOG_WRITE(jw::LogType::LOG_INFO, fmt, __VA_ARGS__)
 #define LOG_DEBUG(fmt, ...)             LOG_WRITE(jw::LogType::LOG_DEBUG, fmt, __VA_ARGS__)
-#define LOG_CRASH(fmt, ...)             LOG_WRITE(jw::LogType::LOG_FATAL, fmt, __VA_ARGS__); MAKE_CRASH();
+#define LOG_CRASH(fmt, ...)             LOG_WRITE(jw::LogType::LOG_FATAL, fmt, __VA_ARGS__); MAKE_CRASH("log crash");
 
 #else
 #define LOGGER_FETAL(fmt, ...)          Logger::GetInstance().Write(jw::LogType::LOG_FATAL ,__WFILE__, __LINE__, fmt, __VA_ARGS__)

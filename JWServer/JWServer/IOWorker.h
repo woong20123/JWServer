@@ -4,25 +4,24 @@
 #include <thread>
 #include <WinSock2.h>
 #include <vector>
+#include <functional>
 
 namespace jw
 {
-
     class IOWorker
     {
     public:
         IOWorker();
         virtual ~IOWorker();
         void Initialize(HANDLE iocpHandle);
-        void RunThreads(uint16_t workerThreadCount);
-        void Stop();
+        void RunThread();
     protected:
-        virtual void onStart() {};
-        virtual void onClose() {}
+        void onClose();
         void execute(std::stop_token stopToken);
     private:
-        std::vector<std::jthread>   _threads;
-        HANDLE                      _iocpHandle;
+        std::thread::id _threadId;
+        HANDLE          _iocpHandle;
+        std::function<void()> _UpdateExecutionFunc;
     };
 }
 #endif

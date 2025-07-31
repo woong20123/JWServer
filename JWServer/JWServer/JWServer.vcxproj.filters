@@ -122,6 +122,12 @@
     <ClInclude Include="MSSQLDB.h">
       <Filter>DataBase</Filter>
     </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">
@@ -242,6 +248,12 @@
     <ClCompile Include="MSSQLDB.cpp">
       <Filter>DataBase</Filter>
     </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Log">
@@ -261,6 +273,9 @@
     </Filter>
     <Filter Include="DataBase">
       <UniqueIdentifier>{737fb5b4-a45a-45a7-88b1-4080819a0aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{3a0211e8-8bb8-4afa-813a-00abf878e5b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

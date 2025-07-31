@@ -21,6 +21,7 @@ namespace jw
     public:
         using PortId_t = uint16_t;
         using PortContainer = std::unordered_map<uint16_t, std::shared_ptr<Port>>;
+        using IOWorkerContainer = std::vector<std::unique_ptr<IOWorker>>;
 
         struct BadIpBlockOption
         {
@@ -67,7 +68,6 @@ namespace jw
     private:
         bool initializeWinSock();
         bool initializeWSASocketFunc();
-        bool initializeIOWorkers();
 
         std::shared_ptr<Port>& getPort(const PortId_t portId);
 
@@ -77,7 +77,7 @@ namespace jw
         LPFN_DISCONNECTEX                   _disConnectExFunc{ nullptr };
         HANDLE                              _iocpHandle;
         uint16_t                            _workerThreadCount;
-        std::unique_ptr<IOWorker>           _ioWorker;
+        IOWorkerContainer                   _ioWorkers;
         PortContainer                       _portContainer;
         std::unique_ptr<SessionInspector>   _sessionInspector;
         std::shared_ptr<BadIpBlock>         _badIpBlock;

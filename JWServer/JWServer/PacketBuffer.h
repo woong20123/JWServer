@@ -15,7 +15,11 @@ namespace jw
 
         void* GetBuffer();
 
+        void Initialize();
+
     private:
+        void clearBuffer();
+
         uint16_t        _setBufferSize;
         BufferType      _buffer[BUFFER_SIZE];
     };

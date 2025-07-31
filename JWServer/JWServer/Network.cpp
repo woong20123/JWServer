@@ -16,7 +16,6 @@ namespace jw
     std::shared_ptr<Port> Network::_NullPort = nullptr;
     Network::Network() :
         _iocpHandle{ nullptr },
-        _ioWorker{ nullptr },
         _workerThreadCount{ 0 }
     {}
 
@@ -26,8 +25,6 @@ namespace jw
 
     bool Network::Initialize()
     {
-        _ioWorker = std::make_unique<IOWorker>();
-
         if (!initializeWinSock())
         {
             LOG_FETAL(L"initializeWinSock Fail");
@@ -53,8 +50,6 @@ namespace jw
         _badIpBlock = std::make_shared<BadIpBlock>();
         _badIpBlock->Initalize();
 
-        initializeIOWorkers();
-
         return true;
     }
 
@@ -65,10 +60,6 @@ namespace jw
 
     bool Network::Start(uint16_t& workerThreadCount)
     {
-        if (nullptr == _ioWorker)
-        {
-            return false;
-        }
 
         if (Network::DEFAULT_WORKER_THREAD_COUNT == workerThreadCount)
         {
@@ -77,8 +68,13 @@ namespace jw
 
         _workerThreadCount = workerThreadCount;
 
-
-        _ioWorker->RunThreads(_workerThreadCount);
+        for (int i = 0; i < workerThreadCount; ++i)
+        {
+            auto ioWorker = std::make_unique<IOWorker>();
+            ioWorker->Initialize(GetIOCPHandle());
+            ioWorker->RunThread();
+            _ioWorkers.push_back(std::move(ioWorker));
+        }
 
         _sessionInspector->Run();
 
@@ -88,8 +84,6 @@ namespace jw
 
     void Network::Stop()
     {
-        if (_ioWorker)
-            _ioWorker->Stop();
 
         if (_sessionInspector)
             _sessionInspector->Stop();
@@ -268,12 +262,6 @@ namespace jw
                 }
             }
         }
-        return true;
-    }
-
-    bool Network::initializeIOWorkers()
-    {
-        _ioWorker->Initialize(GetIOCPHandle());
         return true;
     }
 

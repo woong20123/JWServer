@@ -1,11 +1,13 @@
 ﻿#include "IOWorker.h"
 #include "Logger.h"
 #include "AsyncObject.h"
+#include "Thread.h"
+#include "ThreadManager.h"
 #include <functional>
 
 namespace jw
 {
-    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }
+    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _UpdateExecutionFunc{ nullptr }
     {}
 
     IOWorker::~IOWorker()
@@ -25,29 +27,22 @@ namespace jw
         }
     }
 
-    void IOWorker::RunThreads(uint16_t workerThreadCount)
+    void IOWorker::RunThread()
     {
         using namespace std::placeholders;
 
-        for (int i = 0; i < workerThreadCount; ++i)
-            _threads.emplace_back(std::bind(&IOWorker::execute, this, _1));
-    }
+        auto t = std::make_unique<Thread>();
+        t->Initialize(L"IOWorker");
+        t->SetExecution(std::bind(&IOWorker::execute, this, _1));
 
-    void IOWorker::Stop()
-    {
-        for (auto& t : _threads)
-        {
-            if (t.joinable())
-            {
-                t.request_stop();
-            }
-        }
+        _threadId = t->GetThraedId();
+        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
+
+        GetThreadManager().AddThread(std::move(t));
     }
 
     void IOWorker::execute(std::stop_token stopToken)
     {
-        onStart();
-
         BOOL result{ FALSE };
         unsigned long numOfBytes{ 0 };
         AsyncObject* object{ nullptr };
@@ -64,12 +59,14 @@ namespace jw
                 break;
             }
 
+            _UpdateExecutionFunc();
+
             if (result)
             {
                 if (!object->HandleEvent(context, numOfBytes))
                 {
                     if (object) {
-                        LOG_FETAL(L"HandleEvent fail, tid:{}, eventId:{}", std::this_thread::get_id(), object->GetAsyncObjectId());
+                        LOG_ERROR(L"HandleEvent fail, tid:{}, eventId:{}", std::this_thread::get_id(), object->GetAsyncObjectId());
                         object->HandleFailedEvent(context, numOfBytes);
                     }
                 }
@@ -83,5 +80,17 @@ namespace jw
                 }
             }
         }
+
+        onClose();
+    }
+
+    void IOWorker::onClose()
+    {
+        if (GetThreadManager().ExistsThread(_threadId))
+        {
+            GetThreadManager().RemoveThread(_threadId);
+        }
+
+        _UpdateExecutionFunc = nullptr;
     }
 }

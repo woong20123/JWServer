@@ -43,12 +43,12 @@ namespace jw {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class StopWatchTimer {
+    class StopWatch {
     public:
         using ClockType = std::chrono::steady_clock;
 
-        StopWatchTimer() {}
-        ~StopWatchTimer() = default;
+        StopWatch() {}
+        ~StopWatch() = default;
 
         void Tic()
         {
@@ -69,7 +69,11 @@ namespace jw {
 
     class ScopeTimer {
     public:
-        ScopeTimer(TimerPrinter * printer) : _printer{ printer }
+        ScopeTimer(std::string_view name) : _printer{ std::make_unique<StringTimerPrinter>(name.data()) }
+        {
+            _stopWatchTimer.Tic();
+        }
+        ScopeTimer(std::unique_ptr<TimerPrinter>& printer) : _printer{ std::move(printer) }
         {
             _stopWatchTimer.Tic();
         }
@@ -91,8 +95,8 @@ namespace jw {
         }
 
     private:
-        StopWatchTimer _stopWatchTimer;
-        std::shared_ptr<TimerPrinter> _printer;
+        StopWatch _stopWatchTimer;
+        std::unique_ptr<TimerPrinter> _printer;
     };
 }
 

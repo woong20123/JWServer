@@ -78,7 +78,7 @@ namespace jw
             LOG_ERROR(L"not equal auth key, sessionId:{}, clientAuthKey:{}, serverAuthKey:{}", session->GetId(), clientAuthKey, serverAuthKey);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_AUTH);
-            PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            ProtoBufPacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
             return true;
         }
 
@@ -89,7 +89,7 @@ namespace jw
             LOG_ERROR(L"not equal packet version, sessionId:{}, clientPacketVersion:{}, serverPacketVersion:{}", session->GetId(), clientPacketVersion, serverPacketVersion);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_INVALID_NAME);
-            PacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            ProtoBufPacketHelper::Send(session, GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
             return true;
         }
 
@@ -102,7 +102,7 @@ namespace jw
             LOG_ERROR(L"register User Fail, sessionId:{}, UserName:{}, result:{}", session->GetId(), userName.c_str(), (int)registerUserResult);
             GameLoginFail gameLoginFail;
             gameLoginFail.set_errcode(ERROR_CODE_LOGIN_FAIL_DUPLICATE_NAME);
-            PacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
+            ProtoBufPacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_FAIL, gameLoginFail);
             return true;
         }
 
@@ -111,7 +111,7 @@ namespace jw
         GameLoginOk gameLoginOk;
         gameLoginOk.set_name(name);
         gameLoginOk.set_userid(user->GetUserKey());
-        PacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_OK, gameLoginOk);
+        ProtoBufPacketHelper::Send(user.get(), GAME_PACKET_CMD_LOGIN_OK, gameLoginOk);
 
         LOG_DEBUG(L"on login packet, sessionId:{}, userKey:{}", session->GetId(), user->GetUserKey());
         return true;

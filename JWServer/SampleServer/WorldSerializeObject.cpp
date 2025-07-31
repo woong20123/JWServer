@@ -38,7 +38,7 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
 
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CHAT_OK, gameChatOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CHAT_OK, gameChatOk);
         SAMPLE_SERVER().GetWorld()->BroadcastPacket(sendPacket);
 
         LOG_DEBUG(L"WorldChatTask::Execute() called");
@@ -96,7 +96,7 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
 
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_OK, gameCreateRoomOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_OK, gameCreateRoomOk);
         _user->Send(sendPacket);
     }
 
@@ -108,7 +108,7 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
 
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_FAIL, gameCreateRoomFail);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_FAIL, gameCreateRoomFail);
         _user->Send(sendPacket);
     }
 
@@ -140,7 +140,7 @@ namespace jw
         }
         Packet sendPacket;
         sendPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LIST_OK, gameRoomListOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LIST_OK, gameRoomListOk);
         _user->Send(sendPacket);
     }
 
@@ -176,7 +176,7 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
 
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_NOTIFY, gameCreateRoomNotify);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_CREATE_ROOM_NOTIFY, gameCreateRoomNotify);
         SAMPLE_SERVER().GetWorld()->BroadcastPacket(sendPacket);
 
         LOG_DEBUG(L"CreateRoomNotifyTask::Execute() called, roomId:{}", _roomId);
@@ -204,7 +204,7 @@ namespace jw
         Packet sendPacket;
         sendPacket.Allocate();
 
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_DESTROY_ROOM_NOTIFY, gameDestroyRoomNotify);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_DESTROY_ROOM_NOTIFY, gameDestroyRoomNotify);
         SAMPLE_SERVER().GetWorld()->BroadcastPacket(sendPacket);
 
         LOG_DEBUG(L"DestoroyRoomNotifyTask::Execute() called, roomId:{}", _roomId);

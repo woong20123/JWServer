@@ -27,7 +27,7 @@ namespace jw
             }
         }
 
-        template<typename PacketType>
+        template<typename PacketType> requires std::derived_from<PacketType, ::google::protobuf::Message>
         static void SendFail(const int errCode, const int packetCommand, const std::shared_ptr<User>& user)
         {
             PacketType failPacketType;
@@ -35,7 +35,7 @@ namespace jw
 
             Packet sendPacket;
             sendPacket.Allocate();
-            PacketHelper::ComposeProtoPacket(sendPacket, packetCommand, failPacketType);
+            ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, packetCommand, failPacketType);
 
             user->Send(sendPacket);
         }
@@ -77,7 +77,7 @@ namespace jw
 
         Packet sendPacket;
         sendPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_CHAT_OK, roomChatOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_CHAT_OK, roomChatOk);
 
         RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, sendPacket, RoomSerializeObjectCommon::NONE_IGNORE_USER_KEY);
     }
@@ -146,7 +146,7 @@ namespace jw
 
         Packet notifyPacket;
         notifyPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_ENTER_NOTIFY, roomEnterNotify);
+        ProtoBufPacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_ENTER_NOTIFY, roomEnterNotify);
 
         RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, notifyPacket, _user->GetUserKey());
     }
@@ -171,7 +171,7 @@ namespace jw
 
         Packet sendPacket;
         sendPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_ENTER_OK, roomEnterOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_ENTER_OK, roomEnterOk);
 
         _user->Send(sendPacket);
     }
@@ -228,7 +228,7 @@ namespace jw
 
         Packet sendPacket;
         sendPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LEAVE_OK, roomLeaveOk);
+        ProtoBufPacketHelper::ComposeProtoPacket(sendPacket, GAME_PACKET_CMD_ROOM_LEAVE_OK, roomLeaveOk);
 
         _user->Send(sendPacket);
     }
@@ -250,7 +250,7 @@ namespace jw
 
         Packet notifyPacket;
         notifyPacket.Allocate();
-        PacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_LEAVE_NOTIFY, roomLeaveNotify);
+        ProtoBufPacketHelper::ComposeProtoPacket(notifyPacket, GAME_PACKET_CMD_ROOM_LEAVE_NOTIFY, roomLeaveNotify);
 
         RoomSerializeObjectCommon::SendPacketBroadCastInRoomUser(_roomId, notifyPacket, _user->GetUserKey());
     }

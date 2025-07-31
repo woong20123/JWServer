@@ -7,16 +7,17 @@
 namespace jw
 {
     class PacketBuffer;
+    struct Impl;
     class Packet
     {
     public:
         Packet();
+        ~Packet();
 
         using packetSize = uint16_t;
         struct Header {
             packetSize  _size{ 0 };
         };
-        static constexpr packetSize	MAX_SIZE = 4000;
         static constexpr packetSize	HEADER_SIZE = sizeof(Header);
 
         void Allocate();
@@ -25,18 +26,16 @@ namespace jw
 
         bool IsSet() const;
         void SetBuffer(void* buffer);
-        void SetPacketBuffer(std::shared_ptr<PacketBuffer>& buffer);
         Header* GetHeader() const;
         char* GetBody() const;
         packetSize GetBodySize() const;
         packetSize GetTotalSize() const;
     private:
-        void setPacketBuffer(std::shared_ptr<PacketBuffer>& buffer);
+
         packetSize getSize() const;
         packetSize getFreeSize() const;
-        Header* _header;
 
-        std::shared_ptr<PacketBuffer> _packetBuffer;
+        std::unique_ptr<Impl> _impl;
     };
 }
 #endif

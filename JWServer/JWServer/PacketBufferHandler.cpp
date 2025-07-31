@@ -1,5 +1,6 @@
 ﻿#include "PacketBufferHandler.h"
 #include "Packet.h"
+#include "PacketBuffer.h"
 #include "Logger.h"
 
 namespace jw
@@ -20,7 +21,7 @@ namespace jw
         const auto packetSize = header->_size;
         result._packetSize = packetSize;
 
-        if (packetSize < Packet::HEADER_SIZE || Packet::MAX_SIZE < packetSize)
+        if (packetSize < Packet::HEADER_SIZE || PacketBuffer::BUFFER_SIZE < packetSize)
         {
             LOG_FETAL(L"Invalid Packet Size, packetSize:{}", packetSize);
             //result._isError = true;
