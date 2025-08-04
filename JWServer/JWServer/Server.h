@@ -37,7 +37,7 @@ namespace jw
         SERVER_STATE_MAX
     };
 
-    constexpr const wchar_t* ServerStateStr[(size_t)ServerState::SERVER_STATE_MAX] = {
+    constexpr const wchar_t* ServerStateStr[(size_t)(ServerState::SERVER_STATE_MAX)] = {
         L"NONE",
         L"INITIALIZING",
         L"INITIALIZED",
@@ -45,10 +45,8 @@ namespace jw
         L"STATE_STOPING",
         L"STATE_STOPED",
         L"CLOSING",
-        L"CLOSED",
+        L"CLOSED"
     };
-
-    static constexpr int SERVER_STATE_LAST = static_cast<int>(ServerState::SERVER_STATE_MAX) - 1; // 마지막 상태는 서버가 닫힌 상태이므로 제외합니다.
 
     struct ServerEvent
     {
@@ -135,6 +133,8 @@ namespace jw
 
         virtual bool onInitializingTimer() = 0;
         virtual bool onInitializedTimer() = 0;
+
+        virtual bool onInitializedThreadManager() { return true; };
 
         virtual bool onValidateChecker() = 0;
 

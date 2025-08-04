@@ -11,7 +11,7 @@ namespace jw
     public:
         using ThreadHandle = std::jthread;
         using ThreadId = std::jthread::id;
-        using string = std::wstring;
+        using NameType = std::wstring;
 
         Thread();
         ~Thread();
@@ -19,8 +19,8 @@ namespace jw
         Thread(Thread& other) = delete; // 복사 생성자 금지
         const Thread& operator=(const Thread& other) = delete; // 복사 대입 연산자 금지
 
-        void Initialize(const string& name);
-        void Initialize(const string& name, std::jthread&& thread);
+        void Initialize(const NameType& name);
+        void Initialize(const NameType& name, std::jthread&& thread);
 
         template<typename Func, typename... Args>
         void SetExecution(Func&& func, Args... args)
@@ -32,14 +32,15 @@ namespace jw
             _thread = std::jthread(std::forward<Func>(func), std::forward<Args>(args)...);
         }
 
-        const string& GetName() const { return _name; }
-        const string GetFullName() const;
+        const NameType& GetName() const { return _name; }
+        const NameType GetFullName() const;
         time_t GetLastExecutionTime() const { return _lastExecution; }
         void UpdateLastExecutionTime();
         const ThreadId GetThraedId() const;
+        void Stop();
     private:
         std::jthread _thread;
-        string _name;
+        NameType _name;
         time_t _lastExecution;
     };
 }

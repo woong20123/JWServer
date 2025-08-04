@@ -3,11 +3,12 @@
 #include "AsyncObject.h"
 #include "Thread.h"
 #include "ThreadManager.h"
+#include "ThreadHelper.h"
 #include <functional>
 
 namespace jw
 {
-    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _UpdateExecutionFunc{ nullptr }
+    IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _UpdateExecutionFunc{ nullptr }, _id{}
     {}
 
     IOWorker::~IOWorker()
@@ -31,13 +32,8 @@ namespace jw
     {
         using namespace std::placeholders;
 
-        auto t = std::make_unique<Thread>();
-        t->Initialize(L"IOWorker");
+        auto t = ThreadHelper::MakeThreadAndGetInfo(std::format(L"IOWorker-{}", _id), _threadId, _UpdateExecutionFunc);
         t->SetExecution(std::bind(&IOWorker::execute, this, _1));
-
-        _threadId = t->GetThraedId();
-        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
-
         GetThreadManager().AddThread(std::move(t));
     }
 
@@ -81,12 +77,12 @@ namespace jw
             }
         }
 
-        onClose();
+        onCloseExecute();
     }
 
-    void IOWorker::onClose()
+    void IOWorker::onCloseExecute()
     {
-        if (GetThreadManager().ExistsThread(_threadId))
+        if (_threadId != std::thread::id())
         {
             GetThreadManager().RemoveThread(_threadId);
         }

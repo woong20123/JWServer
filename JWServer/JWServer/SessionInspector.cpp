@@ -4,6 +4,8 @@
 #include "Session.h"
 #include "TypeDefinition.h"
 #include "TimeUtil.h"
+#include "ThreadManager.h"
+#include "ThreadHelper.h"
 #include <algorithm>
 
 namespace jw
@@ -122,20 +124,15 @@ namespace jw
         LOG_DEBUG(L"Session Connection State Change, sessionIndex:{}, beforeState:{}, newState:{}", sessionIndex, static_cast<int>(beforeState), static_cast<int>(state));
     }
 
-    SessionInspector::SessionInspector() : _isRun{ false }, _checkIntervalMilliSecond{ DEFAULT_SESSION_INSPECTOR_CHECK_INTERVAL_SECOND }
+    SessionInspector::SessionInspector() : _checkIntervalMilliSecond{ DEFAULT_SESSION_INSPECTOR_CHECK_INTERVAL_SECOND }, _UpdateExecutionFunc{ nullptr }
     {
     }
     SessionInspector::~SessionInspector()
     {
-        if (_isRun)
-            Stop();
-
-        if (_inspectorThread.joinable()) _inspectorThread.join();
     }
 
     void SessionInspector::Initialize(const bool isRun, const time_t checkIntervalMilliSecond)
     {
-        _isRun = isRun;
         _checkIntervalMilliSecond = checkIntervalMilliSecond;
     }
 
@@ -145,33 +142,60 @@ namespace jw
         _sessionInspectorInfoTables[portId] = table;
     }
 
-    void SessionInspector::Run()
+    void SessionInspector::execute(std::stop_token stopToken)
     {
         // 세션을 검사하는 스레드입니다. 
-        _inspectorThread = std::jthread([this](std::stop_token stopToken) {
-            while (true)
+        while (true)
+        {
+            if (stopToken.stop_requested())
             {
-                if (stopToken.stop_requested())
-                {
-                    LOG_INFO(L"SessionInspector Thread Stop");
-                    return;
-                }
-
-                {
-                    READ_LOCK(_tablesMutex);
-                    std::for_each(_sessionInspectorInfoTables.begin(), _sessionInspectorInfoTables.end(),
-                        [this](auto& sessionInspectorInfoTable) {
-                            sessionInspectorInfoTable.second->Inspect();
-                        });
-                }
-
-                std::this_thread::sleep_for(std::chrono::milliseconds(_checkIntervalMilliSecond));
+                LOG_INFO(L"SessionInspector Thread Stop");
+                return;
             }
-            });
+
+            _UpdateExecutionFunc();
+
+            {
+                READ_LOCK(_tablesMutex);
+                std::for_each(_sessionInspectorInfoTables.begin(), _sessionInspectorInfoTables.end(),
+                    [this](auto& sessionInspectorInfoTable) {
+                        sessionInspectorInfoTable.second->Inspect();
+                    });
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(_checkIntervalMilliSecond));
+        }
+
+        onCloseExecute();
     }
+
+
+    void SessionInspector::RunThread()
+    {
+        using namespace std::placeholders;
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"SessionInspector", _threadId, _UpdateExecutionFunc);
+        t->SetExecution(std::bind(&SessionInspector::execute, this, _1));
+        GetThreadManager().AddThread(std::move(t));
+    }
+
+    void SessionInspector::onCloseExecute()
+    {
+        if (_threadId != std::thread::id())
+        {
+            GetThreadManager().RemoveThread(_threadId);
+        }
+
+        if (_UpdateExecutionFunc)
+            _UpdateExecutionFunc = nullptr;
+    }
+
     void SessionInspector::Stop()
     {
-        LOG_INFO(L"SessionInspector Stop");
-        _inspectorThread.request_stop();
+        if (_threadId != std::thread::id())
+        {
+            GetThreadManager().StopThread(_threadId);
+            LOG_INFO(L"SessionInspector Stop");
+        }
+
     }
 }

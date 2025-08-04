@@ -7,6 +7,7 @@
 #include <shared_mutex>
 #include <list>
 #include <array>
+#include <functional>
 
 namespace jw
 {
@@ -33,7 +34,7 @@ namespace jw
         TimerLauncher& operator=(const TimerLauncher&) = delete;
 
         void Initialize(const int64_t tickIntervalMilliSecond);
-        void Run();
+        void RunThread();
         void Stop();
 
         void RegistTimer(Timer* timer);
@@ -47,6 +48,9 @@ namespace jw
         TimerLauncher();
         ~TimerLauncher();
     private:
+        void execute(std::stop_token stopToken);
+        void onCloseExecute();
+
         void registTimer(Timer* timer);
         void registLongTermTimer(Timer* timer);
 
@@ -62,7 +66,9 @@ namespace jw
         friend class Singleton<TimerLauncher>;
 
         uint8_t                                 _state;
-        std::jthread                            _timerLogicThread;
+
+        std::thread::id                         _threadId;
+        std::function<void()>                   _UpdateExecutionFunc;
 
         uint64_t                                _timerTick;
 

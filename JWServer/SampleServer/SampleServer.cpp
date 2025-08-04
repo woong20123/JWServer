@@ -12,6 +12,7 @@
 #include "GamePacketHandleFuncList.h"
 #include "PacketBufferHandler.h"
 #include "RoomManager.h"
+#include "ThreadManager.h"
 #include <format>
 
 namespace jw
@@ -112,6 +113,14 @@ namespace jw
     bool SampleServer::onInitializingTimer()
     {
         setTimerTickIntervalMilliSecond(_config->GetTimerTickIntervalMilliSecond());
+
+        return true;
+    }
+
+    bool SampleServer::onInitializedThreadManager()
+    {
+        // ThreadFrozen 체크 시간 설정 기본 값을 60초 설정
+        GetThreadManager().SetThreadFrozenTime(_config->GetThreadFrozenCheckTimeSecond());
 
         return true;
     }

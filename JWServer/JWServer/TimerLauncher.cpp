@@ -3,11 +3,13 @@
 #include "Logger.h"
 #include "Network.h"
 #include "TimeUtil.h"
+#include "ThreadManager.h"
+#include "ThreadHelper.h"
 #include <algorithm>
 
 namespace jw
 {
-    TimerLauncher::TimerLauncher() : _state{ STATE_NONE }, _timerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _timerLogicThread{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
+    TimerLauncher::TimerLauncher() : _state{ STATE_NONE }, _timerTick{ 0 }, _timerEventArray{}, _longTermTimerList{}, _tickIntervalMilliSecond{ DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MILLISECOND }
     {
 
     }
@@ -22,52 +24,77 @@ namespace jw
         _tickIntervalMilliSecond = tickIntervalMilliSecond;
     }
 
-    void TimerLauncher::Run()
+    void TimerLauncher::RunThread()
     {
-        _timerLogicThread = std::jthread([this](std::stop_token stopToken) {
-            uint64_t lastTimerTick{ 0 };
-            setState(STATE_RUN);
+        using namespace std::placeholders;
 
-            assert(_tickIntervalMilliSecond > 0);
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"TimerLauncher", _threadId, _UpdateExecutionFunc);
+        t->SetExecution(std::bind(&TimerLauncher::execute, this, _1));
+        GetThreadManager().AddThread(std::move(t));
+    }
 
-            LOG_INFO(L"TimerLauncher Thread Run");
+    void TimerLauncher::execute(std::stop_token stopToken)
+    {
+        uint64_t lastTimerTick{ 0 };
+        setState(STATE_RUN);
 
-            auto baseTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-            int64_t startTimeMs{ 0 }, endTimeMs{ 0 };
-            while (true)
+        assert(_tickIntervalMilliSecond > 0);
+
+        LOG_INFO(L"TimerLauncher Thread Run");
+
+        auto baseTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
+        int64_t startTimeMs{ 0 }, endTimeMs{ 0 };
+        while (true)
+        {
+            startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
+
+            if (stopToken.stop_requested())
             {
-                startTimeMs = TimeUtil::GetCurrentTimeMilliSecond();
-
-                if (stopToken.stop_requested())
-                {
-                    LOG_INFO(L"StopSignal send to Server");
-                    return;
-                }
-
-                // 현재 틱에 해당하는 타이머 목록을 가져옵니다. 
-                std::list<Timer*> tempCurrentTimerList;
-                {
-                    std::unique_lock<std::shared_mutex> lk(_timerMutex);
-                    auto& currentList = getCurrentTimerList();
-                    tempCurrentTimerList.splice(tempCurrentTimerList.begin(), currentList);
-                    lastTimerTick = _timerTick++;
-                }
-
-                postTimerList(tempCurrentTimerList);
-
-                processLongTermTimerList();
-
-                rumTimeCheckAndWait(baseTimeMs);
+                LOG_INFO(L"StopSignal send to Server");
+                return;
             }
-            LOG_INFO(L"TimerLauncher Thread Stop");
-            });
+
+            _UpdateExecutionFunc();
+
+            // 현재 틱에 해당하는 타이머 목록을 가져옵니다. 
+            std::list<Timer*> tempCurrentTimerList;
+            {
+                std::unique_lock<std::shared_mutex> lk(_timerMutex);
+                auto& currentList = getCurrentTimerList();
+                tempCurrentTimerList.splice(tempCurrentTimerList.begin(), currentList);
+                lastTimerTick = _timerTick++;
+            }
+
+            postTimerList(tempCurrentTimerList);
+
+            processLongTermTimerList();
+
+            rumTimeCheckAndWait(baseTimeMs);
+        }
+
+        LOG_INFO(L"TimerLauncher Thread Stop");
+        onCloseExecute();
+
+    }
+
+    void TimerLauncher::onCloseExecute()
+    {
+        if (_threadId != std::thread::id())
+        {
+            GetThreadManager().RemoveThread(_threadId);
+        }
+
+        _UpdateExecutionFunc = nullptr;
     }
 
     void TimerLauncher::Stop()
     {
         LOG_INFO(L"TimerLauncher Stop");
 
-        _timerLogicThread.request_stop();
+        if (_threadId != std::thread::id())
+        {
+            GetThreadManager().StopThread(_threadId);
+        }
 
         setState(STATE_STOP);
     }

@@ -72,11 +72,12 @@ namespace jw
         {
             auto ioWorker = std::make_unique<IOWorker>();
             ioWorker->Initialize(GetIOCPHandle());
+            ioWorker->SetId(i);
             ioWorker->RunThread();
             _ioWorkers.push_back(std::move(ioWorker));
         }
 
-        _sessionInspector->Run();
+        _sessionInspector->RunThread();
 
         LOG_INFO(L"Network start, workerThreadCount:{}", _workerThreadCount);
         return true;

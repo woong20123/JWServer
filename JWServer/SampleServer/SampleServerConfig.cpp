@@ -1,4 +1,6 @@
 #include "SampleServerConfig.h"
+#include "Logger.h"
+#include "StringConverter.h"
 #include <memory>
 
 namespace jw
@@ -9,65 +11,90 @@ namespace jw
     }
     void SampleServerConfig::onLoading()
     {
-        RegisterConfigDefinition(SampleServerConfig::SERVER_PORT, L"13211");
-        RegisterConfigDefinition(SampleServerConfig::WORKER_THREAD, L"0");
-        RegisterConfigDefinition(SampleServerConfig::MAX_CLIENT_SESSION_COUNT, L"5000");
-        RegisterConfigDefinition(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC, L"100");
-        RegisterConfigDefinition(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC, L"100");
-        RegisterConfigDefinition(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND, L"300");
-        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_ENABLE, Config::BOOL_FALSE);
-        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND, L"3600");
-        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT, L"5000");
-        RegisterConfigDefinition(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT, L"1");
+        bool isValid{ true };
+        for (const auto& def : CONFIG_DEFINITIONS)
+        {
+            if (def.key == "none") { continue; }
+
+            if (0 == strnlen_s(def.key, 128))
+            {
+                SetValidate(false);
+                LOG_ERROR(L"is not valid, key is empty");
+            }
+
+            RegisterConfigDefinition(def.key, def.defaultValue);
+        }
+
+
     }
 
     void SampleServerConfig::onLoaded()
-    { }
+    {
+        LOG_INFO(L"[Config Print]");
+        for (const auto& def : CONFIG_DEFINITIONS)
+        {
+            if (def.key == "none") { continue; }
+            if (GetString(def.key).empty())
+            {
+                LOG_ERROR(L"key is empty, key:{}, defaultValue:{}", StringConverter::StrA2WUseUTF8(def.key)->c_str(), def.defaultValue);
+                SetValidate(false);
+            }
+            else
+            {
+                LOG_INFO(L"key:{}, value:{}", StringConverter::StrA2WUseUTF8(def.key)->c_str(), GetString(def.key));
+            }
+        }
+    }
 
     const int16_t SampleServerConfig::GetServerPort()
     {
-        return GetInt16(SampleServerConfig::SERVER_PORT);
+        return GetInt16(CONFIG_DEFINITIONS[CONFIG_DEF_SERVER_PORT].key);
     }
 
     const int16_t SampleServerConfig::GetWorkerThreadCount()
     {
-        return GetInt16(SampleServerConfig::WORKER_THREAD);
+        return GetInt16(CONFIG_DEFINITIONS[CONFIG_DEF_WORKER_THREAD].key);
     }
 
     const int64_t SampleServerConfig::GetMaxClientSessionCount()
     {
-        return GetInt64(SampleServerConfig::MAX_CLIENT_SESSION_COUNT);
+        return GetInt64(CONFIG_DEFINITIONS[CONFIG_DEF_MAX_CLIENT_SESSION_COUNT].key);
     }
 
     const int64_t SampleServerConfig::GetTimerTickIntervalMilliSecond()
     {
-        return GetInt64(SampleServerConfig::TIMER_TICK_INTERVAL_MSEC);
+        return GetInt64(CONFIG_DEFINITIONS[CONFIG_DEF_TIMER_TICK_INTERVAL_MSEC].key);
     }
 
     const int64_t SampleServerConfig::GetLoggerTickIntervalMilliSecond()
     {
-        return GetInt64(SampleServerConfig::LOGGER_TICK_INTERVAL_MSEC);
+        return GetInt64(CONFIG_DEFINITIONS[CONFIG_DEF_LOGGER_TICK_INTERVAL_MSEC].key);
     }
 
     const int64_t SampleServerConfig::GetSessionRecvCheckTimeSecond()
     {
-        return GetInt64(SampleServerConfig::SESSION_RECV_CHECK_TIME_SECOND);
+        return GetInt64(CONFIG_DEFINITIONS[CONFIG_DEF_SESSION_RECV_CHECK_TIME_SECOND].key);
     }
 
     const bool SampleServerConfig::GetBadIpBlockEnable()
     {
-        return GetBool(SampleServerConfig::BAD_IP_BLOCK_ENABLE);
+        return GetBool(CONFIG_DEFINITIONS[CONFIG_DEF_BAD_IP_BLOCK_ENABLE].key);
     }
     const int64_t SampleServerConfig::GetBadIpBlockSanctionTimeSecond()
     {
-        return GetInt64(SampleServerConfig::BAD_IP_BLOCK_SANCTION_TIME_SECOND);
+        return GetInt64(CONFIG_DEFINITIONS[CONFIG_DEF_BAD_IP_BLOCK_SANCTION_TIME_SECOND].key);
     }
     const int32_t SampleServerConfig::GetBadIpBlockTriggeringSessionCount()
     {
-        return GetInt32(SampleServerConfig::BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT);
+        return GetInt32(CONFIG_DEFINITIONS[CONFIG_DEF_BAD_IP_BLOCK_TRIGGERING_SESSION_COUNT].key);
     }
     const int32_t SampleServerConfig::GetBadIpBlockThresholdCheckedCount()
     {
-        return GetInt32(SampleServerConfig::BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT);
+        return GetInt32(CONFIG_DEFINITIONS[CONFIG_DEF_BAD_IP_BLOCK_THRESHOLD_CHECKED_COUNT].key);
+    }
+
+    const int32_t SampleServerConfig::GetThreadFrozenCheckTimeSecond()
+    {
+        return GetInt32(CONFIG_DEFINITIONS[CONFIG_DEF_THREAD_FROZEN_CHECK_TIME_SECOND].key);
     }
 }

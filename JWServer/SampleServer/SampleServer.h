@@ -39,6 +39,8 @@ namespace jw
         bool onInitializedTimer() override;
         bool onInitializingTimer() override;
 
+        bool onInitializedThreadManager() override;
+
         bool onValidateChecker() override;
 
         bool onHandleEvent(const std::shared_ptr<ServerEvent>& eventObj) override;

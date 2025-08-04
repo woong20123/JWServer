@@ -8,9 +8,8 @@ namespace jw
     // convert from LPWSTR to LPSTR
     std::optional<std::string> StringConverter::StrW2A(const std::wstring& Data, uint32_t codePage)
     {
-        assert(Data.length() > 0);
         if (Data.length() == 0) {
-            return std::nullopt;
+            return "";
         }
         int buflen = ::WideCharToMultiByte(codePage, 0, Data.c_str(), -1, nullptr, 0, nullptr, nullptr) + 8;
         auto dest = std::make_unique<char[]>(buflen);
@@ -24,9 +23,8 @@ namespace jw
     // convert from LPSTR to LPWSTR
     std::optional<std::wstring> StringConverter::StrA2W(const std::string& Data, uint32_t codePage)
     {
-        assert(Data.length() > 0);
         if (Data.length() == 0) {
-            return std::nullopt;
+            return L"";
         }
         auto buflen = ::MultiByteToWideChar(codePage, 0, Data.c_str(), -1, nullptr, 0) + 8;
         auto dest = std::make_unique<wchar_t[]>(buflen);

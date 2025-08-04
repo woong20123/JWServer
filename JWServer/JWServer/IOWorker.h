@@ -15,12 +15,14 @@ namespace jw
         virtual ~IOWorker();
         void Initialize(HANDLE iocpHandle);
         void RunThread();
+        void SetId(int32_t workerThreadId) { _id = workerThreadId; }
     protected:
-        void onClose();
+        void onCloseExecute();
         void execute(std::stop_token stopToken);
     private:
-        std::thread::id _threadId;
-        HANDLE          _iocpHandle;
+        int32_t             _id;
+        std::thread::id     _threadId;
+        HANDLE              _iocpHandle;
         std::function<void()> _UpdateExecutionFunc;
     };
 }

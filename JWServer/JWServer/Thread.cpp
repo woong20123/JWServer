@@ -17,12 +17,12 @@ namespace jw
         }
     }
 
-    void Thread::Initialize(const string& name)
+    void Thread::Initialize(const NameType& name)
     {
         _name = name;
     }
 
-    void Thread::Initialize(const string& name, std::jthread&& thread)
+    void Thread::Initialize(const NameType& name, std::jthread&& thread)
     {
         _name = name;
         _thread = std::move(thread);
@@ -42,8 +42,13 @@ namespace jw
         return ThreadId{};
     }
 
-    const Thread::string Thread::GetFullName() const
+    void Thread::Stop()
     {
-        return std::format(L"{}-{}", _name, _thread.get_id());
+        _thread.request_stop();
+    }
+
+    const Thread::NameType Thread::GetFullName() const
+    {
+        return std::format(L"name:{}, id:{}", _name, _thread.get_id());
     }
 }

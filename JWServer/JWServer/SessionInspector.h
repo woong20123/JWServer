@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <shared_mutex>
 #include <unordered_map>
+#include <functional>
 
 namespace jw {
     class Port;
@@ -58,14 +59,17 @@ namespace jw {
 
         void Initialize(const bool isRun, const time_t checkIntervalMilliSecond);
         void RegisterTable(int16_t portId, std::shared_ptr<SessionInspectorInfoTable>& table);
-        void Run();
+        void RunThread();
         void Stop();
     private:
+        void execute(std::stop_token stopToken);
+        void onCloseExecute();
+
         std::shared_mutex                   _tablesMutex;
         SessionInspectorInfoTableContainer _sessionInspectorInfoTables;
-        std::jthread _inspectorThread;
-        bool        _isRun;
-        time_t      _checkIntervalMilliSecond;
+        std::thread::id                     _threadId;
+        std::function<void()>               _UpdateExecutionFunc;
+        time_t                              _checkIntervalMilliSecond;
 
     };
 }

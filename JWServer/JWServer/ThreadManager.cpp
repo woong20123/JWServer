@@ -1,4 +1,5 @@
 ﻿#include "ThreadManager.h"
+#include "ThreadHelper.h"
 #include "Logger.h"
 #include "TypeDefinition.h"
 #include <ranges>
@@ -11,19 +12,18 @@ namespace jw
     void ThreadChecker::Initialize() {}
     void ThreadChecker::RunThread()
     {
-        auto t = std::make_unique<Thread>();
-        t->Initialize(L"ThreadChecker");
-        t->SetExecution(std::bind(&ThreadChecker::execute, this, std::placeholders::_1));
+        using namespace std::placeholders;
 
-        _threadId = t->GetThraedId();
-        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
-
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"ThreadChecker", _threadId, _UpdateExecutionFunc);
+        t->SetExecution(std::bind(&ThreadChecker::execute, this, _1));
         GetThreadManager().AddThread(std::move(t));
     }
 
     void ThreadChecker::execute(std::stop_token stopToken)
     {
         LOG_INFO(L"ThreadChecker started, tid:{}", std::this_thread::get_id());
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+
         while (true)
         {
             if (stopToken.stop_requested())
@@ -45,14 +45,18 @@ namespace jw
             }
             std::this_thread::sleep_for(std::chrono::seconds(10)); // Check every 10 seconds
         }
-        onClose();
+        onCloseExecute();
     }
 
-    void ThreadChecker::onClose()
+    void ThreadChecker::onCloseExecute()
     {
-        if (GetThreadManager().ExistsThread(_threadId))
+        if (_threadId != std::thread::id())
         {
             GetThreadManager().RemoveThread(_threadId);
+        }
+        else
+        {
+            LOG_ERROR(L"Thread does not exist, threadId:{}", _threadId);
         }
 
         _UpdateExecutionFunc = nullptr;
@@ -77,6 +81,7 @@ namespace jw
             return false;
         }
 
+        LOG_INFO(L"ThreadManager Add Thread({})", thread->GetFullName());
         _threads.emplace(thread->GetThraedId(), std::move(thread));
         return true;
     }
@@ -89,14 +94,30 @@ namespace jw
     void ThreadManager::RemoveThread(const Thread::ThreadId& threadId)
     {
         WRITE_LOCK(_mutex);
-        auto it = _threads.find(threadId);
-        if (it != _threads.end())
+        if (const auto it = _threads.find(threadId);
+            it != _threads.end())
         {
+            LOG_INFO(L"Thread({}) removed successfully.", it->second->GetFullName());
             _threads.erase(it);
         }
         else
         {
-            LOG_ERROR(L"Thread with ID {} does not exist.", threadId);
+            LOG_ERROR(L"Thread({}) does not exist.", threadId);
+        }
+    }
+
+    void ThreadManager::StopThread(const Thread::ThreadId& threadId)
+    {
+        WRITE_LOCK(_mutex);
+        if (const auto it = _threads.find(threadId);
+            it != _threads.end())
+        {
+            it->second->Stop();
+            LOG_INFO(L"Thread({}) stopped", it->second->GetFullName());
+        }
+        else
+        {
+            LOG_ERROR(L"Thread({}) does not exist.", threadId);
         }
     }
 
@@ -124,7 +145,6 @@ namespace jw
 
         if (0 == lastExecutionTime)
         {
-            LOG_INFO(L"Thread is never run. threadName:{}", threadName);
             return false;
         }
 

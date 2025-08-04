@@ -38,6 +38,11 @@ namespace jw
             _configDefinition.emplace_back(key, defaultValue);
         }
 
+        void SetValidate(bool validate)
+        {
+            _validate = validate;
+        }
+
         bool IsValidate() const
         {
             return _validate;

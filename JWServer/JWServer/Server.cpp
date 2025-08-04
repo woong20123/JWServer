@@ -131,6 +131,7 @@ namespace jw
         std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
         GetLogger().Initialize(container);
         _logWorker = std::make_unique<LogWorker>(container);
+        _logWorker->SetName("LogWorker");
 
         if (!onInitializedLog())
         {
@@ -302,20 +303,31 @@ namespace jw
         _threadChecker = std::make_unique<ThreadChecker>();
         _threadChecker->RunThread();
 
+        onInitializedThreadManager();
+
         return true;
     }
 
     bool Server::validateChecker()
     {
+        bool isValid{ true };
         if (!onValidateChecker())
         {
             LOG_ERROR(L"fail onValidateChecker, name:{}", _name);
             return false;
         }
 
-        assert(ServerStateStr[SERVER_STATE_LAST]);
+        for (int i = 0; i < static_cast<int>(ServerState::SERVER_STATE_MAX); ++i)
+        {
+            if (wcsnlen_s(ServerStateStr[i], 128) <= 0)
+            {
+                LOG_ERROR(L"ServerStateStr is not initialized correctly, index:{}, name:{}", i, _name);
+                isValid = false;
+                continue;
+            }
+        }
 
-        return true;
+        return isValid;
     }
 
     void Server::startNetwork()
@@ -326,7 +338,7 @@ namespace jw
     }
     void Server::startTimer()
     {
-        GetTimerLauncher().Run();
+        GetTimerLauncher().RunThread();
         LOG_INFO(L"start Timer Success, name:{}", _name);
     }
 
