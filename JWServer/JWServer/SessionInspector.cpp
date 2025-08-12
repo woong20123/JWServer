@@ -15,11 +15,6 @@ namespace jw
     }
     SessionInspectorInfoTable::~SessionInspectorInfoTable()
     {
-        if (_sessionInfoTables)
-        {
-            delete[] _sessionInfoTables;
-            _sessionInfoTables = nullptr;
-        }
     }
 
     void  SessionInspectorInfoTable::Initialize(uint16_t portId, const int64_t maxSessionCount, const time_t recvCheckTimeSecond)
@@ -33,7 +28,7 @@ namespace jw
         _maxSessionCount = maxSessionCount;
         _portId = portId;
         _recvCheckTimeSecond = recvCheckTimeSecond;
-        _sessionInfoTables = new SessionInspectorInfo[_maxSessionCount];
+        _sessionInfoTables.reset(new SessionInspectorInfo[_maxSessionCount]);
         for (int i = 0; i < _maxSessionCount; ++i)
         {
             _sessionInfoTables[i]._sessionId = INVALID_SESSION_ID;
@@ -173,18 +168,15 @@ namespace jw
     void SessionInspector::RunThread()
     {
         using namespace std::placeholders;
-        auto t = ThreadHelper::MakeThreadAndGetInfo(L"SessionInspector", _threadId, _UpdateExecutionFunc);
-        t->SetExecution(std::bind(&SessionInspector::execute, this, _1));
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"SessionInspector",
+            std::bind(&SessionInspector::execute, this, _1));
+        _threadId = t->GetThraedId();
+        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
         GetThreadManager().AddThread(std::move(t));
     }
 
     void SessionInspector::onCloseExecute()
     {
-        if (_threadId != std::thread::id())
-        {
-            GetThreadManager().RemoveThread(_threadId);
-        }
-
         if (_UpdateExecutionFunc)
             _UpdateExecutionFunc = nullptr;
     }
@@ -196,6 +188,5 @@ namespace jw
             GetThreadManager().StopThread(_threadId);
             LOG_INFO(L"SessionInspector Stop");
         }
-
     }
 }

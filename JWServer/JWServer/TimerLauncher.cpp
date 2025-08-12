@@ -27,9 +27,11 @@ namespace jw
     void TimerLauncher::RunThread()
     {
         using namespace std::placeholders;
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"TimerLauncher",
+            std::bind(&TimerLauncher::execute, this, _1));
+        _threadId = t->GetThraedId();
+        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
 
-        auto t = ThreadHelper::MakeThreadAndGetInfo(L"TimerLauncher", _threadId, _UpdateExecutionFunc);
-        t->SetExecution(std::bind(&TimerLauncher::execute, this, _1));
         GetThreadManager().AddThread(std::move(t));
     }
 
@@ -79,11 +81,6 @@ namespace jw
 
     void TimerLauncher::onCloseExecute()
     {
-        if (_threadId != std::thread::id())
-        {
-            GetThreadManager().RemoveThread(_threadId);
-        }
-
         _UpdateExecutionFunc = nullptr;
     }
 

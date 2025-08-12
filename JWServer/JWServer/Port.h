@@ -40,12 +40,14 @@ namespace jw
 
         bool Initialize(const PortInfo& data);
         uint32_t GetId() const;
-        Session* CreateSession();
+        std::shared_ptr<Session> CreateSession();
         bool DestroySession(Session* session);
 
         std::shared_ptr<Session> GetSession(const int32_t sessionIndex);
 
         const size_t GetSessionCount() const;
+
+        void Stop();
 
     private:
 

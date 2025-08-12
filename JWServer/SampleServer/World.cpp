@@ -6,6 +6,8 @@
 #include "Packet.h"
 #include "TimerLauncher.h"
 #include "Logger.h"
+#include "Session.h"
+#include <ranges>
 
 namespace jw
 {
@@ -63,10 +65,10 @@ namespace jw
         _issueBaseKey.push(key);
     }
 
-    std::shared_ptr<User> World::FindUser(const int64_t userKey)
+    std::shared_ptr<User> World::FindUser(const int64_t userKey) const
     {
         READ_LOCK(_userList_mutex);
-        return _userList[userKey];
+        return _userList.at(userKey);
     }
 
     void World::BroadcastPacket(Packet& packet)
@@ -90,5 +92,29 @@ namespace jw
     SerializerKey World::GetSerializerKey() const
     {
         return *_serializerKey;
+    }
+
+    std::vector<int64_t> World::getAllUserKey() const
+    {
+        READ_LOCK(_userList_mutex);
+        std::vector<int64_t> userKeys;
+        std::ranges::copy(_userList | std::views::keys, std::back_inserter(userKeys));
+        return  userKeys;
+    }
+
+    void World::Shutdown()
+    {
+        if (!_userList.empty())
+        {
+            std::vector<int64_t> userKeys = getAllUserKey();
+            for (const auto keys : userKeys)
+            {
+                auto user = FindUser(keys);
+                if (user)
+                {
+                    user->Close(static_cast<uint32_t>(CloseReason::CLOSE_REASON_SERVER_SHUTDOWN));
+                }
+            }
+        }
     }
 }

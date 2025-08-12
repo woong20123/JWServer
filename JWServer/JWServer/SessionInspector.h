@@ -43,7 +43,7 @@ namespace jw {
 
         int16_t                         _portId;
         std::shared_mutex               _sessionInspectorTableMutex;
-        SessionInspectorInfo* _sessionInfoTables;
+        std::unique_ptr<SessionInspectorInfo[]> _sessionInfoTables;
         size_t                          _maxSessionCount;
         time_t                          _recvCheckTimeSecond;
     };

@@ -128,10 +128,11 @@ namespace jw
         }
 
         // Logger Container를 Logger와 LogWorker에 연결합니다. 
-        std::shared_ptr<Logger::PContainer> container = std::make_shared<Logger::PContainer>(100);
-        GetLogger().Initialize(container);
-        _logWorker = std::make_unique<LogWorker>(container);
-        _logWorker->SetName("LogWorker");
+        _logWorker = std::make_unique<LogWorker>();
+        _logWorker->Initialize();
+
+        GetLogger().Initialize(_logWorker->GetProducerContainer());
+
 
         if (!onInitializedLog())
         {
@@ -224,6 +225,7 @@ namespace jw
             onStartedServer();
             break;
         case ServerState::SERVER_STATE_CLOSING:
+            onClosingServer();
             break;
         case ServerState::SERVER_STATE_CLOSED:
             onClosedServer();
@@ -382,7 +384,7 @@ namespace jw
         GetTimerLauncher().Stop();
 
         if (_logWorker)
-            _logWorker->Stop();
+            _logWorker->StopThread();
 
         // 서버의 정리작업을 기다립니다. 
         std::this_thread::sleep_for(std::chrono::seconds(SERVER_CLOSE_WAIT_SECOND));
@@ -390,7 +392,7 @@ namespace jw
         setState(ServerState::SERVER_STATE_CLOSED);
     }
 
-    void Server::Stop()
+    void Server::SendStopSignal()
     {
         if (_state == ServerState::SERVER_STATE_CLOSING ||
             _state == ServerState::SERVER_STATE_CLOSED)

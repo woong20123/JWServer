@@ -26,6 +26,7 @@ namespace jw
         int64_t GetEnterRoomId() const;
         bool IsEnterRoom() const;
 
+        void OnShutdown();
     private:
         // 세션 종료시 호출되는 함수 
         void onSessionClose(int reason);

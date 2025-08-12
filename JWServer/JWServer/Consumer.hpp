@@ -5,7 +5,9 @@
 #include <thread>
 #include <iostream>
 #include <list>
+#include <string_view>
 #include <functional>
+#include <cassert>
 #include "ProducerContainer.hpp"
 #include "StringConverter.h"
 #include "ThreadManager.h"
@@ -24,7 +26,7 @@ namespace jw
     public:
         using PCContainer = ProducerContainer<object>;
         using container = ProducerContainer<object>::container;
-        using ThreadInfo = std::pair<std::thread::id, std::function<void()>>;
+        using HandleFunc = std::function<void(const container& objs)>;
         static constexpr size_t DEFAULT_THREAD_COUNT = 1;
 
         explicit Consumer();
@@ -39,14 +41,19 @@ namespace jw
             _pProducerCon = std::move(producerCon);
         }
 
-        void SetName(const std::string& name)
+        void SetName(const std::string_view name)
         {
             _name = name;
         }
 
-        void SetName(std::string&& name)
+        void SetPrepareFunc(const std::function<void()>& prepareFunc)
         {
-            _name = std::move(name);
+            _prepareFunc = prepareFunc;
+        }
+
+        void SetHandleFunc(const HandleFunc& handleFunc)
+        {
+            _handleFunc = handleFunc;
         }
 
         void RunThread();
@@ -58,33 +65,38 @@ namespace jw
         virtual void prepare();
         // Producer에서 전달 된 object를 handle로 전달합니다. 
         void execute(std::stop_token stoken, std::function<void()> updateExecuteFunc);
-        // 전달 받은 object를 처리하는 로직을 등록합니다. 
-        virtual void handle(const container& objs) = 0;
+        //// 전달 받은 object를 처리하는 로직을 등록합니다. 
+        //virtual void handle(const container& objs) = 0;
 
 
     private:
 
         std::string                         _name;
+        std::function<void()>               _prepareFunc;
+        HandleFunc                          _handleFunc;
         std::shared_ptr<PCContainer>	    _pProducerCon;
-        std::vector<ThreadInfo>	            _threadInfos;
-        size_t                              _threadCount{ 1 };
+        std::vector<std::thread::id>	    _threadIds;
+        size_t                              _threadCount;
     };
 
     template<typename object>
-    Consumer<object>::Consumer() : _pProducerCon{ nullptr }
+    Consumer<object>::Consumer() : _pProducerCon{ nullptr }, _threadCount{ DEFAULT_THREAD_COUNT },
+        _prepareFunc{ nullptr }, _handleFunc{ nullptr }
     {
         static_assert(std::is_pointer_v<object> == false, "Consumer's <object> must not be pointer type ");
         static_assert(std::is_reference_v<object> == false, "Consumer's <object> must not be reference type ");
     }
 
     template<typename object>
-    Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducerCon{ producer }, _threadCount{ threadCount }
+    Consumer<object>::Consumer(const std::shared_ptr<PCContainer>& producer, size_t threadCount) : _pProducerCon{ producer }, _threadCount{ threadCount },
+        _prepareFunc{ nullptr }, _handleFunc{ nullptr }
     {
     }
 
     template<typename object>
     Consumer<object>::~Consumer()
-    {}
+    {
+    }
 
     template<typename object>
     void Consumer<object>::prepare()
@@ -96,27 +108,28 @@ namespace jw
     {
         prepare();
 
+        if (_prepareFunc)
+            _prepareFunc();
+
         using namespace std::placeholders;
-        _threadInfos.reserve(_threadCount);
+        _threadIds.reserve(_threadCount);
 
         for (int i = 0; i < _threadCount; i++)
         {
-            ThreadInfo infos;
             const auto threadName = std::format(L"Consumer-{}-{}", StringConverter::StrA2WUseUTF8(_name).value(), i);
-            auto t = ThreadHelper::MakeThreadAndGetInfo(threadName, infos.first, infos.second);
-            //t->SetExecution(std::bind(&Consumer<object>::execute, this, _1), infos.second);
-            t->SetExecution(std::bind(&Consumer<object>::execute, this, _1, _2), infos.second);
-            _threadInfos.emplace_back(std::move(infos));
-
+            auto t = std::make_unique<Thread>();
+            t->Initialize(threadName.data());
+            std::thread::id tid = t->GetThraedId();
+            t->SetExecution(std::bind(&Consumer<object>::execute, this, _1, _2), [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); });
+            _threadIds.emplace_back(tid);
             GetThreadManager().AddThread(std::move(t));
-            
         }
     }
 
     template<typename object>
     void Consumer<object>::Stop()
     {
-        for (const auto [threadId, _] : _threadInfos)
+        for (const auto threadId : _threadIds)
         {
             GetThreadManager().StopThread(threadId);
         }
@@ -125,6 +138,7 @@ namespace jw
     template<typename object>
     void Consumer<object>::execute(std::stop_token stoken, std::function<void()> updateExecuteFunc)
     {
+        assert(_handleFunc);
         while (true)
         {
 
@@ -145,8 +159,9 @@ namespace jw
 
             container queueObjects;
             _pProducerCon->Wait(queueObjects);
+
             if (!queueObjects.empty())
-                handle(queueObjects);
+                _handleFunc(queueObjects);
         }
     }
 

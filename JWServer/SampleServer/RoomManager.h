@@ -34,9 +34,12 @@ namespace jw
         RoomResult EnterRoom(const RoomID roomId, const int64_t userKey, const std::string& userName);
         RoomResult LeaveRoom(const RoomID roomId, const int64_t userKey);
 
+        void ShutDown();
+
     private:
         bool destoryRoom(const int64_t roomId);
         std::shared_ptr<Room> findRoom(const RoomID roomId) const;
+        std::vector<RoomID>   getAllRoomIds() const;
         std::atomic<RoomID>                         _roomIdIssuer;
         mutable std::shared_mutex                   _roomListMutex;
         std::map<RoomID, std::shared_ptr<Room> >    _roomList;

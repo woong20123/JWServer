@@ -14,13 +14,20 @@ namespace jw
         _logLevel{ LogType::LOG_INFO }
 #endif
 
-    {}
+    {
+    }
 
     Logger::~Logger()
-    {}
+    {
+    }
 
     void Logger::Initialize(const std::shared_ptr<PContainer>& producerCon)
     {
+        if (producerCon == nullptr)
+        {
+            LOG_CRASH(L"producerCon is nullptr");
+        }
+
         _logProducerCon = producerCon;
         _isRun = true;
         std::setlocale(LC_ALL, "KOREAN");

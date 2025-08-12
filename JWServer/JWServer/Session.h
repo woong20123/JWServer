@@ -25,7 +25,8 @@ namespace jw
     {
         SessionContext(uint32_t asyncId) : AsyncContext(asyncId),
             _session{ nullptr }
-        {}
+        {
+        }
         Session* _session;
     };
 
@@ -33,21 +34,24 @@ namespace jw
     {
 
         AsyncRecvContext() : SessionContext(ASYNC_CONTEXT_ID_RECV), _wsaBuffer{ 0, nullptr }
-        {}
+        {
+        }
         WSABUF      _wsaBuffer;
     };
 
     struct AsyncSendContext : public SessionContext
     {
         AsyncSendContext() : SessionContext(ASYNC_CONTEXT_ID_SEND), _sendBuffer{ nullptr }
-        {}
+        {
+        }
         std::shared_ptr<SendBufferList> _sendBuffer;
     };
 
     struct AsyncConnectContext : public SessionContext
     {
         AsyncConnectContext() : SessionContext(ASYNC_CONTEXT_ID_CONNECT)
-        {}
+        {
+        }
     };
 
     union SessionID
@@ -92,6 +96,7 @@ namespace jw
         CLOSE_REASON_CLIENT_DISCONNECTED,
         CLOSE_REASON_INSPECTOR_TIMEOUT,
         CLOSE_REASON_SESSION_DESTRUCTOR,
+        CLOSE_REASON_SERVER_SHUTDOWN,
         CLOSE_REASON_MAX,
     };
 
@@ -124,6 +129,7 @@ namespace jw
         bool Send(const void* byteStream, const size_t byteCount);
         bool Close(CloseReason reason = CloseReason::CLOSE_REASON_UNKNOWN);
         void Dispose();
+        const wchar_t* GetIpString() const { return _ipString.empty() ? L"none" : _ipString.c_str(); }
 
         static SessionID MakeSessionID(const uint32_t index, const uint16_t portId);
 

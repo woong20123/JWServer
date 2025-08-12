@@ -4,13 +4,16 @@
 #include "SampleServer.h"
 #include "RoomManager.h"
 #include "World.h"
+#include "Session.h"
 
 namespace jw
 {
     User::User() : _userKey{ INVALID_USER_KEY }, _enterRoomId{ INVALID_ROOM_ID }
-    {}
+    {
+    }
     User::User(std::shared_ptr<Session>& session) : Channel(session), _userKey{ INVALID_USER_KEY }, _enterRoomId{ INVALID_ROOM_ID }
-    {}
+    {
+    }
 
     void User::Initialize(const std::shared_ptr<Session>& session, const std::string& name)
     {
@@ -46,6 +49,11 @@ namespace jw
     bool User::IsEnterRoom() const
     {
         return _enterRoomId != INVALID_ROOM_ID;
+    }
+
+    void User::OnShutdown()
+    {
+        _session->Close(CloseReason::CLOSE_REASON_SERVER_SHUTDOWN);
     }
 
     void User::setName(const std::string& name)

@@ -13,9 +13,10 @@ namespace jw
     void ThreadChecker::RunThread()
     {
         using namespace std::placeholders;
-
-        auto t = ThreadHelper::MakeThreadAndGetInfo(L"ThreadChecker", _threadId, _UpdateExecutionFunc);
-        t->SetExecution(std::bind(&ThreadChecker::execute, this, _1));
+        auto t = ThreadHelper::MakeThreadAndGetInfo(L"ThreadChecker",
+            std::bind(&ThreadChecker::execute, this, _1));
+        _threadId = t->GetThraedId();
+        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
         GetThreadManager().AddThread(std::move(t));
     }
 
@@ -50,22 +51,15 @@ namespace jw
 
     void ThreadChecker::onCloseExecute()
     {
-        if (_threadId != std::thread::id())
-        {
-            GetThreadManager().RemoveThread(_threadId);
-        }
-        else
-        {
-            LOG_ERROR(L"Thread does not exist, threadId:{}", _threadId);
-        }
-
         _UpdateExecutionFunc = nullptr;
     }
 
     ThreadManager::ThreadManager()
-    {}
+    {
+    }
     ThreadManager::~ThreadManager()
-    { }
+    {
+    }
 
     void ThreadManager::SetThreadFrozenTime(const time_t frozenTime)
     {
@@ -89,21 +83,6 @@ namespace jw
     {
         READ_LOCK(_mutex);
         return _threads.contains(threadId);
-    }
-
-    void ThreadManager::RemoveThread(const Thread::ThreadId& threadId)
-    {
-        WRITE_LOCK(_mutex);
-        if (const auto it = _threads.find(threadId);
-            it != _threads.end())
-        {
-            LOG_INFO(L"Thread({}) removed successfully.", it->second->GetFullName());
-            _threads.erase(it);
-        }
-        else
-        {
-            LOG_ERROR(L"Thread({}) does not exist.", threadId);
-        }
     }
 
     void ThreadManager::StopThread(const Thread::ThreadId& threadId)

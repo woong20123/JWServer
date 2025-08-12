@@ -3,6 +3,7 @@
 #define __JW_THREAD_H__
 #include <thread>
 #include <string>
+#include <stdexcept>
 
 namespace jw
 {
@@ -27,7 +28,7 @@ namespace jw
         {
             if (_thread.joinable())
             {
-                std::runtime_error("Thread is already running. Cannot set execution function again.");
+                throw std::runtime_error("Thread is already running. Cannot set execution function again.");
             }
             _thread = std::jthread(std::forward<Func>(func), std::forward<Args>(args)...);
         }

@@ -193,7 +193,7 @@ namespace jw
         uint32_t iReason = static_cast<uint32_t>(reason);
         if (INVALID_SOCKET == _socket)
         {
-            LOG_ERROR(L"socket is invalid, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
+            LOG_ERROR(L"socket is invalid, id:{}, ip:{}, port:{}, reason:{}", GetId(), GetIpString(), _port, iReason);
             return false;
         }
 
@@ -208,7 +208,7 @@ namespace jw
             onClose(iReason);
 
         // 이곳까지 왔다면 session은 반납 상태입니다. 
-        LOG_INFO(L"Session is Close, id:{}, ip:{}, port:{}, reason:{}", GetId(), _ipString.c_str(), _port, iReason);
+        LOG_INFO(L"Session is Close, id:{}, ip:{}, port:{}, reason:{}", GetId(), GetIpString(), _port, iReason);
         return true;
     }
 

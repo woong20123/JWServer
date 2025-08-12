@@ -46,6 +46,14 @@ namespace jw
         return roomIter->second;
     }
 
+    std::vector<RoomManager::RoomID> RoomManager::getAllRoomIds() const
+    {
+        READ_LOCK(_roomListMutex);
+        std::vector<int64_t> roomIds;
+        std::ranges::copy(_roomList | std::views::keys, std::back_inserter(roomIds));
+        return  roomIds;
+    }
+
     bool RoomManager::IsExistRoom(const RoomID roomId) const
     {
         return findRoom(roomId) != nullptr;
@@ -139,6 +147,19 @@ namespace jw
         }
 
         return ROOM_RESULT_SUCCESS;
+    }
+
+    void RoomManager::ShutDown()
+    {
+        const auto ids = getAllRoomIds();
+        for (const auto& roomId : ids)
+        {
+            const auto& room = findRoom(roomId);
+            if (room)
+            {
+                //room->OnShutDown();
+            }
+        }
     }
 
     bool RoomManager::destoryRoom(const int64_t roomId)

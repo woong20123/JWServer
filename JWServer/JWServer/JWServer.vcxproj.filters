@@ -131,6 +131,9 @@
     <ClInclude Include="ThreadHelper.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">

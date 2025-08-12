@@ -18,6 +18,7 @@ namespace jw
         void RemovSession();
 
         virtual bool Send(Packet& packet);
+        bool Close(uint32_t reason);
     protected:
         std::shared_ptr<Session> _session;
     };

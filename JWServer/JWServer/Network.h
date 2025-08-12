@@ -51,7 +51,7 @@ namespace jw
         HANDLE                          GetIOCPHandle() const;
 
         bool                            RegistPort(const PortId_t portId, std::shared_ptr<Port>& port);
-        Session* CreateSession(const PortId_t portId);
+        std::shared_ptr<Session>        CreateSession(const PortId_t portId);
         bool                            DestroySession(const PortId_t portId, Session* session);
         std::shared_ptr<Session>        GetSession(uint64_t sessionId);
         std::shared_ptr<Session>        GetSession(const PortId_t portId, const int32_t sessionIndex);
@@ -69,20 +69,19 @@ namespace jw
         bool initializeWinSock();
         bool initializeWSASocketFunc();
 
-        std::shared_ptr<Port>& getPort(const PortId_t portId);
+        std::shared_ptr<Port>           getPort(const PortId_t portId);
 
         LPFN_ACCEPTEX                       _acceptExFunc{ nullptr };
         LPFN_GETACCEPTEXSOCKADDRS           _getAcceptExSockAddrFunc{ nullptr };
         LPFN_CONNECTEX                      _connectExFunc{ nullptr };
         LPFN_DISCONNECTEX                   _disConnectExFunc{ nullptr };
-        HANDLE                              _iocpHandle;
-        uint16_t                            _workerThreadCount;
+        HANDLE                              _iocpHandle{ nullptr };
+        uint16_t                            _workerThreadCount{ 0 };
         IOWorkerContainer                   _ioWorkers;
         PortContainer                       _portContainer;
         std::unique_ptr<SessionInspector>   _sessionInspector;
         std::shared_ptr<BadIpBlock>         _badIpBlock;
 
-        static std::shared_ptr<Port>               _NullPort;
         friend class Singleton<Network>;
     };
 

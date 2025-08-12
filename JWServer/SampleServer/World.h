@@ -41,13 +41,17 @@ namespace jw
         void Initialize(size_t userListSize);
         REGITER_USER_RESULT RegistUser(std::shared_ptr<User> user);
         void UnregistUser(const int64_t key);
-        std::shared_ptr<User> FindUser(const int64_t userKey);
+        std::shared_ptr<User> FindUser(const int64_t userKey) const;
         void BroadcastPacket(Packet& packet);
         bool PostSO(std::shared_ptr<SerializeObject>& so);
         SerializerKey GetSerializerKey() const;
+
+        void Shutdown();
     private:
 
-        std::shared_mutex	_userList_mutex;
+        std::vector<int64_t> getAllUserKey() const;
+
+        mutable std::shared_mutex	_userList_mutex;
         std::queue<int64_t> _issueBaseKey;
         std::unordered_map<int64_t, std::shared_ptr<User>> _userList;
         std::unordered_map<std::string, std::shared_ptr<User>> _userListByName;

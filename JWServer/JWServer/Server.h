@@ -51,7 +51,8 @@ namespace jw
     struct ServerEvent
     {
         ServerEvent(uint16_t id) : _id{ id }
-        {}
+        {
+        }
 
         uint16_t _id;
     };
@@ -59,7 +60,8 @@ namespace jw
     struct NotifyServerEvent : public ServerEvent
     {
         NotifyServerEvent() : ServerEvent(SERVER_EVENT_ID_NOTIFY)
-        {}
+        {
+        }
     };
 
     class Server
@@ -71,7 +73,7 @@ namespace jw
         static constexpr int32_t   CLIENT_PORT_ID = 1;
         static constexpr int32_t   INTERNAL_PORT_ID = 2;
 
-        static constexpr uint32_t DEFAULT_SERVER_EVENT_TIME_TICK_MSEC = 30000;
+        static constexpr uint32_t DEFAULT_SERVER_EVENT_TIME_TICK_MSEC = 10000;
         static constexpr int64_t   DEFAULT_TIMER_LOGIC_TICK_INTERVAL_MSEC = 100;
         static constexpr int32_t   DEFAULT_LOG_WAIT_TICK_MSEC = 100;
         // 관리되는 최대 타이머 틱
@@ -98,6 +100,7 @@ namespace jw
         static const wchar_t* ServerStateToStr(ServerState state);
 
         void CloseServer();
+        void SendStopSignal();
 
     protected:
         void registConsoleLogStream(const std::span<LogType> logFlags);
@@ -116,8 +119,8 @@ namespace jw
         virtual bool onInitializing() { return true; }
         virtual bool onInitialized() { return true; }
         virtual bool onStartedServer() { return true; }
-        virtual void onClosingServer() { }
-        virtual void onClosedServer() { }
+        virtual void onClosingServer() {}
+        virtual void onClosedServer() {}
 
         // 서버 구동시 사용자가 설정할 Log 작업을 등록 합니다. 
         // - LogStream 등록
@@ -158,7 +161,6 @@ namespace jw
 
         void waitEvent();
         void handleEvent(const std::list<std::shared_ptr<ServerEvent>>& eventObjs);
-        void Stop();
 
         std::wstring                            _name;
         std::unique_ptr<LogWorker>              _logWorker;

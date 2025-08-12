@@ -9,14 +9,12 @@
 namespace jw
 {
     IOWorker::IOWorker() : _iocpHandle{ INVALID_HANDLE_VALUE }, _UpdateExecutionFunc{ nullptr }, _id{}
-    {}
+    {
+    }
 
     IOWorker::~IOWorker()
     {
         _iocpHandle = INVALID_HANDLE_VALUE;
-
-        /*for (auto& t : _threads)
-            t.join();*/
     }
 
     void IOWorker::Initialize(HANDLE iocpHandle)
@@ -31,10 +29,20 @@ namespace jw
     void IOWorker::RunThread()
     {
         using namespace std::placeholders;
-
-        auto t = ThreadHelper::MakeThreadAndGetInfo(std::format(L"IOWorker-{}", _id), _threadId, _UpdateExecutionFunc);
-        t->SetExecution(std::bind(&IOWorker::execute, this, _1));
+        auto t = ThreadHelper::MakeThreadAndGetInfo(std::format(L"IOWorker-{}", _id),
+            std::bind(&IOWorker::execute, this, _1));
+        _threadId = t->GetThraedId();
+        _UpdateExecutionFunc = [tPtr = t.get()]() { tPtr->UpdateLastExecutionTime(); };
         GetThreadManager().AddThread(std::move(t));
+    }
+
+    void IOWorker::Stop()
+    {
+        if (_threadId != std::thread::id())
+        {
+            GetThreadManager().StopThread(_threadId);
+            LOG_INFO(L"IOWorker Stop");
+        }
     }
 
     void IOWorker::execute(std::stop_token stopToken)
@@ -82,11 +90,7 @@ namespace jw
 
     void IOWorker::onCloseExecute()
     {
-        if (_threadId != std::thread::id())
-        {
-            GetThreadManager().RemoveThread(_threadId);
-        }
-
         _UpdateExecutionFunc = nullptr;
     }
+
 }

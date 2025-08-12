@@ -34,7 +34,6 @@ namespace jw
 
         bool AddThread(std::unique_ptr<Thread>&& thread);
         bool ExistsThread(const Thread::ThreadId& threadId) const;
-        void RemoveThread(const Thread::ThreadId& threadId);
         void StopThread(const Thread::ThreadId& threadId);
         bool CheckFrozenThread(const Thread::ThreadId& threadId) const;
         void GetThreadIds(std::vector<Thread::ThreadId>& ids) const;

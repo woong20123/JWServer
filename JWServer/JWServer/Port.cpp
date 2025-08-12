@@ -43,10 +43,7 @@ namespace jw
 
         _listerner = std::make_unique<Listener>();
         _sessionList = new std::shared_ptr<Session>[info._sesionMaxCount];
-        for (int i = 0; i < info._sesionMaxCount; ++i)
-        {
-            _sessionList[i] = nullptr;
-        }
+
 
         _sessionHandler = info._sessionHandler;
 
@@ -78,7 +75,7 @@ namespace jw
         return _id;
     }
 
-    Session* Port::CreateSession()
+    std::shared_ptr<Session> Port::CreateSession()
     {
         if (getAvailableSessionCount() == 0)
         {
@@ -122,7 +119,7 @@ namespace jw
 
         LOG_INFO(L"Session Create Success, id:{}, port:{}, sessionId:{}, sessionIndex:{}, sessionMaxCount:{}", _id, _portNumber, sessionId.id, sessionIndex, _sessionMaxCount);
 
-        return session.get();
+        return session;
     }
 
     bool Port::DestroySession(Session* session)
@@ -163,6 +160,18 @@ namespace jw
 
         READ_LOCK(_sessionMutex);
         return _sessionList[sessionIndex];
+    }
+
+    void Port::Stop()
+    {
+        for (int i = 0; i < static_cast<int>(_sessionMaxCount); ++i)
+        {
+            if (_sessionList[i] && nullptr != _sessionList[i].get())
+            {
+                //_sessionList[i]->Close(CloseReason::CLOSE_REASON_SERVER_SHUTDOWN);
+                LOG_INFO(L"Session Close Port:{}, Index:{}", GetId(), i);
+            }
+        }
     }
 
     const size_t Port::GetSessionCount() const

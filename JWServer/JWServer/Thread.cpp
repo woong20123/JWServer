@@ -1,5 +1,4 @@
 ﻿#include "Thread.h"
-#include "Thread.h"
 #include "Logger.h"
 
 namespace jw
@@ -13,7 +12,6 @@ namespace jw
         if (_thread.joinable())
         {
             _thread.request_stop();
-            _thread.join();
         }
     }
 

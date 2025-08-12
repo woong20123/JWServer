@@ -157,6 +157,8 @@ namespace jw
 
     void SampleServer::onClosingServer()
     {
+        _roomManager->ShutDown();
+        _world->Shutdown();
         LOG_INFO(L"closing server, name:{}", GetName().data());
     }
 

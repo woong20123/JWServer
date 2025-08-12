@@ -13,11 +13,9 @@
 
 namespace jw
 {
-    std::shared_ptr<Port> Network::_NullPort = nullptr;
-    Network::Network() :
-        _iocpHandle{ nullptr },
-        _workerThreadCount{ 0 }
-    {}
+    Network::Network()
+    {
+    }
 
     Network::~Network() {
         WSACleanup();
@@ -85,9 +83,20 @@ namespace jw
 
     void Network::Stop()
     {
+        for (const auto [key, port] : _portContainer)
+        {
+            port->Stop();
+            LOG_INFO(L"Port({}) stopped", key);
+        }
 
         if (_sessionInspector)
             _sessionInspector->Stop();
+
+        for (const auto& worker : _ioWorkers)
+        {
+            worker->Stop();
+        }
+
     }
 
     LPFN_ACCEPTEX Network::GetAcceptExFunc() const
@@ -134,9 +143,9 @@ namespace jw
         return true;
     }
 
-    Session* Network::CreateSession(const PortId_t portId)
+    std::shared_ptr<Session> Network::CreateSession(const PortId_t portId)
     {
-        if (auto& port = getPort(portId);
+        if (const auto port = getPort(portId);
             nullptr != port)
         {
             return port->CreateSession();
@@ -154,7 +163,7 @@ namespace jw
             return false;
         }
 
-        if (auto& port = getPort(portId);
+        if (const auto port = getPort(portId);
             nullptr != port)
         {
             return port->DestroySession(session);
@@ -172,7 +181,7 @@ namespace jw
 
     std::shared_ptr<Session> Network::GetSession(const PortId_t portId, const int32_t sessionIndex)
     {
-        if (auto& port = getPort(portId);
+        if (const auto port = getPort(portId);
             nullptr != port)
         {
             return port->GetSession(sessionIndex);
@@ -193,7 +202,7 @@ namespace jw
 
     size_t Network::GetSessionCount(const PortId_t portId)
     {
-        if (auto& port = getPort(portId);
+        if (const auto port = getPort(portId);
             nullptr != port)
         {
             return port->GetSessionCount();
@@ -266,7 +275,7 @@ namespace jw
         return true;
     }
 
-    std::shared_ptr<Port>& Network::getPort(const PortId_t portId)
+    std::shared_ptr<Port> Network::getPort(const PortId_t portId)
     {
         if (_portContainer.contains(portId))
         {
@@ -274,7 +283,7 @@ namespace jw
         }
 
         LOG_ERROR(L"not find portNumber, portId:{}", portId);
-        return Network::_NullPort;
+        return nullptr;
     }
 
     Network& GetNetwork() { return Network::GetInstance(); }

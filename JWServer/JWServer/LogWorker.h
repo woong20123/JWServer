@@ -11,22 +11,40 @@
 namespace jw
 {
     class LogBuffer;
-    class LogWorker : public Consumer< std::shared_ptr<LogBuffer> >
+    class LogWorker /*: public Consumer< std::shared_ptr<LogBuffer> >*/
     {
-        CONSUMER_BASE_DECLARE(LogWorker, LogBuffer);
     public:
+        using objectType = std::shared_ptr<LogBuffer>;
+        using Consumer_t = Consumer<objectType>;
+        using Produce_t = ProducerContainer<objectType>;
         static constexpr size_t LOG_STREAM_MAX_COUNT = 10;
+        static constexpr uint32_t DEFAULT_LOG_WAIT_TICK_MSEC = 100;
 
-        // 스레드 수행전 해야 할 작업 등록
-        // 스레드 세이프 합니다. 
-        void prepare() override;
+        LogWorker() = default;
+
+        void Initialize();
 
         void RegisterLogStream(const std::shared_ptr<LogStream>& stream);
         size_t getRegistedLogStreamCount();
+
+        void RunThread();
+        void StopThread();
+
+        std::shared_ptr<Produce_t> GetProducerContainer() const
+        {
+            return _producerCon;
+        }
+
     private:
+        void handle(const Consumer_t::container& objs);
+        void prepare();
+
         std::vector<std::shared_ptr<LogStream> >    _logStreams;
         size_t                                      _logStreamCnt{ 0 };
         std::shared_mutex                           _logStreamMutex;
+
+        std::unique_ptr<Consumer_t>                 _consumer;
+        std::shared_ptr<Produce_t>                  _producerCon;
     };
 }
 #endif // __JW_LOG_WORKER_H__

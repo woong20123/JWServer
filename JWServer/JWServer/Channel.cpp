@@ -27,4 +27,10 @@ namespace jw
         _session->Send(packet);
         return true;
     }
+
+    bool Channel::Close(uint32_t reason)
+    {
+        _session->Close(static_cast<CloseReason>(reason));
+        return true;
+    }
 }

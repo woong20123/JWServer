@@ -174,6 +174,7 @@ bootstrap.bat</Command>
     <ClInclude Include="PacketHandler.h" />
     <ClInclude Include="PacketHelper.hpp" />
     <ClInclude Include="Port.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="SerializeObject.h" />
     <ClInclude Include="Serializer.h" />
     <ClInclude Include="SerializerManager.h" />
